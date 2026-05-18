@@ -28,10 +28,10 @@
   <style>
     /* ───────────────────────── RESET ───────────────────────── */
     *, *::before, *::after { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    html, body { margin: 0; padding: 0; background: #fff; }
+    html, body { margin: 0; padding: 0; background: #000; }
     body {
-      background: #fff;
-      color: #0a0a0a;
+      background: #000;
+      color: #fff;
       font-family: 'DM Sans', system-ui, sans-serif;
       font-weight: 400;
       -webkit-font-smoothing: antialiased;
@@ -49,12 +49,12 @@
       --flavor-001: #FF3366;
       --orange: #FF9955;
       --brown: #AA8866;
-      --bg: #ffffff;
-      --surface: #ffffff;
-      --text: #0a0a0a;
-      --text-mute: rgba(10,10,10,0.80);
-      --text-faint: rgba(10,10,10,0.58);
-      --border: rgba(10,10,10,0.14);
+      --bg: #000000;
+      --surface: #000000;
+      --text: #ffffff;
+      --text-mute: rgba(255,255,255,0.80);
+      --text-faint: rgba(255,255,255,0.58);
+      --border: rgba(255,255,255,0.14);
       --max-content: 1100px;
       --max-narrow: 560px;
       --serif: 'Instrument Serif', 'Times New Roman', serif;
@@ -80,7 +80,7 @@
     }
     .rule {
       height: 1px;
-      background: rgba(0,0,0,0.15);
+      background: rgba(255,255,255,0.15);
       width: 100%;
     }
     .rule-pink { background: var(--pink); }
@@ -102,7 +102,7 @@
     .age-gate {
       position: fixed;
       inset: 0;
-      background: #fff;
+      background: #000;
       z-index: 9999;
       display: flex;
       flex-direction: column;
@@ -165,13 +165,13 @@
       left: 0;
       right: 0;
       height: 44px;
-      background: rgba(255, 255, 255, 0.92);
+      background: rgba(0, 0, 0, 0.92);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
       z-index: 100;
       transform: translateY(-100%);
       transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-      border-bottom: 1px solid rgba(0, 102, 255, 0.25);
+      border-bottom: 1px solid rgba(0, 102, 255, 0.15);
     }
     .sticky.visible { transform: translateY(0); }
     .sticky-inner {
@@ -193,7 +193,7 @@
     .sticky-cta {
       font-size: 13px;
       font-weight: 500;
-      color: var(--pink);
+      color: #fff;
       background: transparent;
       border: 1px solid var(--pink);
       padding: 7px 14px;
@@ -201,7 +201,7 @@
       transition: background 0.2s ease, color 0.2s ease;
       line-height: 1;
     }
-    .sticky-cta:hover { background: var(--pink); color: #ffffff; font-weight: 700; }
+    .sticky-cta:hover { background: var(--pink); color: #000; font-weight: 700; }
 
     /* ────────────────────── BUTTONS ────────────────────── */
     .btn-pink {
@@ -209,7 +209,7 @@
       font-size: 22px;
       letter-spacing: 0.03em;
       background: var(--pink);
-      color: #ffffff;
+      color: #000;
       border: none;
       padding: 14px 36px;
       border-radius: 999px;
@@ -228,8 +228,8 @@
       letter-spacing: 0.12em;
       text-transform: uppercase;
       background: transparent;
-      color: #0a0a0a;
-      border: 1px solid rgba(0,0,0,0.3);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.3);
       padding: 12px 24px;
       border-radius: 999px;
       transition: border-color 0.2s ease, color 0.2s ease;
@@ -241,9 +241,9 @@
     .btn-hero {
       font-size: 15px;
       font-weight: 500;
-      color: #0a0a0a;
+      color: #fff;
       background: transparent;
-      border: 1px solid rgba(0,0,0,0.4);
+      border: 1px solid rgba(255, 255, 255, 0.4);
       padding: 14px 26px;
       border-radius: 999px;
       transition: transform 0.3s ease, border-color 0.3s ease, color 0.3s ease;
@@ -284,8 +284,8 @@
         0deg,
         transparent 0,
         transparent 3px,
-        rgba(0,0,0,0.008) 3px,
-        rgba(0,0,0,0.008) 4px
+        rgba(255, 255, 255, 0.008) 3px,
+        rgba(255, 255, 255, 0.008) 4px
       );
       animation: scanline 8s linear infinite;
       z-index: 3;
@@ -369,7 +369,7 @@
       font-family: var(--serif);
       font-style: italic;
       font-size: clamp(1.1rem, 4.2vw, 1.6rem);
-      color: #0a0a0a;
+      color: #fff;
       letter-spacing: -0.005em;
       max-width: 480px;
       line-height: 1.3;
@@ -387,7 +387,7 @@
       margin-top: 36px;
       background: none;
       border: none;
-      color: #0a0a0a;
+      color: #fff;
       cursor: pointer;
       font-family: var(--mono);
       font-size: 12px;
@@ -448,7 +448,7 @@
       font-size: clamp(1.4rem, 5vw, 2.2rem);
       letter-spacing: -0.02em;
       text-transform: uppercase;
-      color: #0a0a0a;
+      color: #fff;
       padding: 0 24px;
       flex-shrink: 0;
       line-height: 1;
@@ -479,7 +479,7 @@
       text-transform: lowercase;
       letter-spacing: -0.025em;
       line-height: 1.05;
-      color: #0a0a0a;
+      color: #fff;
       font-size: clamp(1.6rem, 5.5vw, 2.4rem);
       margin: 12px 0 0;
     }
@@ -508,7 +508,7 @@
     }
     .drop-card {
       background: var(--surface);
-      border: 1px solid rgba(0,0,0,0.08);
+      border: 1px solid rgba(255,255,255,0.08);
       aspect-ratio: 3 / 4;
       border-radius: 4px;
       padding: 14px;
@@ -549,7 +549,7 @@
       font-family: var(--mono);
       font-size: 8px;
       letter-spacing: 0.2em;
-      color: rgba(0,0,0,0.4);
+      color: rgba(255,255,255,0.4);
       text-transform: uppercase;
       text-align: right;
       line-height: 1.3;
@@ -557,7 +557,7 @@
     .drop-card-num {
       font-family: 'Anton', sans-serif;
       font-size: clamp(3rem, 14vw, 6rem);
-      color: #0a0a0a;
+      color: #fff;
       letter-spacing: -0.05em;
       line-height: 0.85;
       position: relative;
@@ -568,7 +568,7 @@
       font-size: 9px;
       letter-spacing: 0.25em;
       text-transform: uppercase;
-      color: rgba(0,0,0,0.35);
+      color: rgba(255,255,255,0.35);
       z-index: 2;
       position: relative;
       transition: color 0.3s ease;
@@ -607,7 +607,7 @@
     .wtf-foot-text {
       font-family: var(--serif);
       font-style: italic;
-      color: #0a0a0a;
+      color: #fff;
       font-size: clamp(0.9rem, 3.2vw, 1rem);
       opacity: 0.85;
       letter-spacing: 0.005em;
@@ -664,7 +664,7 @@
       font-family: var(--serif);
       font-style: italic;
       font-weight: 400;
-      color: #0a0a0a;
+      color: #fff;
     }
     .warning-meta {
       font-family: var(--mono);
@@ -697,7 +697,7 @@
     .how-headline {
       font-family: 'Anton', sans-serif;
       font-size: clamp(2.4rem, 9vw, 4.5rem);
-      color: #0a0a0a;
+      color: #fff;
       letter-spacing: -0.04em;
       text-transform: lowercase;
       margin: 0;
@@ -728,7 +728,7 @@
     .step-title {
       font-family: 'Anton', sans-serif;
       font-size: clamp(1.4rem, 5.5vw, 2.2rem);
-      color: #0a0a0a;
+      color: #fff;
       letter-spacing: -0.025em;
       text-transform: lowercase;
       line-height: 1.05;
@@ -785,7 +785,7 @@
     .game-headline {
       font-family: 'Anton', sans-serif;
       font-size: clamp(2rem, 8vw, 3.2rem);
-      color: #0a0a0a;
+      color: #fff;
       letter-spacing: -0.04em;
       text-transform: lowercase;
       line-height: 0.92;
@@ -815,7 +815,7 @@
       max-width: 420px;
       margin: 0 auto;
       aspect-ratio: 9 / 16;
-      background: #ffffff;
+      background: #000000;
       border: 1px solid rgba(0,102,255,0.2);
       border-radius: 18px;
       overflow: hidden;
@@ -894,14 +894,14 @@
       font-family: 'Anton', sans-serif;
       font-size: 30px;
       letter-spacing: -0.02em;
-      color: #0a0a0a;
+      color: #fff;
       line-height: 1;
     }
     .hud-label {
       font-size: 9px;
       letter-spacing: 0.25em;
       text-transform: uppercase;
-      color: rgba(0,0,0,0.5);
+      color: rgba(255,255,255,0.5);
       margin-top: 4px;
     }
     .hud-lives { display: flex; gap: 5px; align-items: center; font-size: 18px; }
@@ -919,7 +919,7 @@
     }
     .hud-state-bar {
       height: 4px;
-      background: rgba(0,0,0,0.1);
+      background: rgba(255,255,255,0.1);
       border-radius: 999px;
       overflow: hidden;
     }
@@ -934,7 +934,7 @@
       font-size: 10px;
       letter-spacing: 0.25em;
       text-transform: uppercase;
-      color: rgba(0,0,0,0.7);
+      color: rgba(255,255,255,0.7);
       margin-top: 7px;
       display: flex;
       justify-content: space-between;
@@ -971,7 +971,7 @@
       margin: 0 0 28px;
       max-width: 280px;
     }
-    .game-start-rules strong { color: #0a0a0a; font-weight: 500; }
+    .game-start-rules strong { color: #fff; font-weight: 500; }
     .game-start-btn-wrap { width: 100%; max-width: 220px; }
 
     /* Game over screen — designed for 9:16 screenshot */
@@ -1002,7 +1002,7 @@
     .go-tag {
       font-size: 10px;
       letter-spacing: 0.35em;
-      color: rgba(0,0,0,0.4);
+      color: rgba(255,255,255,0.4);
       text-transform: uppercase;
       line-height: 1;
     }
@@ -1016,7 +1016,7 @@
       font-size: 10px;
       letter-spacing: 0.4em;
       text-transform: uppercase;
-      color: rgba(0,0,0,0.5);
+      color: rgba(255,255,255,0.5);
       margin-bottom: 10px;
     }
     .go-score {
@@ -1030,7 +1030,7 @@
     .go-verdict {
       font-family: 'Anton', sans-serif;
       font-size: clamp(1.6rem, 7vw, 2.4rem);
-      color: #0a0a0a;
+      color: #fff;
       letter-spacing: -0.025em;
       text-transform: lowercase;
       line-height: 1;
@@ -1047,7 +1047,7 @@
     .go-link-down {
       margin-top: 6px;
       font-size: 13px;
-      color: rgba(0,0,0,0.7);
+      color: rgba(255,255,255,0.7);
       background: none;
       border: none;
       text-decoration: underline;
@@ -1090,13 +1090,13 @@
     .waitlist-headline em {
       font-family: var(--serif);
       font-style: italic;
-      color: #0a0a0a;
+      color: #fff;
       font-weight: 400;
     }
     .waitlist-sub {
       font-family: var(--serif);
       font-style: italic;
-      color: #0a0a0a;
+      color: #fff;
       font-size: clamp(0.95rem, 3.5vw, 1.1rem);
       margin: 0 0 32px;
       opacity: 0.85;
@@ -1123,7 +1123,7 @@
     }
     .input {
       font-size: 16px;
-      color: #0a0a0a;
+      color: #fff;
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 12px;
@@ -1132,7 +1132,7 @@
       transition: border-color 0.25s ease;
     }
     .input:focus { border-color: var(--pink); }
-    .input::placeholder { color: rgba(0,0,0,0.35); }
+    .input::placeholder { color: rgba(255,255,255,0.35); }
     .input.optional { border-style: dashed; }
 
     .field-hint {
@@ -1151,7 +1151,7 @@
     }
     .poison-label {
       font-size: 13px;
-      color: rgba(0,0,0,0.55);
+      color: rgba(255,255,255,0.55);
       letter-spacing: 0.04em;
       text-transform: lowercase;
       margin-bottom: 10px;
@@ -1165,9 +1165,9 @@
     .pill {
       font-size: 14px;
       font-weight: 500;
-      color: rgba(0,0,0,0.75);
+      color: rgba(255,255,255,0.75);
       background: transparent;
-      border: 1px solid rgba(0,0,0,0.18);
+      border: 1px solid rgba(255,255,255,0.18);
       border-radius: 999px;
       padding: 9px 16px;
       transition: all 0.2s ease;
@@ -1176,10 +1176,10 @@
       display: inline-flex;
       align-items: center;
     }
-    .pill:hover:not(.active) { border-color: var(--pink); color: #0a0a0a; }
+    .pill:hover:not(.active) { border-color: var(--pink); color: #fff; }
     .pill.active {
       background: var(--pink);
-      color: #ffffff;
+      color: #000;
       border-color: var(--pink);
       font-weight: 700;
     }
@@ -1189,7 +1189,7 @@
       font-size: 24px;
       letter-spacing: 0.03em;
       background: var(--pink);
-      color: #ffffff;
+      color: #000;
       border: none;
       padding: 18px;
       border-radius: 12px;
@@ -1235,7 +1235,7 @@
       font-size: 11px;
       letter-spacing: 0.4em;
       text-transform: uppercase;
-      color: rgba(0,0,0,0.5);
+      color: rgba(255,255,255,0.5);
       margin-bottom: 8px;
     }
     .confirm-num {
@@ -1248,7 +1248,7 @@
       margin-bottom: 12px;
     }
     .confirm-num-text {
-      color: #0a0a0a;
+      color: #fff;
       font-size: 16px;
       opacity: 0.85;
       margin-bottom: 24px;
@@ -1260,7 +1260,7 @@
       margin: 0 0 36px;
     }
     .confirm-share-prompt {
-      color: #0a0a0a;
+      color: #fff;
       font-size: 14px;
       margin-bottom: 16px;
       opacity: 0.7;
@@ -1309,7 +1309,7 @@
       bottom: -20px;
       left: 0;
       right: 0;
-      background: #ffffff;
+      background: #000000;
       border-top: 1px solid var(--border);
       border-radius: 24px 24px 0 0;
       padding: 32px 24px 36px;
@@ -1326,7 +1326,7 @@
     .drop-sheet-handle {
       width: 40px;
       height: 4px;
-      background: rgba(0,0,0,0.2);
+      background: rgba(255,255,255,0.2);
       border-radius: 999px;
       margin: -16px auto 24px;
     }
@@ -1347,7 +1347,7 @@
       font-size: clamp(1.4rem, 6vw, 2rem);
       text-transform: lowercase;
       letter-spacing: -0.025em;
-      color: #0a0a0a;
+      color: #fff;
       line-height: 1.05;
       margin: 0 0 14px;
       text-align: left;
@@ -1381,7 +1381,7 @@
       flex-shrink: 0;
     }
     .drop-sheet-value {
-      color: #0a0a0a;
+      color: #fff;
       font-weight: 500;
       font-size: 14px;
       text-align: right;
@@ -1393,9 +1393,9 @@
       width: 36px;
       height: 36px;
       border-radius: 999px;
-      background: rgba(0,0,0,0.06);
+      background: rgba(255,255,255,0.06);
       border: none;
-      color: #0a0a0a;
+      color: #fff;
       font-size: 22px;
       line-height: 1;
       display: flex;
@@ -1437,7 +1437,7 @@
       left: 50%;
       transform: translateX(-50%) translateY(20px);
       background: var(--pink);
-      color: #ffffff;
+      color: #000;
       font-weight: 700;
       padding: 12px 22px;
       border-radius: 999px;
@@ -1469,7 +1469,7 @@
     .closing-text {
       font-family: 'Anton', sans-serif;
       font-size: clamp(1.8rem, 7vw, 3rem);
-      color: rgba(0,0,0,0.9);
+      color: rgba(255,255,255,0.9);
       letter-spacing: -0.03em;
       text-transform: lowercase;
       line-height: 1;
@@ -1509,7 +1509,7 @@
       font-family: var(--mono);
       font-size: 10px;
       letter-spacing: 0.3em;
-      color: rgba(0,0,0,0.65);
+      color: rgba(255,255,255,0.65);
       text-transform: uppercase;
       line-height: 1.5;
     }
@@ -1524,7 +1524,7 @@
       font-size: 10px;
       letter-spacing: 0.25em;
       text-transform: uppercase;
-      color: rgba(0,0,0,0.4);
+      color: rgba(255,255,255,0.4);
     }
     .footer-right-line.pink { color: var(--pink); }
     @media (max-width: 480px) {
@@ -1553,13 +1553,13 @@
     }
     @keyframes letterGlitch {
       0%   { transform: translate(0, 0) skewX(0deg); opacity: 1; color: var(--pink); }
-      10%  { transform: translate(-6px, 2px) skewX(-8deg); opacity: 0.3; color: #0a0a0a; }
+      10%  { transform: translate(-6px, 2px) skewX(-8deg); opacity: 0.3; color: #fff; }
       20%  { transform: translate(5px, -3px) skewX(6deg); opacity: 1; color: var(--pink); }
       30%  { transform: translate(-4px, 2px) skewX(-4deg); opacity: 0.5; color: #ff00ff; }
       40%  { transform: translate(3px, -1px) skewX(3deg); opacity: 1; color: var(--pink); }
       50%  { transform: translate(0, 0) skewX(0deg); opacity: 0.2; color: #00ffff; }
       60%  { transform: translate(-2px, 1px) skewX(-2deg); opacity: 1; color: var(--pink); }
-      75%  { transform: translate(2px, 0) skewX(2deg); opacity: 0.7; color: #0a0a0a; }
+      75%  { transform: translate(2px, 0) skewX(2deg); opacity: 0.7; color: #fff; }
       100% { transform: translate(0, 0) skewX(0deg); opacity: 1; color: var(--pink); }
     }
 
@@ -1568,7 +1568,7 @@
     .ripple-effect {
       position: absolute;
       border-radius: 50%;
-      background: rgba(0,0,0,0.5);
+      background: rgba(255, 255, 255, 0.5);
       transform: scale(0);
       animation: rippleExpand 600ms ease-out;
       pointer-events: none;
@@ -2024,7 +2024,7 @@
         
         // Add progress bar
         const progressWrap = document.createElement('div');
-        progressWrap.style.cssText = 'width: 200px; height: 4px; background: rgba(0,0,0,0.1); margin: 24px auto; border-radius: 2px; overflow: hidden;';
+        progressWrap.style.cssText = 'width: 200px; height: 4px; background: rgba(255,255,255,0.1); margin: 24px auto; border-radius: 2px; overflow: hidden;';
         const progressBar = document.createElement('div');
         progressBar.style.cssText = 'width: 0%; height: 100%; background: var(--pink); transition: width 2s ease-out;';
         progressWrap.appendChild(progressBar);
@@ -2161,7 +2161,7 @@
       const PAD = 80;
       const PINK_C = '#0066FF';
       const WHITE = '#FFFFFF';
-      const FAINT = 'rgba(0,0,0,0.45)';
+      const FAINT = 'rgba(255,255,255,0.45)';
 
       // ── Helper: draw text with letter-spacing approximation
       const drawText = (text, x, y, options = {}) => {
@@ -2248,7 +2248,7 @@
         ctx.fillText(`"${data.verdict}"`, W / 2, 1280);
 
         // ── Subtitle
-        ctx.fillStyle = 'rgba(0,0,0,0.55)';
+        ctx.fillStyle = 'rgba(255,255,255,0.55)';
         ctx.font = '400 30px "DM Sans", sans-serif';
         ctx.fillText('serves caught before going down', W / 2, 1360);
 
@@ -2271,7 +2271,7 @@
         ctx.fillText("you're in.", W / 2, 1280);
 
         // ── Subtitle
-        ctx.fillStyle = 'rgba(0,0,0,0.55)';
+        ctx.fillStyle = 'rgba(255,255,255,0.55)';
         ctx.font = '400 30px "DM Sans", sans-serif';
         ctx.fillText('on the FROSTD waitlist.', W / 2, 1360);
       }
@@ -2502,7 +2502,7 @@
     };
 
     const drawGrid = () => {
-      ctx.strokeStyle = 'rgba(0,0,0,0.025)';
+      ctx.strokeStyle = 'rgba(255,255,255,0.025)';
       ctx.lineWidth = 1;
       const gs = 32;
       for (let gx = 0; gx <= game.W; gx += gs) {
@@ -3066,7 +3066,7 @@
             r: 1 + Math.random() * 2.5,
             vx: -0.15 + Math.random() * 0.3,
             vy: 0.15 + Math.random() * 0.45,
-            alpha: 0.4 + Math.random() * 0.5,
+            alpha: 0.3 + Math.random() * 0.5,
           });
         }
       }
