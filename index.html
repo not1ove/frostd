@@ -1,3117 +1,1787 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#000000">
-  <title>FROSTD — alcohol in ice cream</title>
-
-  <!-- Open Graph -->
-  <meta property="og:title" content="FROSTD — alcohol in ice cream">
-  <meta property="og:description" content="cause you deserve both. mumbai.">
-  <meta property="og:type" content="website">
-  <meta property="og:image" content="og-card.png">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="FROSTD — alcohol in ice cream">
-  <meta name="twitter:description" content="cause you deserve both. mumbai.">
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Anton&family=DM+Sans:wght@400;500;700&family=Instrument+Serif:ital@1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-
-  <!-- Favicon: pink K on black -->
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23000'/%3E%3Ctext x='50%25' y='50%25' font-family='Impact, sans-serif' font-size='28' font-weight='900' fill='%230066FF' text-anchor='middle' dominant-baseline='central'%3EF%3C/text%3E%3C/svg%3E">
-
-  <!-- Supabase SDK -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <style>
-    /* ───────────────────────── RESET ───────────────────────── */
-    *, *::before, *::after { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    html, body { margin: 0; padding: 0; background: #000; }
-    body {
-      background: #000;
-      color: #fff;
-      font-family: 'DM Sans', system-ui, sans-serif;
-      font-weight: 400;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      overflow-x: hidden;
-      min-height: 100vh;
-    }
-    button { font-family: inherit; cursor: pointer; }
-    input, button { font-family: inherit; outline: none; }
-    img { max-width: 100%; display: block; }
-
-    /* ──────────────────── DESIGN TOKENS ──────────────────── */
-    :root {
-      --pink: #0066FF;
-      --flavor-001: #FF3366;
-      --orange: #FF9955;
-      --brown: #AA8866;
-      --bg: #000000;
-      --surface: #000000;
-      --text: #ffffff;
-      --text-mute: rgba(255,255,255,0.80);
-      --text-faint: rgba(255,255,255,0.58);
-      --border: rgba(255,255,255,0.14);
-      --max-content: 1100px;
-      --max-narrow: 560px;
-      --serif: 'Instrument Serif', 'Times New Roman', serif;
-      --mono: 'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
-    }
-
-    .display { font-family: 'Anton', 'Impact', sans-serif; font-weight: 400; text-transform: uppercase; line-height: 0.9; letter-spacing: -0.03em; }
-
-    /* Editorial typography utilities */
-    .kicker {
-      font-family: var(--mono);
-      font-size: 11px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--text-faint);
-      font-weight: 400;
-    }
-    .kicker-pink { color: var(--pink); }
-    .serif-italic {
-      font-family: var(--serif);
-      font-style: italic;
-      letter-spacing: -0.005em;
-    }
-    .rule {
-      height: 1px;
-      background: rgba(255,255,255,0.15);
-      width: 100%;
-    }
-    .rule-pink { background: var(--pink); }
-
-    /* ──────────────────── BRAND VOICE & ENERGY ──────────────────── */
-    /* 
-       The brand energy is hot people doing things they're not supposed to do. 
-       Aspirational but chaotic. Think the baddest person in the room eating 
-       alcoholic ice cream at 2am and not apologizing for it.
-       
-       Copy tone: Deadpan institutional, no hype, no scarcity. "No Permission Asked."
-    */
-
-    /* ──────────────────── GLOBAL GRAIN REMOVED ──────────────────── */
-    /* Grain overlay was darkening pure black to grey. Removed entirely. */
-
-
-    /* ─────────────────────── AGE GATE ─────────────────────── */
-    .age-gate {
-      position: fixed;
-      inset: 0;
-      background: #000;
-      z-index: 9999;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 40px 24px;
-      text-align: center;
-      transition: opacity 0.4s ease;
-    }
-    .age-gate.hidden { opacity: 0; pointer-events: none; }
-    .age-gate-logo {
-      font-family: 'Anton', sans-serif;
-      color: var(--pink);
-      font-size: clamp(4rem, 18vw, 9rem);
-      letter-spacing: -0.07em;
-      line-height: 0.85;
-      margin-bottom: 32px;
-      text-shadow: 0 0 50px rgba(0, 102, 255, 0.3);
-    }
-    .age-gate-text {
-      font-size: 15px;
-      color: var(--text);
-      max-width: 320px;
-      line-height: 1.5;
-      margin-bottom: 32px;
-      opacity: 0.85;
-    }
-    .age-gate-buttons {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      width: 100%;
-      max-width: 280px;
-    }
-
-    /* ──────────────── REFERRAL BANNER ──────────────── */
-    .ref-banner {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 90;
-      font-size: 12px;
-      letter-spacing: 0.04em;
-      color: var(--pink);
-      text-align: center;
-      padding: 8px 16px;
-      background: rgba(0, 102, 255, 0.05);
-      border-bottom: 1px solid rgba(0, 102, 255, 0.18);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      display: none;
-    }
-    .ref-banner.active { display: block; }
-
-    /* ──────────────── STICKY TOP BAR ──────────────── */
-    .sticky {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 44px;
-      background: rgba(0, 0, 0, 0.92);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      z-index: 100;
-      transform: translateY(-100%);
-      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-      border-bottom: 1px solid rgba(0, 102, 255, 0.15);
-    }
-    .sticky.visible { transform: translateY(0); }
-    .sticky-inner {
-      height: 100%;
-      max-width: var(--max-content);
-      margin: 0 auto;
-      padding: 0 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .sticky-logo {
-      font-family: 'Anton', sans-serif;
-      font-size: 18px;
-      letter-spacing: -0.05em;
-      color: var(--pink);
-      line-height: 1;
-    }
-    .sticky-cta {
-      font-size: 13px;
-      font-weight: 500;
-      color: #fff;
-      background: transparent;
-      border: 1px solid var(--pink);
-      padding: 7px 14px;
-      border-radius: 999px;
-      transition: background 0.2s ease, color 0.2s ease;
-      line-height: 1;
-    }
-    .sticky-cta:hover { background: var(--pink); color: #000; font-weight: 700; }
-
-    /* ────────────────────── BUTTONS ────────────────────── */
-    .btn-pink {
-      font-family: 'Anton', sans-serif;
-      font-size: 22px;
-      letter-spacing: 0.03em;
-      background: var(--pink);
-      color: #000;
-      border: none;
-      padding: 14px 36px;
-      border-radius: 999px;
-      text-transform: uppercase;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-      line-height: 1;
-      width: 100%;
-    }
-    .btn-pink:hover { transform: translateY(-1px); box-shadow: 0 0 50px rgba(0,102,255,0.45); }
-    .btn-pink:active { transform: translateY(0); }
-    .btn-pink:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
-
-    .btn-ghost {
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      background: transparent;
-      color: #fff;
-      border: 1px solid rgba(255,255,255,0.3);
-      padding: 12px 24px;
-      border-radius: 999px;
-      transition: border-color 0.2s ease, color 0.2s ease;
-      line-height: 1;
-      width: 100%;
-    }
-    .btn-ghost:hover { border-color: var(--pink); color: var(--pink); }
-
-    .btn-hero {
-      font-size: 15px;
-      font-weight: 500;
-      color: #fff;
-      background: transparent;
-      border: 1px solid rgba(255, 255, 255, 0.4);
-      padding: 14px 26px;
-      border-radius: 999px;
-      transition: transform 0.3s ease, border-color 0.3s ease, color 0.3s ease;
-      line-height: 1;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .btn-hero:hover { border-color: var(--pink); color: var(--pink); transform: translateY(-2px); }
-
-    /* ──────────────── SCROLL FADE-UP ──────────────── */
-    .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1); }
-    .reveal.in-view { opacity: 1; transform: translateY(0); }
-
-    /* ───────────────────── SECTIONS ───────────────────── */
-    section { padding: 96px 20px; }
-    .section-inner { max-width: var(--max-content); margin: 0 auto; }
-
-    /* ───────────────────── HERO ───────────────────── */
-    .hero {
-      min-height: 100vh;
-      min-height: 100dvh;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      position: relative;
-      overflow: hidden;
-    }
-
-    /* Hero scanlines — animated, subtle */
-    .hero::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      background: repeating-linear-gradient(
-        0deg,
-        transparent 0,
-        transparent 3px,
-        rgba(255, 255, 255, 0.008) 3px,
-        rgba(255, 255, 255, 0.008) 4px
-      );
-      animation: scanline 8s linear infinite;
-      z-index: 3;
-    }
-    @keyframes scanline {
-      0%   { transform: translateY(0); }
-      100% { transform: translateY(8px); }
-    }
-
-    /* Editorial corner labels */
-    .hero-top, .hero-bottom {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 20px 20px;
-      width: 100%;
-      z-index: 4;
-      position: relative;
-    }
-    .hero-top { padding-top: 24px; }
-    .hero-bottom { padding-bottom: 24px; }
-    .hero-top .kicker, .hero-bottom .kicker {
-      line-height: 1.2;
-    }
-
-    /* The lockup column */
-    .hero-center {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      width: 100%;
-      padding: 20px 20px;
-      position: relative;
-      z-index: 2;
-    }
-    .hero-wordmark-wrap {
-      position: relative;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      max-width: 100%;
-    }
-
-    /* Letter-by-letter staggered entrance */
-    .hero-wordmark {
-      font-family: 'Anton', 'Impact', sans-serif;
-      font-weight: 400;
-      letter-spacing: -0.075em;
-      line-height: 0.8;
-      color: var(--pink);
-      position: relative;
-      z-index: 2;
-      font-size: clamp(4.5rem, 25vw, 18rem);
-      display: inline-flex;
-    }
-    .hero-letter {
-      display: inline-block;
-      opacity: 1;
-    }
-
-    .hero-tagline {
-      margin-top: 32px;
-      font-family: var(--serif);
-      font-style: italic;
-      font-size: clamp(1.1rem, 4.2vw, 1.6rem);
-      color: #fff;
-      letter-spacing: -0.005em;
-      max-width: 480px;
-      line-height: 1.3;
-      text-align: center;
-      opacity: 0;
-      animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.9s forwards;
-    }
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Hero CTA — editorial link, not a button */
-    .hero-cta {
-      margin-top: 36px;
-      background: none;
-      border: none;
-      color: #fff;
-      cursor: pointer;
-      font-family: var(--mono);
-      font-size: 12px;
-      letter-spacing: 0.3em;
-      text-transform: uppercase;
-      padding: 8px 0;
-      position: relative;
-      opacity: 0;
-      animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.9s forwards;
-      transition: color 0.3s ease;
-    }
-    .hero-cta::before {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 1px;
-      background: var(--pink);
-      transform: scaleX(0.4);
-      transform-origin: left;
-      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .hero-cta:hover { color: var(--pink); }
-    .hero-cta:hover::before { transform: scaleX(1); }
-    .hero-cta-arrow {
-      display: inline-block;
-      margin-left: 8px;
-      animation: arrowBob 1.6s ease-in-out infinite;
-    }
-    @keyframes arrowBob {
-      0%, 100% { transform: translateY(0); }
-      50%      { transform: translateY(4px); }
-    }
-
-    /* Marquee ticker beneath the lockup */
-    .hero-marquee {
-      width: 100%;
-      overflow: hidden;
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-      padding: 14px 0;
-      position: relative;
-      z-index: 2;
-      opacity: 0;
-      animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) 1.1s forwards;
-      mask-image: linear-gradient(90deg, transparent 0%, #000 8%, #000 92%, transparent 100%);
-      -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 8%, #000 92%, transparent 100%);
-    }
-    .hero-marquee-track {
-      display: inline-flex;
-      white-space: nowrap;
-      animation: marquee 35s linear infinite;
-      will-change: transform;
-    }
-    .hero-marquee-item {
-      font-family: 'Anton', sans-serif;
-      font-size: clamp(1.4rem, 5vw, 2.2rem);
-      letter-spacing: -0.02em;
-      text-transform: uppercase;
-      color: #fff;
-      padding: 0 24px;
-      flex-shrink: 0;
-      line-height: 1;
-    }
-    .hero-marquee-item.pink { color: var(--pink); }
-    .hero-marquee-item.dot {
-      color: var(--pink);
-      padding: 0 16px;
-    }
-    @keyframes marquee {
-      0%   { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
-    }
-
-    /* ─────────────────── WTF SECTION ─────────────────── */
-    .wtf-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 24px;
-      margin-bottom: 56px;
-      padding-bottom: 20px;
-      border-bottom: 1px solid var(--border);
-    }
-    .wtf-header-left { max-width: 700px; }
-    .wtf-headline {
-      font-family: 'Anton', sans-serif;
-      text-transform: lowercase;
-      letter-spacing: -0.025em;
-      line-height: 1.05;
-      color: #fff;
-      font-size: clamp(1.6rem, 5.5vw, 2.4rem);
-      margin: 12px 0 0;
-    }
-    .wtf-headline em {
-      font-family: var(--serif);
-      font-style: italic;
-      color: var(--pink);
-      font-weight: 400;
-    }
-    .wtf-section-num {
-      font-family: var(--mono);
-      font-size: 11px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--pink);
-      flex-shrink: 0;
-      padding-top: 8px;
-    }
-
-    .drops-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      max-width: 720px;
-      margin: 0 auto;
-    }
-    .drop-card {
-      background: var(--surface);
-      border: 1px solid rgba(255,255,255,0.08);
-      aspect-ratio: 3 / 4;
-      border-radius: 4px;
-      padding: 14px;
-      position: relative;
-      overflow: hidden;
-      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      cursor: pointer;
-      -webkit-user-select: none;
-      user-select: none;
-    }
-    .drop-card:hover { transform: translateY(-4px); }
-    .drop-card:active { transform: translateY(-2px) scale(0.98); }
-
-    .drop-card-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      position: relative;
-      z-index: 2;
-    }
-    .drop-card-mini-logo {
-      font-family: 'Anton', sans-serif;
-      font-size: clamp(0.85rem, 2.6vw, 1.05rem);
-      letter-spacing: -0.05em;
-      color: var(--pink);
-      line-height: 1;
-    }
-    .drop-card.c001 .drop-card-mini-logo { color: var(--flavor-001); }
-    .drop-card.c002 .drop-card-mini-logo { color: var(--orange); }
-    .drop-card.c003 .drop-card-mini-logo { color: var(--brown); }
-    .drop-card.c001 .drop-card-num { color: var(--flavor-001); }
-    .drop-card.c002 .drop-card-num { color: var(--orange); }
-    .drop-card.c003 .drop-card-num { color: var(--brown); }
-    .drop-card-spec {
-      font-family: var(--mono);
-      font-size: 8px;
-      letter-spacing: 0.2em;
-      color: rgba(255,255,255,0.4);
-      text-transform: uppercase;
-      text-align: right;
-      line-height: 1.3;
-    }
-    .drop-card-num {
-      font-family: 'Anton', sans-serif;
-      font-size: clamp(3rem, 14vw, 6rem);
-      color: #fff;
-      letter-spacing: -0.05em;
-      line-height: 0.85;
-      position: relative;
-      z-index: 2;
-    }
-    .drop-card-tap-hint {
-      font-family: var(--mono);
-      font-size: 9px;
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.35);
-      z-index: 2;
-      position: relative;
-      transition: color 0.3s ease;
-    }
-    .drop-card:hover .drop-card-tap-hint { color: var(--pink); }
-    .drop-card::after {
-      content: '';
-      position: absolute;
-      bottom: -20%;
-      left: -10%;
-      right: -10%;
-      height: 60%;
-      filter: blur(40px);
-      opacity: 0.18;
-      pointer-events: none;
-      z-index: 1;
-    }
-    .drop-card.c001::after { background: var(--flavor-001); }
-    .drop-card.c001:hover { border-color: rgba(255,51,102,0.4); }
-    .drop-card.c002::after { background: var(--orange); }
-    .drop-card.c002:hover { border-color: rgba(255,153,85,0.4); }
-    .drop-card.c003::after { background: var(--brown); }
-    .drop-card.c003:hover { border-color: rgba(170,136,102,0.4); }
-
-    .wtf-foot {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 36px;
-      padding-top: 20px;
-      border-top: 1px solid var(--border);
-      max-width: 720px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-    .wtf-foot-text {
-      font-family: var(--serif);
-      font-style: italic;
-      color: #fff;
-      font-size: clamp(0.9rem, 3.2vw, 1rem);
-      opacity: 0.85;
-      letter-spacing: 0.005em;
-    }
-    .wtf-foot-meta {
-      font-family: var(--mono);
-      font-size: 10px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--text-faint);
-    }
-
-    /* ─────────────────── WARNING ─────────────────── */
-    .warning {
-      padding: 100px 20px;
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-      position: relative;
-    }
-    .warning-inner {
-      max-width: var(--max-content);
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 24px;
-    }
-    .warning-kicker {
-      font-family: var(--mono);
-      font-size: 11px;
-      letter-spacing: 0.3em;
-      text-transform: uppercase;
-      color: var(--pink);
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .warning-kicker::before {
-      content: '';
-      width: 32px;
-      height: 1px;
-      background: var(--pink);
-    }
-    .warning-text {
-      font-family: 'Anton', sans-serif;
-      color: var(--pink);
-      letter-spacing: -0.03em;
-      line-height: 1;
-      font-size: clamp(2rem, 9vw, 5.5rem);
-      max-width: 1000px;
-      text-transform: lowercase;
-      margin: 0;
-    }
-    .warning-text em {
-      font-family: var(--serif);
-      font-style: italic;
-      font-weight: 400;
-      color: #fff;
-    }
-    .warning-meta {
-      font-family: var(--mono);
-      font-size: 10px;
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-      color: var(--text-faint);
-      margin-top: 8px;
-    }
-
-    /* ─────────────────── HOW IT WORKS ─────────────────── */
-    .how-inner { max-width: 980px; margin: 0 auto; }
-    .how-header {
-      display: grid;
-      grid-template-columns: 80px 1fr;
-      gap: 24px;
-      align-items: end;
-      margin-bottom: 56px;
-      padding-bottom: 20px;
-      border-bottom: 1px solid var(--border);
-    }
-    .how-header-kicker {
-      font-family: var(--mono);
-      font-size: 11px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--pink);
-      padding-bottom: 12px;
-    }
-    .how-headline {
-      font-family: 'Anton', sans-serif;
-      font-size: clamp(2.4rem, 9vw, 4.5rem);
-      color: #fff;
-      letter-spacing: -0.04em;
-      text-transform: lowercase;
-      margin: 0;
-      line-height: 0.92;
-    }
-    .how-headline em {
-      font-family: var(--serif);
-      font-style: italic;
-      color: var(--pink);
-      font-weight: 400;
-    }
-
-    .step-row {
-      display: grid;
-      grid-template-columns: 80px 1fr 80px;
-      gap: 24px;
-      align-items: flex-start;
-      padding: 24px 0;
-    }
-    .step-num {
-      font-family: 'Anton', sans-serif;
-      color: var(--pink);
-      font-size: clamp(3rem, 9vw, 5rem);
-      line-height: 0.85;
-      letter-spacing: -0.05em;
-    }
-    .step-body { padding-top: 6px; }
-    .step-title {
-      font-family: 'Anton', sans-serif;
-      font-size: clamp(1.4rem, 5.5vw, 2.2rem);
-      color: #fff;
-      letter-spacing: -0.025em;
-      text-transform: lowercase;
-      line-height: 1.05;
-      margin: 0 0 8px;
-    }
-    .step-desc {
-      color: var(--text-mute);
-      font-size: clamp(0.95rem, 3.5vw, 1.05rem);
-      line-height: 1.55;
-      margin: 0;
-      max-width: 480px;
-    }
-    .step-tag {
-      font-family: var(--mono);
-      font-size: 10px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--text-faint);
-      text-align: right;
-      padding-top: 18px;
-    }
-    .step-divider {
-      height: 1px;
-      background: var(--border);
-      width: 100%;
-    }
-    @media (max-width: 640px) {
-      .how-header { grid-template-columns: 1fr; gap: 12px; }
-      .how-header-kicker { padding-bottom: 0; }
-      .step-row { grid-template-columns: 60px 1fr; }
-      .step-tag { display: none; }
-      .step-num { font-size: 44px; }
-    }
-
-    /* ─────────────────── GAME ─────────────────── */
-    .game-section { max-width: 600px; margin: 0 auto; }
-    .game-header {
-      display: grid;
-      grid-template-columns: 80px 1fr;
-      gap: 24px;
-      align-items: end;
-      margin-bottom: 32px;
-      padding-bottom: 20px;
-      border-bottom: 1px solid var(--border);
-    }
-    .game-header-kicker {
-      font-family: var(--mono);
-      font-size: 11px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--pink);
-      padding-bottom: 12px;
-    }
-    .game-headline {
-      font-family: 'Anton', sans-serif;
-      font-size: clamp(2rem, 8vw, 3.2rem);
-      color: #fff;
-      letter-spacing: -0.04em;
-      text-transform: lowercase;
-      line-height: 0.92;
-      margin: 0;
-    }
-    .game-headline em {
-      font-family: var(--serif);
-      font-style: italic;
-      color: var(--pink);
-      font-weight: 400;
-    }
-    .game-subhead {
-      font-family: var(--serif);
-      font-style: italic;
-      color: var(--text-mute);
-      font-size: 14px;
-      margin: 0 0 24px;
-      letter-spacing: 0;
-    }
-    @media (max-width: 640px) {
-      .game-header { grid-template-columns: 1fr; gap: 12px; }
-      .game-header-kicker { padding-bottom: 0; }
-    }
-    .game-stage {
-      position: relative;
-      width: 100%;
-      max-width: 420px;
-      margin: 0 auto;
-      aspect-ratio: 9 / 16;
-      background: #000000;
-      border: 1px solid rgba(0,102,255,0.2);
-      border-radius: 18px;
-      overflow: hidden;
-      user-select: none;
-      -webkit-user-select: none;
-    }
-    .game-canvas {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      display: block;
-      touch-action: none;
-      transition: filter 0.6s ease;
-    }
-    .game-canvas-wrap {
-      position: absolute;
-      inset: 0;
-      transition: filter 0.6s ease;
-    }
-    .game-canvas-wrap.tipsy { animation: drunkWobble 4s ease-in-out infinite; filter: saturate(1.15); }
-    .game-canvas-wrap.buzzed { animation: drunkWobbleHeavy 3s ease-in-out infinite; filter: blur(0.5px) saturate(1.3); }
-    .game-canvas-wrap.gone   { animation: drunkWobbleChaos 2s ease-in-out infinite; filter: blur(1.2px) saturate(1.5) hue-rotate(-3deg); }
-
-    @keyframes drunkWobble {
-      0%,100% { transform: rotate(-1deg); }
-      50%     { transform: rotate(1deg); }
-    }
-    @keyframes drunkWobbleHeavy {
-      0%,100% { transform: rotate(-2deg) translateX(-2px); }
-      50%     { transform: rotate(2deg) translateX(2px); }
-    }
-    @keyframes drunkWobbleChaos {
-      0%   { transform: rotate(-3deg) translate(-2px, 1px); }
-      33%  { transform: rotate(3deg) translate(3px, -2px); }
-      66%  { transform: rotate(-2.5deg) translate(-3px, 2px); }
-      100% { transform: rotate(-3deg) translate(-2px, 1px); }
-    }
-
-    .game-overlay {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      transition: background 0.6s ease;
-    }
-    .game-overlay.tipsy  { background: linear-gradient(180deg, transparent, rgba(0,102,255,0.05)); }
-    .game-overlay.buzzed { background: linear-gradient(180deg, transparent, rgba(0,102,255,0.12)); }
-    .game-overlay.gone   { background: linear-gradient(180deg, rgba(0,102,255,0.08), rgba(0,102,255,0.20)); }
-
-    /* HUD */
-    .hud {
-      position: absolute;
-      top: 12px;
-      left: 12px;
-      right: 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      z-index: 5;
-      pointer-events: none;
-    }
-    .hud-score-block { line-height: 1; }
-    .hud-best-block {
-      line-height: 1;
-      text-align: center;
-      opacity: 0.7;
-    }
-    .hud-best {
-      font-family: 'Anton', sans-serif;
-      font-size: 22px;
-      letter-spacing: -0.02em;
-      color: var(--pink);
-      line-height: 1;
-    }
-    .hud-score {
-      font-family: 'Anton', sans-serif;
-      font-size: 30px;
-      letter-spacing: -0.02em;
-      color: #fff;
-      line-height: 1;
-    }
-    .hud-label {
-      font-size: 9px;
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.5);
-      margin-top: 4px;
-    }
-    .hud-lives { display: flex; gap: 5px; align-items: center; font-size: 18px; }
-    .heart { opacity: 1; transition: opacity 0.3s ease; }
-    .heart.empty { opacity: 0.2; }
-
-
-    .hud-state {
-      position: absolute;
-      bottom: 14px;
-      left: 14px;
-      right: 14px;
-      z-index: 5;
-      pointer-events: none;
-    }
-    .hud-state-bar {
-      height: 4px;
-      background: rgba(255,255,255,0.1);
-      border-radius: 999px;
-      overflow: hidden;
-    }
-    .hud-state-fill {
-      height: 100%;
-      background: var(--pink);
-      border-radius: 999px;
-      transition: width 0.5s ease;
-      width: 25%;
-    }
-    .hud-state-text {
-      font-size: 10px;
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.7);
-      margin-top: 7px;
-      display: flex;
-      justify-content: space-between;
-    }
-    .hud-state-text .current { color: var(--pink); font-weight: 700; }
-
-    /* Game start screen */
-    .game-screen {
-      position: absolute;
-      inset: 0;
-      background: rgba(0,0,0,0.96);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 32px 24px;
-      z-index: 10;
-    }
-    .game-screen.hidden { display: none; }
-    .game-start-title {
-      font-family: 'Anton', sans-serif;
-      color: var(--pink);
-      font-size: clamp(2rem, 8vw, 2.8rem);
-      line-height: 0.95;
-      letter-spacing: -0.03em;
-      text-transform: lowercase;
-      margin: 0 0 20px;
-    }
-    .game-start-rules {
-      font-size: 14px;
-      color: var(--text-mute);
-      line-height: 1.65;
-      margin: 0 0 28px;
-      max-width: 280px;
-    }
-    .game-start-rules strong { color: #fff; font-weight: 500; }
-    .game-start-btn-wrap { width: 100%; max-width: 220px; }
-
-    /* Game over screen — designed for 9:16 screenshot */
-    .game-over-stack {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      align-items: center;
-      animation: fadeIn 0.6s ease both;
-    }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-    .go-top {
-      width: 100%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .go-logo {
-      font-family: 'Anton', sans-serif;
-      color: var(--pink);
-      font-size: 28px;
-      letter-spacing: -0.07em;
-      line-height: 1;
-    }
-    .go-tag {
-      font-size: 10px;
-      letter-spacing: 0.35em;
-      color: rgba(255,255,255,0.4);
-      text-transform: uppercase;
-      line-height: 1;
-    }
-    .go-middle {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-    }
-    .go-score-label {
-      font-size: 10px;
-      letter-spacing: 0.4em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.5);
-      margin-bottom: 10px;
-    }
-    .go-score {
-      font-family: 'Anton', sans-serif;
-      font-size: clamp(7rem, 30vw, 11rem);
-      color: var(--pink);
-      letter-spacing: -0.06em;
-      line-height: 0.85;
-      text-shadow: 0 0 50px rgba(0,102,255,0.55);
-    }
-    .go-verdict {
-      font-family: 'Anton', sans-serif;
-      font-size: clamp(1.6rem, 7vw, 2.4rem);
-      color: #fff;
-      letter-spacing: -0.025em;
-      text-transform: lowercase;
-      line-height: 1;
-      margin-top: 16px;
-    }
-    .go-bottom {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      align-items: center;
-    }
-    .go-bottom .btn-pink, .go-bottom .btn-ghost { max-width: 240px; }
-    .go-link-down {
-      margin-top: 6px;
-      font-size: 13px;
-      color: rgba(255,255,255,0.7);
-      background: none;
-      border: none;
-      text-decoration: underline;
-      text-underline-offset: 4px;
-      transition: color 0.2s ease;
-    }
-    .go-link-down:hover { color: var(--pink); }
-
-    /* ─────────────────── WAITLIST ─────────────────── */
-    .waitlist-section {
-      max-width: var(--max-narrow);
-      margin: 0 auto;
-    }
-    .waitlist-header {
-      display: grid;
-      grid-template-columns: 80px 1fr;
-      gap: 24px;
-      align-items: end;
-      margin-bottom: 36px;
-      padding-bottom: 20px;
-      border-bottom: 1px solid var(--border);
-    }
-    .waitlist-header-kicker {
-      font-family: var(--mono);
-      font-size: 11px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--pink);
-      padding-bottom: 12px;
-    }
-    .waitlist-headline {
-      font-family: 'Anton', sans-serif;
-      font-size: clamp(2.2rem, 9vw, 3.6rem);
-      color: var(--pink);
-      letter-spacing: -0.04em;
-      text-transform: lowercase;
-      line-height: 0.92;
-      margin: 0;
-    }
-    .waitlist-headline em {
-      font-family: var(--serif);
-      font-style: italic;
-      color: #fff;
-      font-weight: 400;
-    }
-    .waitlist-sub {
-      font-family: var(--serif);
-      font-style: italic;
-      color: #fff;
-      font-size: clamp(0.95rem, 3.5vw, 1.1rem);
-      margin: 0 0 32px;
-      opacity: 0.85;
-      line-height: 1.4;
-      max-width: 420px;
-    }
-    @media (max-width: 640px) {
-      .waitlist-header { grid-template-columns: 1fr; gap: 12px; }
-      .waitlist-header-kicker { padding-bottom: 0; }
-    }
-
-    .form {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      max-width: 440px;
-      margin: 0 auto;
-      width: 100%;
-    }
-    .form .input,
-    .form .submit-btn {
-      width: 100%;
-      box-sizing: border-box;
-    }
-    .input {
-      font-size: 16px;
-      color: #fff;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 16px 18px;
-      height: 54px;
-      transition: border-color 0.25s ease;
-    }
-    .input:focus { border-color: var(--pink); }
-    .input::placeholder { color: rgba(255,255,255,0.35); }
-    .input.optional { border-style: dashed; }
-
-    .field-hint {
-      font-size: 12px;
-      color: var(--text-faint);
-      margin-top: -6px;
-      margin-bottom: 4px;
-      padding-left: 18px;
-      text-align: left;
-      letter-spacing: 0.02em;
-    }
-
-    .poison-block {
-      margin-top: 8px;
-      text-align: left;
-    }
-    .poison-label {
-      font-size: 13px;
-      color: rgba(255,255,255,0.55);
-      letter-spacing: 0.04em;
-      text-transform: lowercase;
-      margin-bottom: 10px;
-      padding-left: 4px;
-    }
-    .poison-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-    .pill {
-      font-size: 14px;
-      font-weight: 500;
-      color: rgba(255,255,255,0.75);
-      background: transparent;
-      border: 1px solid rgba(255,255,255,0.18);
-      border-radius: 999px;
-      padding: 9px 16px;
-      transition: all 0.2s ease;
-      line-height: 1;
-      height: 36px;
-      display: inline-flex;
-      align-items: center;
-    }
-    .pill:hover:not(.active) { border-color: var(--pink); color: #fff; }
-    .pill.active {
-      background: var(--pink);
-      color: #000;
-      border-color: var(--pink);
-      font-weight: 700;
-    }
-
-    .submit-btn {
-      font-family: 'Anton', sans-serif;
-      font-size: 24px;
-      letter-spacing: 0.03em;
-      background: var(--pink);
-      color: #000;
-      border: none;
-      padding: 18px;
-      border-radius: 12px;
-      text-transform: uppercase;
-      margin-top: 8px;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-      line-height: 1;
-      height: 60px;
-    }
-    .submit-btn:hover:not(:disabled) {
-      transform: translateY(-1px);
-      box-shadow: 0 0 50px rgba(0,102,255,0.4);
-    }
-    .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-    .form-error {
-      color: var(--pink);
-      font-size: 14px;
-      text-align: left;
-      margin-top: 4px;
-      padding-left: 4px;
-    }
-
-    /* Confirmation */
-    .confirm {
-      animation: numPop 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
-    }
-    @keyframes numPop {
-      0%   { transform: scale(0.6); opacity: 0; }
-      60%  { transform: scale(1.08); opacity: 1; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-    .confirm-headline {
-      font-family: 'Anton', sans-serif;
-      font-size: clamp(3rem, 12vw, 5.5rem);
-      color: var(--pink);
-      letter-spacing: -0.05em;
-      text-transform: uppercase;
-      line-height: 0.92;
-      margin: 0 0 24px;
-    }
-    .confirm-num-label {
-      font-size: 11px;
-      letter-spacing: 0.4em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.5);
-      margin-bottom: 8px;
-    }
-    .confirm-num {
-      font-family: 'Anton', sans-serif;
-      font-size: clamp(5rem, 20vw, 8rem);
-      color: var(--pink);
-      letter-spacing: -0.05em;
-      line-height: 0.9;
-      text-shadow: 0 0 60px rgba(0,102,255,0.5);
-      margin-bottom: 12px;
-    }
-    .confirm-num-text {
-      color: #fff;
-      font-size: 16px;
-      opacity: 0.85;
-      margin-bottom: 24px;
-    }
-    .confirm-poison-line {
-      color: var(--pink);
-      font-size: 16px;
-      font-weight: 500;
-      margin: 0 0 36px;
-    }
-    .confirm-share-prompt {
-      color: #fff;
-      font-size: 14px;
-      margin-bottom: 16px;
-      opacity: 0.7;
-    }
-    .confirm-share-btns {
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-      max-width: 360px;
-      margin: 0 auto;
-    }
-    .confirm-share-btns .btn-pink,
-    .confirm-share-btns .btn-ghost {
-      flex: 1;
-      min-width: 0;
-    }
-    .confirm-promise {
-      font-family: var(--mono);
-      font-size: 11px;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--text-faint);
-      margin: 28px auto 0;
-      max-width: 360px;
-      line-height: 1.5;
-    }
-
-    /* ─────────────────── DROP SHEET MODAL ─────────────────── */
-    .drop-sheet-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.75);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      z-index: 200;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.4s ease;
-    }
-    .drop-sheet-backdrop.open {
-      opacity: 1;
-      pointer-events: auto;
-    }
-    .drop-sheet {
-      position: fixed;
-      bottom: -20px;
-      left: 0;
-      right: 0;
-      background: #000000;
-      border-top: 1px solid var(--border);
-      border-radius: 24px 24px 0 0;
-      padding: 32px 24px 36px;
-      z-index: 201;
-      transform: translateY(120%);
-      transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-      max-height: 85vh;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-    }
-    .drop-sheet.open {
-      transform: translateY(0);
-    }
-    .drop-sheet-handle {
-      width: 40px;
-      height: 4px;
-      background: rgba(255,255,255,0.2);
-      border-radius: 999px;
-      margin: -16px auto 24px;
-    }
-    .drop-sheet-num {
-      font-family: 'Anton', sans-serif;
-      font-size: clamp(4.5rem, 22vw, 7rem);
-      letter-spacing: -0.06em;
-      line-height: 0.85;
-      margin-bottom: 4px;
-      text-align: left;
-    }
-    .drop-sheet-num.c001 { color: var(--flavor-001); text-shadow: 0 0 50px rgba(255,51,102,0.4); }
-    .drop-sheet-num.c002 { color: var(--orange); text-shadow: 0 0 50px rgba(255,153,85,0.4); }
-    .drop-sheet-num.c003 { color: var(--brown); text-shadow: 0 0 50px rgba(170,136,102,0.4); }
-
-    .drop-sheet-spirits {
-      font-family: 'Anton', sans-serif;
-      font-size: clamp(1.4rem, 6vw, 2rem);
-      text-transform: lowercase;
-      letter-spacing: -0.025em;
-      color: #fff;
-      line-height: 1.05;
-      margin: 0 0 14px;
-      text-align: left;
-    }
-    .drop-sheet-tagline {
-      font-size: 14px;
-      color: var(--text-mute);
-      line-height: 1.5;
-      margin: 0 0 28px;
-      text-align: left;
-      font-style: italic;
-    }
-    .drop-sheet-ingredients {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      padding-top: 20px;
-      border-top: 1px solid var(--border);
-    }
-    .drop-sheet-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: 16px;
-    }
-    .drop-sheet-label {
-      color: var(--text-faint);
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      font-size: 11px;
-      flex-shrink: 0;
-    }
-    .drop-sheet-value {
-      color: #fff;
-      font-weight: 500;
-      font-size: 14px;
-      text-align: right;
-    }
-    .drop-sheet-close {
-      position: absolute;
-      top: 16px;
-      right: 16px;
-      width: 36px;
-      height: 36px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.06);
-      border: none;
-      color: #fff;
-      font-size: 22px;
-      line-height: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background 0.2s ease, color 0.2s ease;
-      padding: 0;
-    }
-    .drop-sheet-close:hover {
-      background: rgba(0,102,255,0.2);
-      color: var(--pink);
-    }
-
-    @media (min-width: 640px) {
-      .drop-sheet {
-        bottom: 50%;
-        left: 50%;
-        right: auto;
-        top: auto;
-        width: 90%;
-        max-width: 460px;
-        border-radius: 20px;
-        border: 1px solid var(--border);
-        transform: translate(-50%, calc(50% + 30px));
-        opacity: 0;
-        transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
-      }
-      .drop-sheet.open {
-        transform: translate(-50%, 50%);
-        opacity: 1;
-      }
-      .drop-sheet-handle { display: none; }
-    }
-
-    /* Toast */
-    .toast {
-      position: fixed;
-      bottom: 28px;
-      left: 50%;
-      transform: translateX(-50%) translateY(20px);
-      background: var(--pink);
-      color: #000;
-      font-weight: 700;
-      padding: 12px 22px;
-      border-radius: 999px;
-      font-size: 14px;
-      z-index: 200;
-      opacity: 0;
-      transition: opacity 0.3s ease, transform 0.3s ease;
-      pointer-events: none;
-    }
-    .toast.show {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
-
-    /* ─────────────────── CLOSING ─────────────────── */
-    .closing {
-      padding: 120px 20px;
-      text-align: center;
-      border-top: 1px solid var(--border);
-    }
-    .closing-kicker {
-      font-family: var(--mono);
-      font-size: 11px;
-      letter-spacing: 0.3em;
-      text-transform: uppercase;
-      color: var(--pink);
-      margin-bottom: 28px;
-    }
-    .closing-text {
-      font-family: 'Anton', sans-serif;
-      font-size: clamp(1.8rem, 7vw, 3rem);
-      color: rgba(255,255,255,0.9);
-      letter-spacing: -0.03em;
-      text-transform: lowercase;
-      line-height: 1;
-      max-width: 800px;
-      margin: 0 auto;
-    }
-    .closing-text em {
-      font-family: var(--serif);
-      font-style: italic;
-      color: var(--pink);
-      font-weight: 400;
-    }
-
-    /* ─────────────────── FOOTER ─────────────────── */
-    footer {
-      padding: 56px 20px 40px;
-      border-top: 1px solid var(--border);
-      max-width: var(--max-content);
-      margin: 0 auto;
-      width: 100%;
-    }
-    .footer-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 32px;
-      align-items: end;
-    }
-    .footer-left .footer-logo {
-      font-family: 'Anton', sans-serif;
-      color: var(--pink);
-      font-size: 36px;
-      letter-spacing: -0.07em;
-      line-height: 0.9;
-      margin-bottom: 8px;
-    }
-    .footer-left .footer-tag {
-      font-family: var(--mono);
-      font-size: 10px;
-      letter-spacing: 0.3em;
-      color: rgba(255,255,255,0.65);
-      text-transform: uppercase;
-      line-height: 1.5;
-    }
-    .footer-right {
-      text-align: right;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .footer-right-line {
-      font-family: var(--mono);
-      font-size: 10px;
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.4);
-    }
-    .footer-right-line.pink { color: var(--pink); }
-    @media (max-width: 480px) {
-      .footer-grid { grid-template-columns: 1fr; gap: 24px; }
-      .footer-right { text-align: left; }
-    }
-
-    /* ─────────────────── MOBILE TUNING ─────────────────── */
-    @media (max-width: 480px) {
-      section { padding: 80px 18px; }
-      .hero { padding: 24px 18px 56px; }
-      .warning { padding: 100px 18px; }
-      .closing { padding: 100px 18px; }
-      .drops-grid { gap: 10px; max-width: 100%; }
-      .drop-card { padding: 14px; border-radius: 12px; }
-      .game-stage { border-radius: 16px; }
-    }
-
-    /* ════════════════════════════════════════════
-       ENHANCEMENT LAYER — added animations & polish
-       ════════════════════════════════════════════ */
-
-    /* 2. Tap ripple effect on CTAs */
-    .ripple-container { position: relative; overflow: hidden; }
-    .ripple-effect {
-      position: absolute;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.5);
-      transform: scale(0);
-      animation: rippleExpand 600ms ease-out;
-      pointer-events: none;
-    }
-    @keyframes rippleExpand {
-      to { transform: scale(4); opacity: 0; }
-    }
-
-    /* 3. Drop number flicker */
-    .drop-card-num.flickering {
-      animation: numFlicker 480ms linear;
-    }
-    @keyframes numFlicker {
-      0%   { opacity: 1; }
-      10%  { opacity: 0.4; }
-      20%  { opacity: 1; }
-      30%  { opacity: 0.2; }
-      40%  { opacity: 1; }
-      55%  { opacity: 0.6; }
-      70%  { opacity: 1; }
-      85%  { opacity: 0.3; }
-      100% { opacity: 1; }
-    }
-
-    /* 4. Frost particle drift canvas — sits behind everything */
-    #frostParticles {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 0;
-      opacity: 1;
-    }
-
-    /* 5. Drop card tap tilt (3D press feedback) */
-    .drop-card {
-      transform-style: preserve-3d;
-      perspective: 1000px;
-      will-change: transform;
-    }
-    .drop-card.tapping {
-      animation: cardTilt 320ms cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-    @keyframes cardTilt {
-      0%   { transform: perspective(800px) rotateX(0) rotateY(0) scale(1); }
-      40%  { transform: perspective(800px) rotateX(8deg) rotateY(-4deg) scale(0.96); }
-      100% { transform: perspective(800px) rotateX(0) rotateY(0) scale(1); }
-    }
-
-    /* 6. Sticky bar slide-in with bounce */
-    .sticky.visible {
-      animation: stickyDrop 540ms cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-    @keyframes stickyDrop {
-      0%   { transform: translateY(-100%); opacity: 0; }
-      60%  { transform: translateY(4px); opacity: 1; }
-      100% { transform: translateY(0); opacity: 1; }
-    }
-
-    /* Reduce motion accessibility — respect users who prefer less */
-    @media (prefers-reduced-motion: reduce) {
-      .drop-card-num.flickering,
-      .drop-card.tapping,
-      .sticky.visible {
-        animation: none !important;
-      }
-      #frostParticles { display: none; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#F4EDE0">
+<title>FROSTD — alcoholic gelato. mumbai.</title>
+<meta name="description" content="alcohol in ice cream. cause you deserve both. served at events across mumbai. 5% abv. no permissions asked.">
+<meta property="og:title" content="FROSTD — alcoholic gelato">
+<meta property="og:description" content="alcohol in ice cream. cause you deserve both.">
+<meta property="og:type" content="website">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800;900&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* ────────────────────────────────────────────
+   FROSTD — design tokens
+   ──────────────────────────────────────────── */
+:root {
+  --cream: #F4EDE0;
+  --cream-deep: #ECE3D2;
+  --ink: #1A1A1A;
+  --ink-soft: #2A2A2A;
+  --blue: #1E5BFF;
+  --blue-deep: #0E3FCC;
+  --hairline: rgba(26, 26, 26, 0.08);
+  --hairline-blue: rgba(30, 91, 255, 0.18);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-spring: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 400;
+  background: var(--cream);
+  color: var(--ink);
+  line-height: 1.5;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Subtle paper grain — applied fixed so no repaints during scroll */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(30,91,255,0.015) 0%, transparent 40%),
+    url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.1 0 0 0 0 0.1 0 0 0 0 0.1 0 0 0 0.15 0'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.4'/></svg>");
+  background-size: auto, 200px 200px;
+  pointer-events: none;
+  z-index: 1;
+  mix-blend-mode: multiply;
+  opacity: 0.5;
+}
+
+main, nav, .modal-wrap { position: relative; z-index: 2; }
+
+/* ────────────────────────────────────────────
+   Typography
+   ──────────────────────────────────────────── */
+.mono {
+  font-family: 'Geist Mono', monospace;
+  font-feature-settings: "tnum";
+}
+
+.eyebrow {
+  font-family: 'Geist Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--blue);
+  font-weight: 500;
+}
+
+h1, h2, h3 { font-weight: 700; letter-spacing: -0.02em; line-height: 1.05; }
+h1 { font-size: clamp(48px, 9vw, 120px); font-weight: 800; }
+h2 { font-size: clamp(36px, 6vw, 72px); letter-spacing: -0.03em; }
+h3 { font-size: clamp(20px, 2.5vw, 28px); letter-spacing: -0.01em; }
+
+p { color: var(--ink-soft); }
+
+/* ────────────────────────────────────────────
+   AGE GATE
+   ──────────────────────────────────────────── */
+.modal-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: var(--cream);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  transition: opacity 600ms var(--ease-out-expo);
+}
+.modal-wrap.hidden { opacity: 0; pointer-events: none; }
+
+.gate {
+  max-width: 480px;
+  text-align: center;
+}
+.gate-mark {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 32px;
+}
+.gate-eyebrow { margin-bottom: 16px; }
+.gate-title {
+  font-size: clamp(32px, 6vw, 48px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  margin-bottom: 12px;
+}
+.gate-sub {
+  font-size: 15px;
+  color: var(--ink-soft);
+  margin-bottom: 40px;
+}
+.gate-buttons { display: flex; gap: 12px; justify-content: center; }
+.gate-btn {
+  padding: 14px 32px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  border-radius: 6px;
+  cursor: pointer;
+  border: none;
+  transition: all 300ms var(--ease-spring);
+}
+.gate-btn-yes {
+  background: var(--ink);
+  color: var(--cream);
+}
+.gate-btn-yes:hover { background: var(--blue); transform: translateY(-1px); }
+.gate-btn-yes:active { transform: scale(0.98); }
+.gate-btn-no {
+  background: transparent;
+  color: var(--ink-soft);
+  border: 1px solid var(--hairline);
+}
+.gate-btn-no:hover { color: var(--ink); border-color: var(--ink); }
+.gate-fine {
+  margin-top: 32px;
+  font-size: 11px;
+  color: rgba(26,26,26,0.4);
+  letter-spacing: 0.04em;
+}
+
+.gate-progress-wrap {
+  width: 200px;
+  height: 4px;
+  background: rgba(26, 26, 26, 0.08);
+  margin: 24px auto;
+  border-radius: 2px;
+  overflow: hidden;
+}
+.gate-progress-bar {
+  width: 0%;
+  height: 100%;
+  background: var(--blue);
+  border-radius: 2px;
+  transition: width 2s cubic-bezier(0.25, 1, 0.5, 1);
+}
+.gate-fade-buttons {
+  opacity: 0 !important;
+  pointer-events: none;
+  transition: opacity 300ms ease;
+}
+
+/* ────────────────────────────────────────────
+   NAV
+   ──────────────────────────────────────────── */
+nav {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  right: 16px;
+  z-index: 50;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  background: rgba(244, 237, 224, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--hairline);
+  border-radius: 999px;
+  max-width: 720px;
+  margin: 0 auto;
+  transition: transform 400ms var(--ease-spring);
+}
+.nav-mark {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Geist Mono', monospace;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--ink);
+}
+.nav-mark svg { width: 16px; height: 16px; }
+.nav-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 8px 8px 16px;
+  background: var(--ink);
+  color: var(--cream);
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 300ms var(--ease-spring);
+}
+.nav-cta:hover { background: var(--blue); }
+.nav-cta:active { transform: scale(0.97); }
+.nav-cta-arrow {
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 300ms var(--ease-spring);
+}
+.nav-cta:hover .nav-cta-arrow { transform: translateX(2px) rotate(-45deg); }
+.nav-cta-arrow svg { width: 12px; height: 12px; }
+
+/* ────────────────────────────────────────────
+   LAYOUT
+   ──────────────────────────────────────────── */
+.section {
+  padding: 100px 24px;
+  position: relative;
+}
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.container-narrow {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+/* ────────────────────────────────────────────
+   HERO
+   ──────────────────────────────────────────── */
+.hero {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 120px 24px 80px;
+  position: relative;
+  text-align: center;
+}
+
+.hero-wordmark {
+  max-width: min(86vw, 720px);
+  width: 100%;
+  height: auto;
+  margin-bottom: 32px;
+  filter: drop-shadow(0 1px 0 rgba(30,91,255,0.06));
+  display: none; /* shown via JS only if image loads */
+}
+
+/* Large CSS-rendered wordmark — primary by default, replaced by image once uploaded */
+.hero-wordmark-fallback {
+  font-family: 'Geist', sans-serif;
+  font-weight: 900;
+  font-size: clamp(80px, 17vw, 220px);
+  color: var(--blue);
+  letter-spacing: -0.04em;
+  line-height: 0.85;
+  margin-bottom: 32px;
+  display: block;
+  text-align: center;
+  filter: drop-shadow(0 2px 0 rgba(30,91,255,0.08));
+}
+
+.hero-tagline {
+  font-size: clamp(18px, 2.4vw, 22px);
+  font-weight: 500;
+  color: var(--ink);
+  max-width: 540px;
+  margin-bottom: 20px;
+  letter-spacing: -0.01em;
+}
+
+.hero-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-family: 'Geist Mono', monospace;
+  font-size: 12px;
+  color: var(--ink-soft);
+  letter-spacing: 0.08em;
+  margin-bottom: 60px;
+}
+.hero-meta span { opacity: 0.55; }
+.hero-meta .dot {
+  width: 3px;
+  height: 3px;
+  background: var(--ink-soft);
+  border-radius: 50%;
+  opacity: 0.3;
+}
+
+.hero-scroll {
+  position: absolute;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Geist Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--ink-soft);
+  opacity: 0.5;
+  animation: scrollBob 2.4s ease-in-out infinite;
+}
+@keyframes scrollBob {
+  0%, 100% { transform: translateX(-50%) translateY(0); opacity: 0.5; }
+  50% { transform: translateX(-50%) translateY(4px); opacity: 0.25; }
+}
+
+/* ────────────────────────────────────────────
+   "WHAT IT IS" — editorial split
+   ──────────────────────────────────────────── */
+.intro {
+  padding: 120px 24px;
+  border-top: 1px solid var(--hairline);
+}
+.intro-grid {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: start;
+}
+.intro-left .eyebrow { margin-bottom: 20px; }
+.intro-headline {
+  font-size: clamp(40px, 5.5vw, 64px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.02;
+}
+.intro-headline .blue { color: var(--blue); }
+.intro-right {
+  padding-top: 12px;
+}
+.intro-right p {
+  font-size: 17px;
+  line-height: 1.65;
+  margin-bottom: 20px;
+}
+.intro-right p:last-child { margin-bottom: 0; }
+.intro-right strong { color: var(--ink); font-weight: 600; }
+
+/* ────────────────────────────────────────────
+   FLAVORS
+   ──────────────────────────────────────────── */
+.flavors {
+  padding: 120px 24px;
+  border-top: 1px solid var(--hairline);
+}
+.flavors-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  margin-bottom: 60px;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.flavors-head h2 { max-width: 600px; }
+.flavors-head .meta {
+  font-family: 'Geist Mono', monospace;
+  font-size: 12px;
+  color: var(--ink-soft);
+  letter-spacing: 0.08em;
+}
+
+.flavor-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--hairline);
+  border: 1px solid var(--hairline);
+  border-radius: 16px;
+  overflow: hidden;
+}
+.flavor-card {
+  background: var(--cream);
+  padding: 40px 32px;
+  position: relative;
+  transition: background 400ms var(--ease-out-expo);
+}
+.flavor-card:hover { background: var(--cream-deep); }
+
+.flavor-num {
+  font-family: 'Geist Mono', monospace;
+  font-size: 56px;
+  font-weight: 600;
+  color: var(--blue);
+  letter-spacing: -0.04em;
+  line-height: 1;
+  margin-bottom: 32px;
+}
+.flavor-ingredients {
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+.flavor-tagline {
+  font-size: 14px;
+  color: var(--ink-soft);
+  font-style: italic;
+  margin-bottom: 32px;
+}
+.flavor-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 24px;
+  border-top: 1px solid var(--hairline);
+  font-family: 'Geist Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--ink-soft);
+}
+.flavor-foot .price { color: var(--ink); font-weight: 600; }
+
+.flavors-sub {
+  margin-top: 40px;
+  font-family: 'Geist Mono', monospace;
+  font-size: 13px;
+  color: var(--ink-soft);
+  text-align: center;
+  letter-spacing: 0.04em;
+}
+
+/* ────────────────────────────────────────────
+   LIABILITY CALLOUT
+   ──────────────────────────────────────────── */
+.liability {
+  padding: 60px 24px;
+  text-align: center;
+}
+.liability-box {
+  display: inline-block;
+  padding: 20px 32px;
+  border: 1.5px dashed var(--blue);
+  border-radius: 12px;
+  font-family: 'Geist Mono', monospace;
+  font-size: 13px;
+  color: var(--blue);
+  letter-spacing: 0.04em;
+  background: rgba(30, 91, 255, 0.03);
+}
+
+/* ────────────────────────────────────────────
+   SLOT MACHINE
+   ──────────────────────────────────────────── */
+.slot {
+  padding: 120px 24px;
+  border-top: 1px solid var(--hairline);
+  text-align: center;
+}
+.slot-head { margin-bottom: 60px; }
+.slot-head h2 { margin-bottom: 12px; }
+.slot-head p {
+  font-size: 16px;
+  color: var(--ink-soft);
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.slot-machine {
+  max-width: 720px;
+  margin: 0 auto;
+  background: var(--cream-deep);
+  border: 1px solid var(--hairline);
+  border-radius: 24px;
+  padding: 8px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.4);
+}
+.slot-inner {
+  background: var(--cream);
+  border-radius: 18px;
+  padding: 40px 32px;
+}
+
+.reels {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 32px;
+}
+.reel-wrap {
+  background: var(--cream-deep);
+  border: 1px solid var(--hairline);
+  border-radius: 12px;
+  padding: 8px;
+  position: relative;
+  overflow: hidden;
+  height: 100px;
+}
+.reel-wrap::before, .reel-wrap::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  height: 24px;
+  z-index: 2;
+  pointer-events: none;
+}
+.reel-wrap::before {
+  top: 0;
+  background: linear-gradient(to bottom, var(--cream-deep), transparent);
+}
+.reel-wrap::after {
+  bottom: 0;
+  background: linear-gradient(to top, var(--cream-deep), transparent);
+}
+.reel-label {
+  position: absolute;
+  top: 6px;
+  left: 8px;
+  font-family: 'Geist Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  opacity: 0.5;
+  z-index: 3;
+}
+.reel-viewport {
+  height: 100%;
+  background: var(--cream);
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+}
+.reel-strip {
+  position: absolute;
+  left: 0; right: 0;
+  top: 0;
+  transition: transform 2200ms var(--ease-spring);
+}
+.reel-item {
+  height: 84px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+
+.spin-btn {
+  padding: 16px 48px;
+  background: var(--blue);
+  color: var(--cream);
+  border: none;
+  border-radius: 999px;
+  font-family: 'Geist Mono', monospace;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 300ms var(--ease-spring);
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+.spin-btn:hover:not(:disabled) { background: var(--blue-deep); transform: translateY(-1px); }
+.spin-btn:active:not(:disabled) { transform: scale(0.97); }
+.spin-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.spin-btn .arrow {
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 400ms var(--ease-spring);
+}
+.spin-btn:hover .arrow { transform: rotate(45deg); }
+
+.result {
+  margin-top: 32px;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: all 600ms var(--ease-out-expo);
+  pointer-events: none;
+}
+.result.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+
+.result-card {
+  background: var(--ink);
+  color: var(--cream);
+  border-radius: 16px;
+  padding: 32px 24px;
+  text-align: center;
+}
+.result-eyebrow {
+  font-family: 'Geist Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(244, 237, 224, 0.5);
+  margin-bottom: 16px;
+}
+.result-combo {
+  font-size: clamp(22px, 3.5vw, 32px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  margin-bottom: 16px;
+}
+.result-combo .sep { color: var(--blue); margin: 0 6px; }
+.result-verdict {
+  font-style: italic;
+  font-size: 15px;
+  color: rgba(244, 237, 224, 0.7);
+  margin-bottom: 28px;
+}
+.result-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.result-btn {
+  padding: 10px 18px;
+  background: rgba(244, 237, 224, 0.1);
+  color: var(--cream);
+  border: 1px solid rgba(244, 237, 224, 0.18);
+  border-radius: 999px;
+  font-family: 'Geist Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 300ms var(--ease-spring);
+}
+.result-btn.primary {
+  background: var(--blue);
+  border-color: var(--blue);
+}
+.result-btn:hover { background: rgba(244, 237, 224, 0.18); transform: translateY(-1px); }
+.result-btn.primary:hover { background: var(--blue-deep); border-color: var(--blue-deep); }
+.result-btn:active { transform: scale(0.97); }
+.result-btn.success {
+  background: rgba(255,255,255,0.18);
+  border-color: rgba(255,255,255,0.3);
+  pointer-events: none;
+}
+
+/* ────────────────────────────────────────────
+   EVENTS
+   ──────────────────────────────────────────── */
+.events {
+  padding: 120px 24px;
+  border-top: 1px solid var(--hairline);
+}
+.events-head {
+  margin-bottom: 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.events-head h2 { max-width: 600px; }
+
+.event-list {
+  border-top: 1px solid var(--hairline);
+}
+.event-row {
+  display: grid;
+  grid-template-columns: 100px 1fr auto;
+  gap: 24px;
+  align-items: center;
+  padding: 28px 0;
+  border-bottom: 1px solid var(--hairline);
+  transition: padding 300ms var(--ease-out-expo);
+}
+.event-row:hover { padding-left: 12px; }
+.event-date {
+  font-family: 'Geist Mono', monospace;
+  font-size: 13px;
+  color: var(--ink);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+.event-date .month { display: block; font-size: 11px; opacity: 0.5; letter-spacing: 0.1em; margin-bottom: 2px; }
+.event-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.event-name { font-size: 18px; font-weight: 600; color: var(--ink); }
+.event-loc { font-size: 13px; color: var(--ink-soft); }
+.event-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  font-family: 'Geist Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border-radius: 999px;
+  background: var(--hairline);
+  color: var(--ink-soft);
+}
+.event-status.next {
+  background: rgba(30, 91, 255, 0.1);
+  color: var(--blue);
+}
+.event-status.next::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  background: var(--blue);
+  border-radius: 50%;
+  animation: pulse 1.6s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+/* ────────────────────────────────────────────
+   PARTNER
+   ──────────────────────────────────────────── */
+.partner {
+  padding: 120px 24px;
+  border-top: 1px solid var(--hairline);
+}
+.partner-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: start;
+}
+.partner-left .eyebrow { margin-bottom: 20px; }
+.partner-left h2 { margin-bottom: 20px; }
+.partner-left p {
+  font-size: 16px;
+  line-height: 1.65;
+  max-width: 440px;
+  margin-bottom: 32px;
+}
+.partner-left-points {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.partner-point {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: 'Geist Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+}
+.partner-point::before {
+  content: '';
+  width: 8px;
+  height: 1px;
+  background: var(--blue);
+}
+
+/* ────────────────────────────────────────────
+   FORMS
+   ──────────────────────────────────────────── */
+.form { display: flex; flex-direction: column; gap: 14px; }
+.input-row { display: flex; flex-direction: column; gap: 6px; }
+.input-row label {
+  font-family: 'Geist Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.input, .textarea {
+  background: #FFFFFF;
+  border: 1px solid var(--hairline);
+  border-radius: 8px;
+  padding: 14px 16px;
+  font-family: inherit;
+  font-size: 15px;
+  color: var(--ink);
+  transition: all 300ms var(--ease-out-expo);
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+}
+.input:focus, .textarea:focus {
+  outline: none;
+  border-color: var(--blue);
+  background: var(--cream);
+  box-shadow: 0 0 0 4px rgba(30, 91, 255, 0.08);
+}
+.textarea { resize: vertical; min-height: 96px; font-family: inherit; }
+
+.submit-btn {
+  margin-top: 8px;
+  padding: 16px 24px;
+  background: var(--ink);
+  color: var(--cream);
+  border: none;
+  border-radius: 999px;
+  font-family: 'Geist Mono', monospace;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 300ms var(--ease-spring);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+.submit-btn:hover:not(:disabled) { background: var(--blue); }
+.submit-btn:active:not(:disabled) { transform: scale(0.98); }
+.submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.submit-btn .arrow {
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: rgba(244,237,224,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 400ms var(--ease-spring);
+}
+.submit-btn:hover .arrow { transform: translateX(2px) rotate(-45deg); }
+
+.form-success {
+  padding: 24px;
+  background: rgba(30, 91, 255, 0.06);
+  border: 1px solid var(--hairline-blue);
+  border-radius: 12px;
+  font-size: 14px;
+  color: var(--blue-deep);
+  text-align: center;
+  display: none;
+}
+.form-success.show { display: block; }
+
+/* ────────────────────────────────────────────
+   QUOTE MOMENT
+   ──────────────────────────────────────────── */
+.quote {
+  padding: 140px 24px;
+  text-align: center;
+  border-top: 1px solid var(--hairline);
+}
+.quote-text {
+  font-size: clamp(36px, 6vw, 72px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  max-width: 900px;
+  margin: 0 auto;
+  color: var(--ink);
+}
+.quote-text .blue { color: var(--blue); }
+
+/* ────────────────────────────────────────────
+   WAITLIST
+   ──────────────────────────────────────────── */
+.waitlist {
+  padding: 120px 24px;
+  background: var(--ink);
+  color: var(--cream);
+  border-top: 1px solid var(--ink);
+}
+.waitlist .eyebrow { color: rgba(244, 237, 224, 0.5); }
+.waitlist-head {
+  text-align: center;
+  max-width: 640px;
+  margin: 0 auto 60px;
+}
+.waitlist-head .eyebrow { margin-bottom: 20px; }
+.waitlist-head h2 { margin-bottom: 16px; color: var(--cream); }
+.waitlist-head p {
+  font-size: 16px;
+  color: rgba(244, 237, 224, 0.6);
+  line-height: 1.6;
+}
+
+.waitlist-form {
+  max-width: 480px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.waitlist-form .input, .waitlist-form .textarea {
+  background: rgba(244, 237, 224, 0.06);
+  border-color: rgba(244, 237, 224, 0.12);
+  color: var(--cream);
+}
+.waitlist-form .input::placeholder { color: rgba(244, 237, 224, 0.35); }
+.waitlist-form .input:focus {
+  background: rgba(244, 237, 224, 0.1);
+  border-color: var(--blue);
+  box-shadow: 0 0 0 4px rgba(30, 91, 255, 0.15);
+}
+.waitlist-form label {
+  color: rgba(244, 237, 224, 0.5);
+}
+
+.poison-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.poison-pill {
+  padding: 8px 16px;
+  background: rgba(244, 237, 224, 0.06);
+  border: 1px solid rgba(244, 237, 224, 0.12);
+  color: var(--cream);
+  border-radius: 999px;
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 300ms var(--ease-spring);
+}
+.poison-pill:hover { background: rgba(244, 237, 224, 0.12); }
+.poison-pill.active {
+  background: var(--blue);
+  border-color: var(--blue);
+}
+
+.waitlist-form .submit-btn {
+  background: var(--blue);
+  color: var(--cream);
+  margin-top: 8px;
+}
+.waitlist-form .submit-btn:hover:not(:disabled) { background: var(--blue-deep); }
+
+.waitlist-success {
+  text-align: center;
+  padding: 40px 24px;
+  display: none;
+}
+.waitlist-success.show { display: block; }
+.waitlist-success h3 {
+  color: var(--blue);
+  font-size: 32px;
+  margin-bottom: 12px;
+}
+.waitlist-success p {
+  color: rgba(244, 237, 224, 0.7);
+  margin-bottom: 24px;
+}
+.share-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: rgba(244, 237, 224, 0.1);
+  border: 1px solid rgba(244, 237, 224, 0.18);
+  color: var(--cream);
+  border-radius: 999px;
+  font-family: 'Geist Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 300ms var(--ease-spring);
+}
+.share-pill:hover { background: rgba(244, 237, 224, 0.18); }
+
+/* ────────────────────────────────────────────
+   FOOTER
+   ──────────────────────────────────────────── */
+footer {
+  background: var(--ink);
+  color: var(--cream);
+  padding: 60px 24px 32px;
+  text-align: center;
+}
+.footer-mark {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 24px;
+  opacity: 0.6;
+}
+.footer-name {
+  font-family: 'Geist Mono', monospace;
+  font-size: 13px;
+  letter-spacing: 0.4em;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.footer-meta {
+  font-family: 'Geist Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: rgba(244, 237, 224, 0.4);
+  text-transform: uppercase;
+  margin-bottom: 32px;
+}
+.footer-fine {
+  font-size: 10px;
+  color: rgba(244, 237, 224, 0.3);
+  max-width: 480px;
+  margin: 0 auto;
+  line-height: 1.6;
+  letter-spacing: 0.04em;
+}
+
+/* ────────────────────────────────────────────
+   SCROLL REVEAL
+   ──────────────────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  filter: blur(4px);
+  transition: opacity 900ms var(--ease-out-expo), transform 900ms var(--ease-out-expo), filter 900ms var(--ease-out-expo);
+}
+.reveal.in {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+}
+.reveal[data-delay="1"] { transition-delay: 80ms; }
+.reveal[data-delay="2"] { transition-delay: 160ms; }
+.reveal[data-delay="3"] { transition-delay: 240ms; }
+.reveal[data-delay="4"] { transition-delay: 320ms; }
+
+/* ────────────────────────────────────────────
+   MOBILE
+   ──────────────────────────────────────────── */
+@media (max-width: 768px) {
+  nav { padding: 10px 14px; top: 12px; left: 12px; right: 12px; }
+  .nav-cta { padding: 6px 6px 6px 14px; font-size: 12px; }
+  .nav-cta-arrow { width: 20px; height: 20px; }
+  .nav-mark { font-size: 11px; }
+
+  .section, .intro, .flavors, .slot, .events, .partner, .quote, .waitlist { padding: 80px 20px; }
+  .hero { padding: 100px 20px 60px; }
+
+  .intro-grid, .partner-grid { grid-template-columns: 1fr; gap: 40px; }
+  .flavor-grid { grid-template-columns: 1fr; }
+  .flavor-card { padding: 32px 24px; }
+  .flavor-num { font-size: 48px; margin-bottom: 24px; }
+
+  .reels { gap: 8px; }
+  .reel-wrap { height: 80px; }
+  .reel-item { height: 64px; font-size: 14px; }
+
+  .event-row { grid-template-columns: 80px 1fr; padding: 20px 0; }
+  .event-status { grid-column: 1 / -1; justify-self: start; margin-top: 4px; }
+
+  .events-head, .flavors-head { flex-direction: column; align-items: start; }
+
+  h1 { font-size: clamp(56px, 14vw, 96px); }
+  .quote-text { font-size: clamp(28px, 8vw, 48px); }
+}
+
+/* Reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.01ms !important; transition-duration: 0.1ms !important; }
+  .reveal { opacity: 1; transform: none; filter: none; }
+}
+</style>
 </head>
+
 <body>
 
-  <!-- ───────────────────── FROST PARTICLES (ambient background) ───────────────────── -->
-  <canvas id="frostParticles" aria-hidden="true"></canvas>
-
-  <!-- ───────────────────── AGE GATE ───────────────────── -->
-  <div class="age-gate" id="ageGate">
-    <div class="age-gate-logo">FROSTD</div>
-    <p class="age-gate-text">this is for people 21 and over.<br>you good?</p>
-    <div class="age-gate-buttons">
-      <button class="btn-pink" id="ageYes">yeah, I'm legal</button>
-      <button class="btn-ghost" id="ageNo">not yet</button>
+<!-- ═══ AGE GATE ═══ -->
+<div class="modal-wrap" id="ageGate">
+  <div class="gate">
+    <svg class="gate-mark" viewBox="0 0 60 60" fill="none">
+      <path d="M30 8L30 52M8 30L52 30M14 14L46 46M46 14L14 46" stroke="#1E5BFF" stroke-width="2.5" stroke-linecap="round"/>
+    </svg>
+    <div class="eyebrow gate-eyebrow">FROSTD · MUMBAI</div>
+    <h2 class="gate-title" id="gateTitle">old enough<br>to drink?</h2>
+    <p class="gate-sub" id="gateSub">our gelato has real alcohol in it. that's the whole point.</p>
+    <div class="gate-buttons" id="gateButtons">
+      <button class="gate-btn gate-btn-yes" id="gateYes" type="button">yes, let me in</button>
+      <button class="gate-btn gate-btn-no" id="gateNo" type="button">no</button>
     </div>
+    <div class="gate-fine" id="gateFine">for adults of legal drinking age in your region.</div>
+  </div>
+</div>
+
+<!-- ═══ NAV ═══ -->
+<nav id="nav">
+  <div class="nav-mark">
+    <svg viewBox="0 0 60 60" fill="none">
+      <path d="M30 8L30 52M8 30L52 30M14 14L46 46M46 14L14 46" stroke="#1A1A1A" stroke-width="3" stroke-linecap="round"/>
+    </svg>
+    FROSTD
+  </div>
+  <a href="#waitlist" class="nav-cta">
+    join the list
+    <span class="nav-cta-arrow">
+      <svg viewBox="0 0 12 12" fill="none">
+        <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </span>
+  </a>
+</nav>
+
+<main>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <img src="/frostd-wordmark.png" alt="FROSTD" class="hero-wordmark" id="heroWordmark" onload="this.style.display='block';document.getElementById('heroFallback').style.display='none';" onerror="this.remove();">
+  <div class="hero-wordmark-fallback" id="heroFallback">FROSTD</div>
+
+  <p class="hero-tagline reveal" data-delay="1">alcohol in ice cream. cause you deserve both.</p>
+
+  <div class="hero-meta reveal" data-delay="2">
+    <span>MUMBAI</span>
+    <span class="dot"></span>
+    <span>WITH ALCOHOL</span>
+    <span class="dot"></span>
+    <span>EVENTS ONLY</span>
   </div>
 
-  <!-- ───────────────────── REFERRAL BANNER ───────────────────── -->
-  <div class="ref-banner" id="refBanner">your friend thinks you can handle it.</div>
+  <div class="hero-scroll">SCROLL ↓</div>
+</section>
 
-  <!-- ───────────────────── STICKY BAR ───────────────────── -->
-  <div class="sticky" id="stickyBar">
-    <div class="sticky-inner">
-      <span class="sticky-logo">FROSTD</span>
-      <button class="sticky-cta" data-scroll="waitlist">join ↓</button>
+<!-- ═══ INTRO ═══ -->
+<section class="intro">
+  <div class="intro-grid">
+    <div class="intro-left">
+      <div class="eyebrow reveal">001 — what it is</div>
+      <h2 class="intro-headline reveal" data-delay="1">
+        your favourite drinks,<br>
+        <span class="blue">frozen.</span>
+      </h2>
+    </div>
+    <div class="intro-right">
+      <p class="reveal" data-delay="2">FROSTD is alcoholic gelato. real spirits infused into a premium gelato base — tequila, rum, baileys. not extracts. not essences. <strong>the real thing, frozen properly.</strong></p>
+      <p class="reveal" data-delay="3">served at events across mumbai. no storefront. no delivery. find us before we find you.</p>
+      <p class="reveal" data-delay="4">no permissions asked.</p>
     </div>
   </div>
+</section>
 
-  <!-- ───────────────────── HERO ───────────────────── -->
-  <section class="hero" id="hero">
-    <div class="hero-top">
-      <span class="kicker kicker-pink">VOL. 01 · MUMBAI</span>
-      <span class="kicker">EST. 2026</span>
+<!-- ═══ FLAVORS ═══ -->
+<section class="flavors" id="flavors">
+  <div class="container">
+    <div class="flavors-head">
+      <div>
+        <div class="eyebrow reveal" style="margin-bottom:16px">002 — the menu</div>
+        <h2 class="reveal" data-delay="1">three flavors.<br>none of them safe.</h2>
+      </div>
+      <div class="meta reveal" data-delay="2">₹400 / SERVE</div>
     </div>
 
-    <div class="hero-center">
-      <div class="hero-wordmark-wrap">
-        <span class="hero-wordmark" aria-label="FROSTD">
-          <span class="hero-letter">F</span><span class="hero-letter">R</span><span class="hero-letter">O</span><span class="hero-letter">S</span><span class="hero-letter">T</span><span class="hero-letter">D</span>
-        </span>
-      </div>
-      <p class="hero-tagline">alcohol in ice cream. cause you deserve both.</p>
-      <button class="hero-cta" data-scroll="wtf">
-        I need this <span class="hero-cta-arrow">↓</span>
-      </button>
-    </div>
-
-    <div class="hero-marquee" aria-hidden="true">
-      <div class="hero-marquee-track" id="marqueeTrack">
-        <!-- duplicated in JS for seamless loop -->
-      </div>
-    </div>
-
-    <div class="hero-bottom">
-      <span class="kicker">01 / 07</span>
-      <span class="kicker kicker-pink">NOT SAFE FOR WORK ↓</span>
-    </div>
-  </section>
-
-  <!-- ───────────────────── WTF SECTION ───────────────────── -->
-  <section id="wtf" class="reveal">
-    <div class="section-inner">
-      <div class="wtf-header">
-        <div class="wtf-header-left">
-          <div class="kicker kicker-pink">02 / THE PRODUCT</div>
-          <h2 class="wtf-headline">your favourite drinks, frozen.<br>served across mumbai.</h2>
-        </div>
-        <span class="wtf-section-num">003<br>FLAVORS</span>
-      </div>
-
-      <div class="drops-grid">
-        <div class="drop-card c001" data-drop="001">
-          <div class="drop-card-top">
-            <span class="drop-card-mini-logo">FROSTD</span>
-            <span class="drop-card-spec">BATCH .01<br>TBD</span>
-          </div>
-          <span class="drop-card-num">001</span>
-          <span class="drop-card-tap-hint">TAP →</span>
-        </div>
-        <div class="drop-card c002" data-drop="002">
-          <div class="drop-card-top">
-            <span class="drop-card-mini-logo">FROSTD</span>
-            <span class="drop-card-spec">BATCH .02<br>TBD</span>
-          </div>
-          <span class="drop-card-num">002</span>
-          <span class="drop-card-tap-hint">TAP →</span>
-        </div>
-        <div class="drop-card c003" data-drop="003">
-          <div class="drop-card-top">
-            <span class="drop-card-mini-logo">FROSTD</span>
-            <span class="drop-card-spec">BATCH .03<br>TBD</span>
-          </div>
-          <span class="drop-card-num">003</span>
-          <span class="drop-card-tap-hint">TAP →</span>
+    <div class="flavor-grid reveal" data-delay="2">
+      <div class="flavor-card">
+        <div class="flavor-num">001</div>
+        <div class="flavor-ingredients">tequila · guava · chili</div>
+        <div class="flavor-tagline">sweet, then it bites.</div>
+        <div class="flavor-foot">
+          <span>WITH TEQUILA</span>
+          <span class="price">₹400</span>
         </div>
       </div>
-
-      <div class="wtf-foot">
-        <span class="wtf-foot-text">know about drops before everyone else.</span>
-        <span class="wtf-foot-meta">↓ JOIN BELOW</span>
+      <div class="flavor-card">
+        <div class="flavor-num">002</div>
+        <div class="flavor-ingredients">rum · cookie · caramel</div>
+        <div class="flavor-tagline">the basic order. not sorry.</div>
+        <div class="flavor-foot">
+          <span>WITH RUM</span>
+          <span class="price">₹400</span>
+        </div>
+      </div>
+      <div class="flavor-card">
+        <div class="flavor-num">003</div>
+        <div class="flavor-ingredients">baileys · coffee · chocolate</div>
+        <div class="flavor-tagline">dessert and a nightcap.</div>
+        <div class="flavor-foot">
+          <span>WITH BAILEYS</span>
+          <span class="price">₹400</span>
+        </div>
       </div>
     </div>
-  </section>
 
-  <!-- ───────────────────── WARNING ───────────────────── -->
-  <section class="warning reveal">
-    <div class="warning-inner">
-      <div class="warning-kicker">03 / DISCLAIMER</div>
-      <h2 class="warning-text">we are <em>not liable</em><br>for what happens<br>after 2 serves.</h2>
-      <div class="warning-meta">READ TWICE</div>
+    <div class="flavors-sub reveal" data-delay="3">flavors, dates, locations — you hear first.</div>
+  </div>
+</section>
+
+<!-- ═══ LIABILITY ═══ -->
+<section class="liability">
+  <div class="liability-box reveal">⚠ we are not liable for what happens after 2 serves</div>
+</section>
+
+<!-- ═══ SLOT MACHINE ═══ -->
+<section class="slot">
+  <div class="container-narrow">
+    <div class="slot-head">
+      <div class="eyebrow reveal" style="margin-bottom:16px">003 — what's next?</div>
+      <h2 class="reveal" data-delay="1">tell us what to drop next.</h2>
+      <p class="reveal" data-delay="2">spin the reels. if the combo's a vibe, we make it. real flavors come from this page.</p>
     </div>
-  </section>
 
-  <!-- ───────────────────── HOW IT WORKS ───────────────────── -->
-  <section class="reveal">
-    <div class="how-inner">
-      <div class="how-header">
-        <span class="how-header-kicker">04 / METHOD</span>
-        <h2 class="how-headline">how it <em>actually</em> works.</h2>
-      </div>
+    <div class="slot-machine reveal" data-delay="2">
+      <div class="slot-inner">
 
-      <div class="step-row">
-        <div class="step-num">01</div>
-        <div class="step-body">
-          <h3 class="step-title">real spirits, real cold.</h3>
-          <p class="step-desc">not flavored. not extract. actual alcohol infused in every serve.</p>
-        </div>
-        <div class="step-tag">PROCESS</div>
-      </div>
-      <div class="step-divider"></div>
-
-      <div class="step-row">
-        <div class="step-num">02</div>
-        <div class="step-body">
-          <h3 class="step-title">served at events across mumbai.</h3>
-          <p class="step-desc">find us before we find you.</p>
-        </div>
-        <div class="step-tag">EXCLUSIVE</div>
-      </div>
-      <div class="step-divider"></div>
-
-      <div class="step-row">
-        <div class="step-num">03</div>
-        <div class="step-body">
-          <h3 class="step-title">collectible card with every serve.</h3>
-          <p class="step-desc">numbered. limited. proof you were there.</p>
-        </div>
-        <div class="step-tag">ARTIFACT</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ───────────────────── GAME ───────────────────── -->
-  <section class="reveal" id="gameSection">
-    <div class="game-section">
-      <div class="game-header">
-        <span class="game-header-kicker">05 / EXPERIMENT</span>
-        <h2 class="game-headline">how many serves<br>can you <em>handle?</em></h2>
-      </div>
-      <p class="game-subhead">a small experiment. don't read into it.</p>
-
-      <div class="game-stage" id="gameStage">
-        <div class="game-canvas-wrap" id="canvasWrap">
-          <canvas class="game-canvas" id="gameCanvas"></canvas>
-        </div>
-        <div class="game-overlay" id="gameOverlay"></div>
-
-        <!-- HUD -->
-        <div class="hud" id="hud" style="display:none">
-          <div class="hud-score-block">
-            <div class="hud-score" id="hudScore">0</div>
-            <div class="hud-label">serves</div>
-          </div>
-          <div class="hud-best-block" id="hudBestBlock" style="display:none">
-            <div class="hud-best" id="hudBest">0</div>
-            <div class="hud-label">best</div>
-          </div>
-          <div class="hud-lives" id="hudLives">
-            <span class="heart">❤️</span>
-            <span class="heart">❤️</span>
-            <span class="heart">❤️</span>
-          </div>
-        </div>
-        <div class="hud-state" id="hudState" style="display:none">
-          <div class="hud-state-bar"><div class="hud-state-fill" id="hudStateFill"></div></div>
-          <div class="hud-state-text">
-            <span>state</span>
-            <span class="current" id="hudStateText">sober</span>
-          </div>
-        </div>
-
-        <!-- Start screen -->
-        <div class="game-screen" id="startScreen">
-          <h3 class="game-start-title">tap the scoops.<br>don't black out.</h3>
-          <p class="game-start-rules">
-            <strong>3 lives.</strong> miss 3 scoops, you're done.<br>
-            the more you catch, the drunker it gets.
-          </p>
-          <div class="game-start-btn-wrap">
-            <button class="btn-pink" id="startBtn">play</button>
-          </div>
-        </div>
-
-        <!-- Game over screen — 9:16 share-optimized -->
-        <div class="game-screen hidden" id="gameOverScreen">
-          <div class="game-over-stack">
-            <div class="go-top">
-              <span class="go-logo">FROSTD</span>
-              <span class="go-tag">GAME OVER</span>
+        <div class="reels">
+          <div class="reel-wrap">
+            <div class="reel-label">spirit</div>
+            <div class="reel-viewport">
+              <div class="reel-strip" id="reel0"></div>
             </div>
-            <div class="go-middle">
-              <div class="go-score-label">final count</div>
-              <div class="go-score" id="goScore">0</div>
-              <div class="go-verdict" id="goVerdict">lightweight.</div>
+          </div>
+          <div class="reel-wrap">
+            <div class="reel-label">base</div>
+            <div class="reel-viewport">
+              <div class="reel-strip" id="reel1"></div>
             </div>
-            <div class="go-bottom">
-              <button class="btn-pink" id="shareScoreBtn">share</button>
-              <button class="btn-ghost" id="playAgainBtn">play again</button>
-              <button class="go-link-down" data-scroll="waitlist">want to try the real thing? ↓</button>
+          </div>
+          <div class="reel-wrap">
+            <div class="reel-label">wildcard</div>
+            <div class="reel-viewport">
+              <div class="reel-strip" id="reel2"></div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-  </section>
 
-  <!-- ───────────────────── WAITLIST ───────────────────── -->
-  <section class="reveal" id="waitlist">
-    <div class="waitlist-section">
-      <div id="formWrap">
-        <div class="waitlist-header">
-          <span class="waitlist-header-kicker">06 / ENTRY</span>
-          <h2 class="waitlist-headline">you're not <em>lame</em>,<br>are you?</h2>
-        </div>
-        <p class="waitlist-sub">flavors, dates, locations — you hear first.</p>
+        <button class="spin-btn" id="spinBtn" onclick="spinReels()">
+          spin
+          <span class="arrow">
+            <svg viewBox="0 0 12 12" fill="none">
+              <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+        </button>
 
-        <form class="form" id="waitlistForm" novalidate>
-          <input class="input" type="text" id="fName" placeholder="name" autocomplete="name">
-          <input class="input" type="email" id="fEmail" placeholder="email" autocomplete="email">
-          <input class="input optional" type="tel" id="fPhone" placeholder="phone (optional)" autocomplete="tel">
-          <div class="field-hint">drop alerts only. no spam.</div>
-
-          <div class="poison-block">
-            <div class="poison-label">what's your poison?</div>
-            <div class="poison-row" id="poisonRow">
-              <button type="button" class="pill" data-poison="tequila">tequila</button>
-              <button type="button" class="pill" data-poison="rum">rum</button>
-              <button type="button" class="pill" data-poison="whiskey">whiskey</button>
-              <button type="button" class="pill" data-poison="baileys">baileys</button>
-              <button type="button" class="pill" data-poison="surprise">surprise me</button>
+        <div class="result" id="result">
+          <div class="result-card">
+            <div class="result-eyebrow">FROSTD 004?</div>
+            <div class="result-combo" id="resultCombo">
+              <span id="r0">—</span><span class="sep">·</span><span id="r1">—</span><span class="sep">·</span><span id="r2">—</span>
+            </div>
+            <div class="result-verdict" id="resultVerdict">—</div>
+            <div class="result-actions">
+              <button class="result-btn" onclick="spinReels()">spin again</button>
+              <button class="result-btn" onclick="shareSlot()">share</button>
+              <button class="result-btn primary" id="submitLabBtn" onclick="submitToLab()">submit to lab</button>
             </div>
           </div>
+        </div>
 
-          <div class="form-error" id="formError" style="display:none"></div>
+      </div>
+    </div>
+  </div>
+</section>
 
-          <button class="submit-btn" type="submit" id="submitBtn">I'm in</button>
+<!-- ═══ EVENTS ═══ -->
+<section class="events">
+  <div class="container">
+    <div class="events-head">
+      <div>
+        <div class="eyebrow reveal" style="margin-bottom:16px">004 — where to find us</div>
+        <h2 class="reveal" data-delay="1">where we're<br>scooping next.</h2>
+      </div>
+    </div>
+
+    <div class="event-list">
+      <div class="event-row reveal">
+        <div class="event-date"><span class="month">TBD</span>2026</div>
+        <div class="event-info">
+          <div class="event-name">lil flea — summer edition</div>
+          <div class="event-loc">jio world garden, BKC</div>
+        </div>
+        <div class="event-status next">next</div>
+      </div>
+      <div class="event-row reveal" data-delay="1">
+        <div class="event-date"><span class="month">TBD</span>2026</div>
+        <div class="event-info">
+          <div class="event-name">AYCS</div>
+          <div class="event-loc">jio world convention centre</div>
+        </div>
+        <div class="event-status">soon</div>
+      </div>
+      <div class="event-row reveal" data-delay="2">
+        <div class="event-date"><span class="month">TBD</span>—</div>
+        <div class="event-info">
+          <div class="event-name">private parties</div>
+          <div class="event-loc">we come to you</div>
+        </div>
+        <div class="event-status">on call</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PARTNER ═══ -->
+<section class="partner">
+  <div class="container">
+    <div class="partner-grid">
+      <div class="partner-left">
+        <div class="eyebrow reveal">005 — bring us in</div>
+        <h2 class="reveal" data-delay="1">we cart up.<br>you bring the crowd.</h2>
+        <p class="reveal" data-delay="2">running an event? hosting a party? throwing a launch? we bring everything — cart, gelato, alcohol license, the buzz. you bring the people.</p>
+        <div class="partner-left-points">
+          <div class="partner-point reveal" data-delay="3">events · parties · launches · weddings</div>
+          <div class="partner-point reveal" data-delay="4">mumbai now · expanding soon</div>
+        </div>
+      </div>
+      <div class="partner-right">
+        <form class="form reveal" data-delay="2" id="partnerForm" onsubmit="submitPartner(event)">
+          <div class="input-row">
+            <label>your name</label>
+            <input type="text" class="input" name="name" required>
+          </div>
+          <div class="input-row">
+            <label>event / venue / brand</label>
+            <input type="text" class="input" name="event" required>
+          </div>
+          <div class="input-row">
+            <label>date (rough is fine)</label>
+            <input type="text" class="input" name="date">
+          </div>
+          <div class="input-row">
+            <label>email or phone</label>
+            <input type="text" class="input" name="contact" required>
+          </div>
+          <div class="input-row">
+            <label>tell us about it</label>
+            <textarea class="textarea" name="details" placeholder="what's the vibe? how many people?"></textarea>
+          </div>
+          <button type="submit" class="submit-btn" id="partnerSubmit">
+            send inquiry
+            <span class="arrow">
+              <svg viewBox="0 0 12 12" fill="none">
+                <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+          </button>
+          <div class="form-success" id="partnerSuccess">got it. we'll be in touch within 48 hours.</div>
         </form>
       </div>
-
-      <div id="confirmWrap" class="confirm" style="display:none">
-        <h2 class="confirm-headline">you're in.</h2>
-        <div class="confirm-num-label">your number</div>
-        <div class="confirm-num" id="confirmNum">#001</div>
-        <div class="confirm-num-text" id="confirmText">you're #1 on the list.</div>
-        <p class="confirm-poison-line" id="confirmPoison" style="display:none"></p>
-        <p class="confirm-share-prompt">share this or you're a lightweight.</p>
-        <div class="confirm-share-btns">
-          <button class="btn-pink" id="confirmShareBtn">share</button>
-          <button class="btn-ghost" id="confirmCopyBtn">copy link</button>
-        </div>
-        <p class="confirm-promise">we'll text you 24h before events. nothing else.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ───────────────────── CLOSING ───────────────────── -->
-  <section class="closing reveal">
-    <div class="closing-kicker">07 / END NOTE</div>
-    <p class="closing-text">if you don't get it,<br><em>you won't get it.</em></p>
-  </section>
-
-  <!-- ───────────────────── FOOTER ───────────────────── -->
-  <footer>
-    <div class="footer-grid">
-      <div class="footer-left">
-        <div class="footer-logo">FROSTD</div>
-        <div class="footer-tag">NO PERMISSION ASKED</div>
-      </div>
-      <div class="footer-right">
-        <span class="footer-right-line pink">VOL. 01 · 2026</span>
-        <span class="footer-right-line">MUMBAI · IND</span>
-        <span class="footer-right-line">© FROSTD ALL RIGHTS</span>
-      </div>
-    </div>
-  </footer>
-
-  <!-- ───────────────────── DROP SHEET MODAL ───────────────────── -->
-  <div class="drop-sheet-backdrop" id="dropBackdrop"></div>
-  <div class="drop-sheet" id="dropSheet" role="dialog" aria-modal="true" aria-labelledby="dropNum">
-    <button class="drop-sheet-close" id="dropClose" aria-label="close">×</button>
-    <div class="drop-sheet-handle"></div>
-    <div class="drop-sheet-num" id="dropNum">001</div>
-    <div class="drop-sheet-spirits" id="dropSpirits"></div>
-    <p class="drop-sheet-tagline" id="dropTagline"></p>
-    <div class="drop-sheet-ingredients">
-      <div class="drop-sheet-row">
-        <span class="drop-sheet-label">spirit</span>
-        <span class="drop-sheet-value" id="dropSpirit"></span>
-      </div>
-      <div class="drop-sheet-row">
-        <span class="drop-sheet-label">flavor</span>
-        <span class="drop-sheet-value" id="dropFlavor"></span>
-      </div>
-      <div class="drop-sheet-row">
-        <span class="drop-sheet-label">finish</span>
-        <span class="drop-sheet-value" id="dropFinish"></span>
-      </div>
-      <div class="drop-sheet-row">
-        <span class="drop-sheet-label">status</span>
-        <span class="drop-sheet-value" id="dropStatus">dropping soon</span>
-      </div>
     </div>
   </div>
+</section>
 
-  <!-- ───────────────────── TOAST ───────────────────── -->
-  <div class="toast" id="toast">link copied</div>
+<!-- ═══ QUOTE MOMENT ═══ -->
+<section class="quote">
+  <div class="quote-text reveal">
+    if you don't get it,<br>
+    <span class="blue">you won't get it.</span>
+  </div>
+</section>
 
-  <script>
-  (function() {
-    'use strict';
+<!-- ═══ WAITLIST ═══ -->
+<section class="waitlist" id="waitlist">
+  <div class="container-narrow">
+    <div class="waitlist-head">
+      <div class="eyebrow reveal" style="margin-bottom:16px">006 — the list</div>
+      <h2 class="reveal" data-delay="1">you're not lame are you?</h2>
+      <p class="reveal" data-delay="2">flavors, dates, locations, drops — hear it first. no spam. no fluff. just the goods.</p>
+    </div>
 
-    // ──────────────── CONFIG ────────────────
-    const PINK = '#0066FF';
-    const STATE_TIERS = [
-      { min: 0, key: 'sober',  label: 'sober',  cls: '' },
-      { min: 4, key: 'tipsy',  label: 'tipsy',  cls: 'tipsy' },
-      { min: 8, key: 'buzzed', label: 'buzzed', cls: 'buzzed' },
-      { min: 13, key: 'gone',  label: 'gone',   cls: 'gone' }
-    ];
-    const POISON_LINES = {
-      tequila:  "noted. tequila fan. we'll remember that.",
-      rum:      "rum person. respect.",
-      whiskey:  "whiskey. bold choice.",
-      baileys:  "baileys. smooth operator.",
-      surprise: "living dangerously. we like that."
-    };
-    const verdictFor = (s) => {
-      if (s <= 3) return 'lightweight.';
-      if (s <= 6) return 'not bad. not great.';
-      if (s <= 10) return 'you can hang.';
-      return 'certified menace.';
-    };
+    <form class="waitlist-form reveal" data-delay="2" id="waitlistForm" onsubmit="submitWaitlist(event)">
+      <div class="input-row">
+        <label>your name</label>
+        <input type="text" class="input" name="name" required placeholder="">
+      </div>
+      <div class="input-row">
+        <label>email</label>
+        <input type="email" class="input" name="email" required placeholder="">
+      </div>
+      <div class="input-row">
+        <label>phone (optional)</label>
+        <input type="tel" class="input" name="phone" placeholder="">
+      </div>
+      <div class="input-row">
+        <label>what's your poison?</label>
+        <div class="poison-grid" id="poisonGrid">
+          <button type="button" class="poison-pill" data-poison="tequila">tequila</button>
+          <button type="button" class="poison-pill" data-poison="rum">rum</button>
+          <button type="button" class="poison-pill" data-poison="baileys">baileys</button>
+          <button type="button" class="poison-pill" data-poison="whiskey">whiskey</button>
+          <button type="button" class="poison-pill" data-poison="surprise">surprise me</button>
+        </div>
+      </div>
+      <button type="submit" class="submit-btn" id="waitlistSubmit">
+        i'm in
+        <span class="arrow">
+          <svg viewBox="0 0 12 12" fill="none">
+            <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+      </button>
+    </form>
 
-    // ──────────────── AGE GATE ────────────────
-    const ageGate = document.getElementById('ageGate');
-    const ageYes = document.getElementById('ageYes');
-    const ageNo  = document.getElementById('ageNo');
+    <div class="waitlist-success" id="waitlistSuccess">
+      <h3>you're in.</h3>
+      <p>watch your inbox. tell a friend who deserves a buzz.</p>
+      <button class="share-pill" onclick="shareWaitlist()">
+        share frostd
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+          <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</section>
 
+</main>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <svg class="footer-mark" viewBox="0 0 60 60" fill="none">
+    <path d="M30 8L30 52M8 30L52 30M14 14L46 46M46 14L14 46" stroke="#F4EDE0" stroke-width="2" stroke-linecap="round"/>
+  </svg>
+  <div class="footer-name">FROSTD</div>
+  <div class="footer-meta">MUMBAI · 2026 · WITH ALCOHOL</div>
+  <div class="footer-fine">
+    frostd contains real alcohol. for adults of legal drinking age. served only at licensed events.
+  </div>
+</footer>
+
+<script>
+/* ────────────────────────────────────────────
+   SUPABASE CONFIG — REPLACE THESE WHEN READY
+   ──────────────────────────────────────────── */
+const SUPABASE_URL = 'YOUR_SUPABASE_URL';
+const SUPABASE_KEY = 'YOUR_SUPABASE_ANON_KEY';
+let supabase = null;
+
+// Load Supabase SDK only when actually configured. Failures must NOT break the page.
+function initSupabase() {
+  if (SUPABASE_URL === 'YOUR_SUPABASE_URL' || SUPABASE_KEY === 'YOUR_SUPABASE_ANON_KEY') {
+    return;
+  }
+  const script = document.createElement('script');
+  script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+  script.async = true;
+  script.onload = function() {
     try {
-      if (sessionStorage.getItem('frostd_age_passed') === '1') {
-        ageGate.classList.add('hidden');
-        setTimeout(() => { ageGate.style.display = 'none'; }, 400);
-      }
-    } catch(e) {}
+      supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    } catch (e) {
+      console.warn('Supabase init failed:', e);
+    }
+  };
+  script.onerror = function() {
+    console.warn('Supabase SDK failed to load — forms will log locally only');
+  };
+  document.head.appendChild(script);
+}
+initSupabase();
 
-    ageYes.addEventListener('click', () => {
-      try { sessionStorage.setItem('frostd_age_passed', '1'); } catch(e) {}
-      ageGate.classList.add('hidden');
-      setTimeout(() => { ageGate.style.display = 'none'; }, 400);
-    });
-    ageNo.addEventListener('click', () => {
-      const textEl = ageGate.querySelector('.age-gate-text');
-      const buttonsEl = ageGate.querySelector('.age-gate-buttons');
-      
-      // Hide buttons
-      buttonsEl.style.opacity = '0';
-      buttonsEl.style.pointerEvents = 'none';
-      
-      // Step 1: "verifying..."
+/* ────────────────────────────────────────────
+   AGE GATE
+   ──────────────────────────────────────────── */
+(function setupAgeGate() {
+  const gate = document.getElementById('ageGate');
+  const yesBtn = document.getElementById('gateYes');
+  const noBtn = document.getElementById('gateNo');
+  const buttons = document.getElementById('gateButtons');
+  const title = document.getElementById('gateTitle');
+  const sub = document.getElementById('gateSub');
+  const fine = document.getElementById('gateFine');
+
+  if (!gate || !yesBtn || !noBtn) {
+    console.error('Age gate elements missing');
+    return;
+  }
+
+  function pass() {
+    gate.classList.add('hidden');
+    document.body.style.overflow = '';
+    setTimeout(() => { gate.style.display = 'none'; }, 600);
+  }
+
+  function rejectSequence() {
+    // Fade out buttons
+    buttons.classList.add('gate-fade-buttons');
+    fine.style.opacity = '0';
+
+    // Step 1: verifying...
+    setTimeout(() => {
+      title.innerHTML = 'verifying...';
+      sub.innerHTML = '';
+
+      // Create progress bar
+      const wrap = document.createElement('div');
+      wrap.className = 'gate-progress-wrap';
+      const bar = document.createElement('div');
+      bar.className = 'gate-progress-bar';
+      wrap.appendChild(bar);
+      sub.appendChild(wrap);
+
+      // Trigger progress
+      requestAnimationFrame(() => { bar.style.width = '100%'; });
+
+      // Step 2: contacting your mother
       setTimeout(() => {
-        textEl.innerHTML = 'verifying...';
-        
-        // Add progress bar
-        const progressWrap = document.createElement('div');
-        progressWrap.style.cssText = 'width: 200px; height: 4px; background: rgba(255,255,255,0.1); margin: 24px auto; border-radius: 2px; overflow: hidden;';
-        const progressBar = document.createElement('div');
-        progressBar.style.cssText = 'width: 0%; height: 100%; background: var(--pink); transition: width 2s ease-out;';
-        progressWrap.appendChild(progressBar);
-        textEl.appendChild(progressWrap);
-        
-        // Animate progress bar
-        setTimeout(() => { progressBar.style.width = '100%'; }, 50);
-        
-        // Step 2: "contacting local authorities..."
-        setTimeout(() => {
-          textEl.innerHTML = 'contacting local authorities...';
-          
-          // Step 3: Final message
-          setTimeout(() => {
-            textEl.innerHTML = 'just kidding.<br>come back when you\'re legal.';
-            // Lock the page - no way forward
-          }, 2000);
-        }, 2200);
-      }, 300);
-    });
+        title.innerHTML = 'contacting<br>your mother...';
+      }, 2100);
 
-    // ──────────────── REFERRAL ────────────────
-    let refName = null;
+      // Step 3: caught
+      setTimeout(() => {
+        title.innerHTML = 'caught.';
+        sub.innerHTML = "she's not impressed.<br>come back when you're older.";
+      }, 4100);
+    }, 200);
+  }
+
+  yesBtn.addEventListener('click', pass);
+  noBtn.addEventListener('click', rejectSequence);
+
+  // Lock scroll while gate is up
+  document.body.style.overflow = 'hidden';
+})();
+
+/* ────────────────────────────────────────────
+   SCROLL REVEAL
+   ──────────────────────────────────────────── */
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('in');
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+/* ────────────────────────────────────────────
+   SLOT MACHINE
+   ──────────────────────────────────────────── */
+const SPIRITS = ['tequila', 'rum', 'vodka', 'baileys', 'whiskey', 'gin', 'mezcal', 'cognac'];
+const BASES = ['chocolate', 'vanilla', 'strawberry', 'mango', 'coffee', 'pistachio', 'coconut', 'kulfi'];
+const WILDS = ['chili', 'caramel', 'cookie', 'hot honey', 'sea salt', 'basil', 'espresso', 'ghost pepper'];
+const VERDICTS = [
+  "you might be onto something.",
+  "we wouldn't serve this. probably.",
+  "actually... write that down.",
+  "no. but okay.",
+  "this is how legends start.",
+  "send help.",
+  "the lab is calling.",
+  "drop 004 incoming.",
+  "this one's haunted.",
+  "ten out of ten chaos."
+];
+
+const REELS = [SPIRITS, BASES, WILDS];
+let currentResult = { spirit: null, base: null, wild: null, verdict: null };
+let isSpinning = false;
+
+// Build reel strips (repeat content for smooth spin)
+function buildReels() {
+  REELS.forEach((items, idx) => {
+    const strip = document.getElementById('reel' + idx);
+    if (!strip) return;
+    const html = [];
+    for (let i = 0; i < 20; i++) {
+      items.forEach(item => {
+        html.push(`<div class="reel-item">${item}</div>`);
+      });
+    }
+    strip.innerHTML = html.join('');
+  });
+}
+buildReels();
+
+function spinReels() {
+  if (isSpinning) return;
+  isSpinning = true;
+  document.getElementById('spinBtn').disabled = true;
+  document.getElementById('result').classList.remove('show');
+
+  // Reset submit button state
+  const submitBtn = document.getElementById('submitLabBtn');
+  submitBtn.classList.remove('success');
+  submitBtn.textContent = 'submit to lab';
+
+  const picks = [];
+  REELS.forEach((items, idx) => {
+    const pick = Math.floor(Math.random() * items.length);
+    picks.push({ idx, pick, value: items[pick] });
+
+    const strip = document.getElementById('reel' + idx);
+    strip.style.transition = 'none';
+    strip.style.transform = 'translateY(0)';
+    // Force reflow
+    strip.offsetHeight;
+    strip.style.transition = `transform ${2200 + idx * 200}ms cubic-bezier(0.32, 0.72, 0, 1)`;
+
+    const itemHeight = window.innerWidth < 768 ? 64 : 84;
+    const targetCycle = 10 + idx * 2;
+    const targetY = -(targetCycle * items.length + pick) * itemHeight;
+    strip.style.transform = `translateY(${targetY}px)`;
+  });
+
+  setTimeout(() => {
+    currentResult = {
+      spirit: picks[0].value,
+      base: picks[1].value,
+      wild: picks[2].value,
+      verdict: VERDICTS[Math.floor(Math.random() * VERDICTS.length)]
+    };
+    document.getElementById('r0').textContent = currentResult.spirit;
+    document.getElementById('r1').textContent = currentResult.base;
+    document.getElementById('r2').textContent = currentResult.wild;
+    document.getElementById('resultVerdict').textContent = currentResult.verdict;
+    document.getElementById('result').classList.add('show');
+    document.getElementById('spinBtn').disabled = false;
+    isSpinning = false;
+  }, 2200 + 2 * 200 + 100);
+}
+
+async function submitToLab() {
+  if (!currentResult.spirit) return;
+  const btn = document.getElementById('submitLabBtn');
+  btn.disabled = true;
+
+  if (supabase) {
     try {
-      const params = new URLSearchParams(window.location.search);
-      const r = params.get('ref');
-      if (r) {
-        refName = r;
-        document.getElementById('refBanner').classList.add('active');
-      }
-    } catch(e) {}
-
-    // ──────────────── MARQUEE TICKER ────────────────
-    (function() {
-      const track = document.getElementById('marqueeTrack');
-      if (!track) return;
-      const items = [
-        { text: 'FROSTD', cls: 'pink' },
-        { text: '·', cls: 'dot' },
-        { text: 'NO PERMISSION ASKED', cls: '' },
-        { text: '·', cls: 'dot' },
-        { text: 'MUMBAI 2026', cls: '' },
-        { text: '·', cls: 'dot' },
-        { text: 'DROPS ONLY', cls: '' },
-        { text: '·', cls: 'dot' },
-        { text: 'FROZEN. SPIKED.', cls: 'pink' },
-        { text: '·', cls: 'dot' },
-      ];
-      // Render twice for seamless loop
-      const html = [...items, ...items].map(i =>
-        `<span class="hero-marquee-item ${i.cls}">${i.text}</span>`
-      ).join('');
-      track.innerHTML = html;
-    })();
-
-    // ──────────────── SCROLL HANDLERS ────────────────
-    document.querySelectorAll('[data-scroll]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const target = document.getElementById(btn.dataset.scroll);
-        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      await supabase.from('frostd_lab_submissions').insert({
+        spirit: currentResult.spirit,
+        base: currentResult.base,
+        wildcard: currentResult.wild,
+        created_at: new Date().toISOString()
       });
-    });
-
-    // ──────────────── STICKY BAR ────────────────
-    const stickyBar = document.getElementById('stickyBar');
-    const onScroll = () => {
-      stickyBar.classList.toggle('visible', window.scrollY > window.innerHeight * 0.85);
-    };
-    window.addEventListener('scroll', onScroll, { passive: true });
-
-    // ──────────────── REVEAL OBSERVER ────────────────
-    const revealObs = new IntersectionObserver((entries) => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          e.target.classList.add('in-view');
-          revealObs.unobserve(e.target);
-        }
-      });
-    }, { threshold: 0.12 });
-    document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
-
-    // ──────────────── TOAST ────────────────
-    const toast = document.getElementById('toast');
-    const showToast = (msg) => {
-      toast.textContent = msg;
-      toast.classList.add('show');
-      clearTimeout(toast._t);
-      toast._t = setTimeout(() => toast.classList.remove('show'), 2200);
-    };
-
-    // ──────────────── STORY CARD GENERATOR ────────────────
-    /**
-     * Generates a 1080x1920 PNG share card (Spotify Wrapped style).
-     * Two types: 'game' shows score+verdict, 'waitlist' shows entry number.
-     * Returns a Blob.
-     */
-    const generateStoryCard = async (type, data) => {
-      // Wait for fonts to be loaded so canvas renders correctly
-      try {
-        if (document.fonts && document.fonts.ready) {
-          await document.fonts.ready;
-          // Pre-load specific font/size combos we'll use
-          await Promise.all([
-            document.fonts.load('400 220px Anton'),
-            document.fonts.load('400 540px Anton'),
-            document.fonts.load('400 480px Anton'),
-            document.fonts.load('italic 80px "Instrument Serif"'),
-            document.fonts.load('500 28px "JetBrains Mono"'),
-            document.fonts.load('500 30px "JetBrains Mono"'),
-          ]);
-        }
-      } catch(e) { /* fonts may not be supported, fall back to system */ }
-
-      const W = 1080, H = 1920;
-      const canvas = document.createElement('canvas');
-      canvas.width = W;
-      canvas.height = H;
-      const ctx = canvas.getContext('2d');
-
-      // ── Background
-      ctx.fillStyle = '#000000';
-      ctx.fillRect(0, 0, W, H);
-
-      // ── Subtle grain
-      const grainImg = ctx.getImageData(0, 0, W, H);
-      for (let i = 0; i < grainImg.data.length; i += 4) {
-        const n = (Math.random() - 0.5) * 18;
-        grainImg.data[i]     = Math.max(0, Math.min(255, grainImg.data[i] + n));
-        grainImg.data[i + 1] = Math.max(0, Math.min(255, grainImg.data[i + 1] + n));
-        grainImg.data[i + 2] = Math.max(0, Math.min(255, grainImg.data[i + 2] + n));
-      }
-      ctx.putImageData(grainImg, 0, 0);
-
-      const PAD = 80;
-      const PINK_C = '#0066FF';
-      const WHITE = '#FFFFFF';
-      const FAINT = 'rgba(255,255,255,0.45)';
-
-      // ── Helper: draw text with letter-spacing approximation
-      const drawText = (text, x, y, options = {}) => {
-        const {
-          font = '400 32px sans-serif',
-          color = WHITE,
-          align = 'center',
-          baseline = 'alphabetic',
-          letterSpacing = 0,
-        } = options;
-        ctx.fillStyle = color;
-        ctx.font = font;
-        ctx.textAlign = align;
-        ctx.textBaseline = baseline;
-
-        if (letterSpacing === 0) {
-          ctx.fillText(text, x, y);
-          return;
-        }
-
-        // Manual letter spacing for tight Anton headlines
-        const chars = text.split('');
-        const widths = chars.map(c => ctx.measureText(c).width);
-        const totalWidth = widths.reduce((a, b) => a + b, 0) + letterSpacing * (chars.length - 1);
-
-        let cursorX;
-        if (align === 'center')      cursorX = x - totalWidth / 2;
-        else if (align === 'right')  cursorX = x - totalWidth;
-        else                          cursorX = x;
-
-        ctx.textAlign = 'left';
-        for (let i = 0; i < chars.length; i++) {
-          ctx.fillText(chars[i], cursorX, y);
-          cursorX += widths[i] + letterSpacing;
-        }
-      };
-
-      // ── Top corner labels
-      ctx.fillStyle = PINK_C;
-      ctx.font = '500 26px "JetBrains Mono", monospace';
-      ctx.textAlign = 'left';
-      ctx.textBaseline = 'top';
-      ctx.fillText('VOL. 01 / MUMBAI', PAD, PAD);
-
-      ctx.fillStyle = FAINT;
-      ctx.textAlign = 'right';
-      ctx.fillText(type === 'game' ? '05 / GAME' : '06 / ENTRY', W - PAD, PAD);
-
-      // ── FROSTD lockup (centered, big)
-      drawText('FROSTD', W / 2, 380, {
-        font: '400 240px Anton, Impact, sans-serif',
-        color: PINK_C,
-        align: 'center',
-        baseline: 'alphabetic',
-        letterSpacing: -18,
-      });
-
-      // ── Pink rule below lockup
-      ctx.fillStyle = PINK_C;
-      ctx.fillRect(PAD, 460, W - PAD * 2, 2);
-
-      // ── Subhead label (mono caps)
-      ctx.fillStyle = FAINT;
-      ctx.font = '500 28px "JetBrains Mono", monospace';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'top';
-      ctx.fillText(type === 'game' ? 'FINAL COUNT' : 'YOUR NUMBER', W / 2, 540);
-
-      if (type === 'game') {
-        // ── Big score
-        drawText(String(data.score), W / 2, 1080, {
-          font: '400 560px Anton, Impact, sans-serif',
-          color: PINK_C,
-          align: 'center',
-          baseline: 'alphabetic',
-          letterSpacing: -30,
-        });
-
-        // ── Italic verdict
-        ctx.fillStyle = WHITE;
-        ctx.font = 'italic 96px "Instrument Serif", "Times New Roman", serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'alphabetic';
-        ctx.fillText(`"${data.verdict}"`, W / 2, 1280);
-
-        // ── Subtitle
-        ctx.fillStyle = 'rgba(255,255,255,0.55)';
-        ctx.font = '400 30px "DM Sans", sans-serif';
-        ctx.fillText('serves caught before going down', W / 2, 1360);
-
-      } else {
-        // ── Waitlist number
-        const numStr = '#' + String(data.number).padStart(3, '0');
-        drawText(numStr, W / 2, 1080, {
-          font: '400 440px Anton, Impact, sans-serif',
-          color: PINK_C,
-          align: 'center',
-          baseline: 'alphabetic',
-          letterSpacing: -22,
-        });
-
-        // ── Italic line
-        ctx.fillStyle = WHITE;
-        ctx.font = 'italic 96px "Instrument Serif", "Times New Roman", serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'alphabetic';
-        ctx.fillText("you're in.", W / 2, 1280);
-
-        // ── Subtitle
-        ctx.fillStyle = 'rgba(255,255,255,0.55)';
-        ctx.font = '400 30px "DM Sans", sans-serif';
-        ctx.fillText('on the FROSTD waitlist.', W / 2, 1360);
-      }
-
-      // ── Pink rule above footer
-      ctx.fillStyle = PINK_C;
-      ctx.fillRect(PAD, 1700, W - PAD * 2, 2);
-
-      // ── Footer: NO PERMISSION ASKED + URL
-      ctx.fillStyle = FAINT;
-      ctx.font = '500 26px "JetBrains Mono", monospace';
-      ctx.textAlign = 'left';
-      ctx.textBaseline = 'top';
-      ctx.fillText('NO PERMISSION ASKED', PAD, 1740);
-
-      ctx.fillStyle = PINK_C;
-      ctx.textAlign = 'right';
-      ctx.fillText(data.url || 'frostd.in', W - PAD, 1740);
-
-      ctx.fillStyle = FAINT;
-      ctx.textAlign = 'left';
-      ctx.fillText('MUMBAI · 2026', PAD, 1790);
-
-      ctx.textAlign = 'right';
-      ctx.fillText('JOIN THE LIST →', W - PAD, 1790);
-
-      // ── Convert to Blob
-      return new Promise((resolve) => {
-        canvas.toBlob((blob) => resolve(blob), 'image/png', 1.0);
-      });
-    };
-
-    /**
-     * Tries to share the card via Web Share API with files.
-     * Falls back to triggering a download.
-     */
-    const shareStoryCard = async (blob, filename, shareText, shareUrl) => {
-      const file = new File([blob], filename, { type: 'image/png' });
-
-      // Try Web Share API with files (mobile native share sheet)
-      try {
-        if (navigator.canShare && navigator.canShare({ files: [file] })) {
-          await navigator.share({
-            files: [file],
-            title: 'FROSTD',
-            text: shareText,
-            url: shareUrl,
-          });
-          return 'shared';
-        }
-      } catch (err) {
-        if (err && err.name === 'AbortError') return 'aborted';
-        // fall through to download
-      }
-
-      // Fallback: trigger download
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      setTimeout(() => URL.revokeObjectURL(url), 1500);
-      return 'downloaded';
-    };
-
-    // ──────────────── DROP SHEET ────────────────
-    const DROPS = {
-      '001': {
-        spirits: 'tequila / guava / chili',
-        tagline: 'sweet up front. sharp on the back. tequila everywhere.',
-        spirit: 'tequila',
-        flavor: 'guava',
-        finish: 'chili',
-        cls: 'c001'
-      },
-      '002': {
-        spirits: 'rum / cookie crumble / fudge',
-        tagline: 'dessert that hits back.',
-        spirit: 'rum',
-        flavor: 'cookie crumble',
-        finish: 'fudge',
-        cls: 'c002'
-      },
-      '003': {
-        spirits: 'whiskey / chocolate / caramel',
-        tagline: 'an adult bedtime story.',
-        spirit: 'whiskey',
-        flavor: 'chocolate',
-        finish: 'caramel',
-        cls: 'c003'
-      }
-    };
-
-    const dropBackdrop = document.getElementById('dropBackdrop');
-    const dropSheet = document.getElementById('dropSheet');
-    const dropNumEl = document.getElementById('dropNum');
-    const dropSpiritsEl = document.getElementById('dropSpirits');
-    const dropTaglineEl = document.getElementById('dropTagline');
-    const dropSpiritEl = document.getElementById('dropSpirit');
-    const dropFlavorEl = document.getElementById('dropFlavor');
-    const dropFinishEl = document.getElementById('dropFinish');
-
-    const openDrop = (num) => {
-      const d = DROPS[num];
-      if (!d) return;
-      dropNumEl.textContent = num;
-      dropNumEl.className = 'drop-sheet-num ' + d.cls;
-      dropSpiritsEl.textContent = d.spirits;
-      dropTaglineEl.textContent = d.tagline;
-      dropSpiritEl.textContent = d.spirit;
-      dropFlavorEl.textContent = d.flavor;
-      dropFinishEl.textContent = d.finish;
-      dropBackdrop.classList.add('open');
-      dropSheet.classList.add('open');
-      document.body.style.overflow = 'hidden';
-    };
-    const closeDrop = () => {
-      dropBackdrop.classList.remove('open');
-      dropSheet.classList.remove('open');
-      document.body.style.overflow = '';
-    };
-
-    document.querySelectorAll('.drop-card').forEach(card => {
-      card.addEventListener('click', () => {
-        const num = card.dataset.drop;
-        if (num) openDrop(num);
-      });
-    });
-    dropBackdrop.addEventListener('click', closeDrop);
-    document.getElementById('dropClose').addEventListener('click', closeDrop);
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && dropSheet.classList.contains('open')) closeDrop();
-    });
-
-    // ════════════════════════════════════════════════
-    // GAME
-    // ════════════════════════════════════════════════
-    const canvas = document.getElementById('gameCanvas');
-    const canvasWrap = document.getElementById('canvasWrap');
-    const overlay = document.getElementById('gameOverlay');
-    const ctx = canvas.getContext('2d');
-    const startScreen = document.getElementById('startScreen');
-    const gameOverScreen = document.getElementById('gameOverScreen');
-    const hud = document.getElementById('hud');
-    const hudState = document.getElementById('hudState');
-    const hudScoreEl = document.getElementById('hudScore');
-    const hudLivesEl = document.getElementById('hudLives');
-    const hudStateFill = document.getElementById('hudStateFill');
-    const hudStateText = document.getElementById('hudStateText');
-    const hudBestEl = document.getElementById('hudBest');
-    const hudBestBlock = document.getElementById('hudBestBlock');
-
-    const getBestScore = () => {
-      try { return parseInt(localStorage.getItem('frostd_best') || '0', 10) || 0; }
-      catch(e) { return 0; }
-    };
-    const setBestScore = (n) => {
-      try { localStorage.setItem('frostd_best', String(n)); } catch(e) {}
-    };
-    const updateBestScore = () => {
-      const best = getBestScore();
-      if (game.score > best) {
-        setBestScore(game.score);
-        hudBestEl.textContent = game.score;
-      }
-    };
-
-    let game = {
-      state: 'idle',
-      score: 0,
-      lives: 3,
-      scoops: [],
-      particles: [],
-      lastSpawn: 0,
-      lastFrame: 0,
-      W: 0,
-      H: 0,
-      raf: null
-    };
-
-    const tierFor = (s) => {
-      let t = STATE_TIERS[0];
-      for (const tier of STATE_TIERS) if (s >= tier.min) t = tier;
-      return t;
-    };
-
-    const sizeCanvas = () => {
-      const dpr = window.devicePixelRatio || 1;
-      const rect = canvas.getBoundingClientRect();
-      canvas.width = Math.round(rect.width * dpr);
-      canvas.height = Math.round(rect.height * dpr);
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      game.W = rect.width;
-      game.H = rect.height;
-    };
-
-    window.addEventListener('resize', () => {
-      if (game.state === 'playing') sizeCanvas();
-    });
-
-    // Preload the scoop illustration for the game
-    const drawScoop = (x, y, r, rotation) => {
-      // Emoji ice cream - simple, playful, zero complexity
-      const emoji = '🍨';
-      const size = r * 2;
-      
-      ctx.save();
-      ctx.translate(x, y);
-      if (rotation) ctx.rotate(rotation);
-      
-      ctx.font = `${size}px Arial, sans-serif`;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(emoji, 0, 0);
-      
-      ctx.restore();
-    };
-
-    const drawParticle = (p) => {
-      ctx.globalAlpha = Math.max(0, p.life);
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx.fillStyle = p.color;
-      ctx.fill();
-      ctx.globalAlpha = 1;
-    };
-
-    const drawGrid = () => {
-      ctx.strokeStyle = 'rgba(255,255,255,0.025)';
-      ctx.lineWidth = 1;
-      const gs = 32;
-      for (let gx = 0; gx <= game.W; gx += gs) {
-        ctx.beginPath(); ctx.moveTo(gx, 0); ctx.lineTo(gx, game.H); ctx.stroke();
-      }
-      for (let gy = 0; gy <= game.H; gy += gs) {
-        ctx.beginPath(); ctx.moveTo(0, gy); ctx.lineTo(game.W, gy); ctx.stroke();
-      }
-    };
-
-    const updateDrunkClasses = () => {
-      const t = tierFor(game.score);
-      canvasWrap.classList.remove('tipsy','buzzed','gone');
-      overlay.classList.remove('tipsy','buzzed','gone');
-      if (t.cls) {
-        canvasWrap.classList.add(t.cls);
-        overlay.classList.add(t.cls);
-      }
-      const idx = STATE_TIERS.findIndex(x => x.key === t.key);
-      const pct = ((idx + 1) / STATE_TIERS.length) * 100;
-      hudStateFill.style.width = pct + '%';
-      hudStateText.textContent = t.label;
-    };
-
-    const updateLivesUI = () => {
-      const hearts = hudLivesEl.querySelectorAll('.heart');
-      hearts.forEach((h, i) => {
-        h.classList.toggle('empty', i >= game.lives);
-      });
-    };
-
-    const startGame = () => {
-      game.score = 0;
-      game.lives = 3;
-      game.scoops = [];
-      game.particles = [];
-      game.lastSpawn = 0;
-      game.lastFrame = performance.now();
-      game.state = 'playing';
-
-      hudScoreEl.textContent = '0';
-      updateLivesUI();
-      updateDrunkClasses();
-
-      const best = getBestScore();
-      if (best > 0) {
-        hudBestEl.textContent = best;
-        hudBestBlock.style.display = 'block';
-      } else {
-        hudBestBlock.style.display = 'none';
-      }
-
-      startScreen.classList.add('hidden');
-      gameOverScreen.classList.add('hidden');
-      hud.style.display = 'flex';
-      hudState.style.display = 'block';
-
-      sizeCanvas();
-      cancelAnimationFrame(game.raf);
-      game.raf = requestAnimationFrame(loop);
-    };
-
-    const endGame = () => {
-      game.state = 'over';
-      cancelAnimationFrame(game.raf);
-      hud.style.display = 'none';
-      hudState.style.display = 'none';
-      // Strip drunk effects on game-over screen
-      canvasWrap.classList.remove('tipsy','buzzed','gone');
-      overlay.classList.remove('tipsy','buzzed','gone');
-
-      document.getElementById('goScore').textContent = game.score;
-      document.getElementById('goVerdict').textContent = verdictFor(game.score);
-      gameOverScreen.classList.remove('hidden');
-    };
-
-    const loop = (now) => {
-      if (game.state !== 'playing') return;
-      const dt = Math.min(50, now - game.lastFrame);
-      game.lastFrame = now;
-
-      ctx.clearRect(0, 0, game.W, game.H);
-      drawGrid();
-
-      // Spawn — calibrated difficulty (between original easy and hardest)
-      const baseSpawn = Math.max(400, 1000 - game.score * 38);
-      const baseSpeed = 120 + game.score * 7;
-      const doubleSpawn = game.score >= 14 && Math.random() < 0.18;
-
-      game.lastSpawn += dt;
-      if (game.lastSpawn > baseSpawn) {
-        game.lastSpawn = 0;
-        const spawns = doubleSpawn ? 2 : 1;
-        for (let n = 0; n < spawns; n++) {
-          const r = 24 + Math.random() * 10;
-          const newScoop = {
-            x: r + 10 + Math.random() * (game.W - r * 2 - 20),
-            y: -r - 30 - (n * 80),
-            baseX: 0,
-            r,
-            vy: (baseSpeed + Math.random() * 50) / 1000,
-            wobbleAmp: 2 + Math.random() * 4,
-            wobbleFreq: 0.001 + Math.random() * 0.001,
-            wobblePhase: Math.random() * Math.PI * 2,
-            rotation: (Math.random() - 0.5) * 0.3,
-            rotSpeed: (Math.random() - 0.5) * 0.0008,
-            alive: true,
-            birth: now
-          };
-          newScoop.baseX = newScoop.x;
-          game.scoops.push(newScoop);
-        }
-      }
-
-      // Update + draw scoops
-      const stillAlive = [];
-      for (const s of game.scoops) {
-        if (!s.alive) continue;
-        s.y += s.vy * dt;
-        s.rotation += s.rotSpeed * dt;
-        const t = (now - s.birth);
-        s.x = s.baseX + Math.sin(t * s.wobbleFreq + s.wobblePhase) * s.wobbleAmp;
-
-        if (s.y - s.r > game.H + 20) {
-          // missed
-          game.lives = Math.max(0, game.lives - 1);
-          updateLivesUI();
-          if (game.lives <= 0) {
-            endGame();
-            return;
-          }
-          continue;
-        }
-        drawScoop(s.x, s.y, s.r, s.rotation);
-        stillAlive.push(s);
-      }
-      game.scoops = stillAlive;
-
-      // Particles
-      const livingParticles = [];
-      for (const p of game.particles) {
-        p.x += p.vx * dt;
-        p.y += p.vy * dt;
-        p.vy += 0.0008 * dt;
-        p.life -= 0.014 * dt;
-        if (p.life <= 0) continue;
-        drawParticle(p);
-        livingParticles.push(p);
-      }
-      game.particles = livingParticles;
-
-      game.raf = requestAnimationFrame(loop);
-    };
-
-    const handleTap = (clientX, clientY) => {
-      if (game.state !== 'playing') return;
-      const rect = canvas.getBoundingClientRect();
-      const cx = clientX - rect.left;
-      const cy = clientY - rect.top;
-
-      // Cone illustration is taller than wide. Use elliptical hit detection
-      // matching the visual bounding box (2:2.4 ratio).
-      let bestIdx = -1, bestScore = Infinity;
-      for (let i = 0; i < game.scoops.length; i++) {
-        const s = game.scoops[i];
-        if (!s.alive) continue;
-        const dx = (s.x - cx) / (s.r + 12);
-        const dy = (s.y - cy) / (s.r * 1.2 + 12);
-        const norm = dx * dx + dy * dy;
-        if (norm < 1 && norm < bestScore) {
-          bestScore = norm;
-          bestIdx = i;
-        }
-      }
-      if (bestIdx >= 0) {
-        const s = game.scoops[bestIdx];
-        // Particle burst
-        for (let i = 0; i < 14; i++) {
-          const ang = (Math.PI * 2 * i) / 14 + Math.random() * 0.3;
-          game.particles.push({
-            x: s.x,
-            y: s.y,
-            vx: Math.cos(ang) * (0.20 + Math.random() * 0.25),
-            vy: Math.sin(ang) * (0.20 + Math.random() * 0.25) - 0.1,
-            r: 2 + Math.random() * 2.5,
-            color: i % 2 ? PINK : '#fff',
-            life: 1
-          });
-        }
-        s.alive = false;
-        game.score += 1;
-        hudScoreEl.textContent = game.score;
-        updateDrunkClasses();
-        updateBestScore();
-      }
-    };
-
-    canvas.addEventListener('click', (e) => handleTap(e.clientX, e.clientY));
-    canvas.addEventListener('touchstart', (e) => {
-      e.preventDefault();
-      const t = e.touches[0];
-      if (t) handleTap(t.clientX, t.clientY);
-    }, { passive: false });
-
-    document.getElementById('startBtn').addEventListener('click', startGame);
-    document.getElementById('playAgainBtn').addEventListener('click', startGame);
-
-    // Lazy size canvas when game section visible (avoids unnecessary work)
-    const gameStageEl = document.getElementById('gameStage');
-    new IntersectionObserver((entries) => {
-      entries.forEach(e => {
-        if (e.isIntersecting) sizeCanvas();
-      });
-    }, { threshold: 0.1 }).observe(gameStageEl);
-    // Initial size after fonts load
-    setTimeout(sizeCanvas, 100);
-
-    // Share game score — generate story card
-    const shareScoreBtn = document.getElementById('shareScoreBtn');
-    shareScoreBtn.addEventListener('click', async () => {
-      const originalText = shareScoreBtn.textContent;
-      shareScoreBtn.disabled = true;
-      shareScoreBtn.textContent = 'cooking...';
-      try {
-        const baseUrl = window.location.href.split('?')[0];
-        const blob = await generateStoryCard('game', {
-          score: game.score,
-          verdict: verdictFor(game.score),
-          url: baseUrl.replace(/^https?:\/\//, '').replace(/\/$/, '') || 'frostd.in',
-        });
-        const result = await shareStoryCard(
-          blob,
-          `frostd-${game.score}-serves.png`,
-          `i survived ${game.score} serves of FROSTD. how many can you handle? 🍦`,
-          baseUrl
-        );
-        if (result === 'downloaded') showToast('image saved · post it to your story');
-        else if (result === 'shared') showToast('shared');
-      } catch (err) {
-        showToast('something broke');
-      } finally {
-        shareScoreBtn.disabled = false;
-        shareScoreBtn.textContent = originalText;
-      }
-    });
-
-    // ════════════════════════════════════════════════
-    // WAITLIST
-    // ════════════════════════════════════════════════
-    let selectedPoison = null;
-    document.querySelectorAll('.pill').forEach(pill => {
-      pill.addEventListener('click', () => {
-        const p = pill.dataset.poison;
-        if (selectedPoison === p) {
-          selectedPoison = null;
-          pill.classList.remove('active');
-        } else {
-          document.querySelectorAll('.pill').forEach(x => x.classList.remove('active'));
-          selectedPoison = p;
-          pill.classList.add('active');
-        }
-      });
-    });
-
-    // ──────────────── SUPABASE INIT ────────────────
-    // Wait for Supabase SDK to load
-    let supabase = null;
-    
-    const initSupabase = async () => {
-      if (supabase) return supabase;
-      
-      // Wait for SDK to be available
-      let attempts = 0;
-      while (!window.supabase && attempts < 50) {
-        await new Promise(r => setTimeout(r, 100));
-        attempts++;
-      }
-      
-      if (!window.supabase) {
-        throw new Error('Supabase SDK failed to load');
-      }
-      
-      const { createClient } = window.supabase;
-      const supabaseUrl = 'https://nkjgdhuxavbzojxcerfe.supabase.co';
-      const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ramdkaHV4YXZiem9qeGNlcmZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczNjUxNjksImV4cCI6MjA5Mjk0MTE2OX0._PnbHoGM_Q6p1oP0PZ5Wz8kwR6gi5U8N_WCu3oX5r9o';
-      
-      supabase = createClient(supabaseUrl, supabaseAnonKey);
-      return supabase;
-    };
-
-    /**
-     * SUPABASE BACKEND — inserts waitlist entries into the KOLD table (backend table name, do not change)
-     */
-    const submitToBackend = async (data) => {
-      try {
-        const client = await initSupabase();
-        
-        // Insert the record into Supabase
-        const { data: insertedData, error } = await client
-          .from('KOLD')
-          .insert([{
-            name: data.name,
-            email: data.email,
-            phone: data.phone,
-            poison: data.poison,
-            ref: data.ref,
-            ts: data.ts
-          }])
-          .select();
-
-        if (error) {
-          console.error('Supabase insert error:', error);
-          throw new Error(error.message || 'Failed to insert record');
-        }
-
-        // Get the ID of the inserted record to use as the waitlist number
-        const insertedId = insertedData && insertedData[0] ? insertedData[0].id : null;
-        if (!insertedId) throw new Error('No ID returned from insert');
-
-        return { number: insertedId };
-      } catch (err) {
-        console.error('Backend submission error:', err);
-        throw err;
-      }
-    };
-
-    const formEl = document.getElementById('waitlistForm');
-    const submitBtn = document.getElementById('submitBtn');
-    const formError = document.getElementById('formError');
-    const formWrap = document.getElementById('formWrap');
-    const confirmWrap = document.getElementById('confirmWrap');
-
-    formEl.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      formError.style.display = 'none';
-
-      const name = document.getElementById('fName').value.trim();
-      const email = document.getElementById('fEmail').value.trim();
-      const phone = document.getElementById('fPhone').value.trim();
-
-      if (!name) {
-        formError.textContent = 'we need a name.';
-        formError.style.display = 'block';
-        return;
-      }
-      if (!/^\S+@\S+\.\S+$/.test(email)) {
-        formError.textContent = 'that email looks broken.';
-        formError.style.display = 'block';
-        return;
-      }
-
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'hold on...';
-
-      try {
-        const result = await submitToBackend({
-          name,
-          email: email.toLowerCase(),
-          phone: phone || null,
-          poison: selectedPoison,
-          ref: refName,
-          ts: new Date().toISOString()
-        });
-
-        // Show confirmation
-        document.getElementById('confirmNum').textContent = '#' + String(result.number).padStart(3, '0');
-        document.getElementById('confirmText').textContent = `you're #${result.number} on the list.`;
-
-        const poisonLine = document.getElementById('confirmPoison');
-        if (selectedPoison && POISON_LINES[selectedPoison]) {
-          poisonLine.textContent = POISON_LINES[selectedPoison];
-          poisonLine.style.display = 'block';
-        } else {
-          poisonLine.style.display = 'none';
-        }
-
-        formWrap.style.display = 'none';
-        confirmWrap.style.display = 'block';
-
-        // Re-trigger num pop animation
-        confirmWrap.classList.remove('confirm');
-        void confirmWrap.offsetWidth;
-        confirmWrap.classList.add('confirm');
-
-        // Scroll into view in case the form was tall
-        document.getElementById('waitlist').scrollIntoView({ behavior: 'smooth', block: 'start' });
-      } catch(err) {
-        console.error('Form submission error:', err);
-        formError.textContent = err.message || 'something broke. try again.';
-        formError.style.display = 'block';
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = "I'm in";
-      }
-    });
-
-    // Confirmation share buttons
-    const confirmShareBtn = document.getElementById('confirmShareBtn');
-    confirmShareBtn.addEventListener('click', async () => {
-      const originalText = confirmShareBtn.textContent;
-      confirmShareBtn.disabled = true;
-      confirmShareBtn.textContent = 'cooking...';
-      try {
-        const baseUrl = window.location.href.split('?')[0];
-        const name = document.getElementById('fName').value.trim();
-        const refUrl = name ? `${baseUrl}?ref=${encodeURIComponent(name)}` : baseUrl;
-        // Get the live waitlist number from the confirmation display
-        const numText = document.getElementById('confirmNum').textContent.replace(/\D/g, '');
-        const number = parseInt(numText, 10) || 1;
-
-        const blob = await generateStoryCard('waitlist', {
-          number,
-          url: baseUrl.replace(/^https?:\/\//, '').replace(/\/$/, '') || 'frostd.in',
-        });
-        const result = await shareStoryCard(
-          blob,
-          `frostd-waitlist-${number}.png`,
-          `i just joined the FROSTD waitlist. alcohol in ice cream. you're welcome.`,
-          refUrl
-        );
-        if (result === 'downloaded') showToast('image saved · post it to your story');
-        else if (result === 'shared') showToast('shared');
-      } catch (err) {
-        showToast('something broke');
-      } finally {
-        confirmShareBtn.disabled = false;
-        confirmShareBtn.textContent = originalText;
-      }
-    });
-
-    document.getElementById('confirmCopyBtn').addEventListener('click', async () => {
-      const baseUrl = window.location.href.split('?')[0];
-      const name = document.getElementById('fName').value.trim();
-      const url = name ? `${baseUrl}?ref=${encodeURIComponent(name)}` : baseUrl;
-      try {
-        await navigator.clipboard.writeText(url);
-        showToast('link copied');
-      } catch (err) {
-        showToast('copy failed · long-press to copy');
-      }
-    });
-
-  })();
-  </script>
-
-  <!-- ════════════════════════════════════════════
-       ENHANCEMENT LAYER — animations & polish
-       Self-contained, won't conflict with main script
-       ════════════════════════════════════════════ -->
-  <script>
-  (function() {
-    'use strict';
-
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const isTouch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
-
-    // ────────────────────────────────────────────
-    // ────────────────────────────────────────────
-    // TAP RIPPLE + HAPTIC ON CTAs
-    // ────────────────────────────────────────────
-    function initRipple() {
-      const ctas = document.querySelectorAll('.hero-cta, .btn-pink, .sticky-cta, .submit-btn, [data-scroll]');
-      ctas.forEach(btn => {
-        // Make sure container has ripple base
-        const cs = getComputedStyle(btn);
-        if (cs.position === 'static') btn.style.position = 'relative';
-        btn.style.overflow = 'hidden';
-
-        btn.addEventListener('pointerdown', function(e) {
-          // Haptic on supported devices
-          if (navigator.vibrate && isTouch) {
-            try { navigator.vibrate(8); } catch(_) {}
-          }
-          if (prefersReducedMotion) return;
-
-          const rect = btn.getBoundingClientRect();
-          const size = Math.max(rect.width, rect.height);
-          const x = e.clientX - rect.left - size / 2;
-          const y = e.clientY - rect.top - size / 2;
-
-          const ripple = document.createElement('span');
-          ripple.className = 'ripple-effect';
-          ripple.style.width = ripple.style.height = size + 'px';
-          ripple.style.left = x + 'px';
-          ripple.style.top = y + 'px';
-          btn.appendChild(ripple);
-
-          setTimeout(() => ripple.remove(), 600);
-        }, { passive: true });
-      });
-    }
-
-    // ────────────────────────────────────────────
-    // 3. DROP NUMBER FLICKER (random card every 8-12s)
-    // ────────────────────────────────────────────
-    function initDropFlicker() {
-      if (prefersReducedMotion) return;
-      const nums = document.querySelectorAll('.drop-card-num');
-      if (!nums.length) return;
-
-      function flickerNext() {
-        const target = nums[Math.floor(Math.random() * nums.length)];
-        if (!target.classList.contains('flickering')) {
-          target.classList.add('flickering');
-          setTimeout(() => target.classList.remove('flickering'), 500);
-        }
-        const delay = 3000 + Math.random() * 3000; // 3-6s
-        setTimeout(flickerNext, delay);
-      }
-      setTimeout(flickerNext, 2500);
-    }
-
-    // ────────────────────────────────────────────
-    // 4. FROST PARTICLE DRIFT
-    // ────────────────────────────────────────────
-    function initFrostParticles() {
-      if (prefersReducedMotion) return;
-      const canvas = document.getElementById('frostParticles');
-      if (!canvas) return;
-      const ctx = canvas.getContext('2d');
-      let particles = [];
-      let rafId;
-
-      function resize() {
-        canvas.width = window.innerWidth * window.devicePixelRatio;
-        canvas.height = window.innerHeight * window.devicePixelRatio;
-        canvas.style.width = window.innerWidth + 'px';
-        canvas.style.height = window.innerHeight + 'px';
-        ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-      }
-
-      function createParticles() {
-        const count = Math.min(80, Math.floor(window.innerWidth / 12));
-        particles = [];
-        for (let i = 0; i < count; i++) {
-          particles.push({
-            x: Math.random() * window.innerWidth,
-            y: Math.random() * window.innerHeight,
-            r: 1 + Math.random() * 2.5,
-            vx: -0.15 + Math.random() * 0.3,
-            vy: 0.15 + Math.random() * 0.45,
-            alpha: 0.3 + Math.random() * 0.5,
-          });
-        }
-      }
-
-      function draw() {
-        ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
-        particles.forEach(p => {
-          p.x += p.vx;
-          p.y += p.vy;
-          if (p.y > window.innerHeight + 5) {
-            p.y = -5;
-            p.x = Math.random() * window.innerWidth;
-          }
-          if (p.x < -5) p.x = window.innerWidth + 5;
-          if (p.x > window.innerWidth + 5) p.x = -5;
-
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(0, 102, 255, ${p.alpha})`;
-          ctx.fill();
-        });
-        rafId = requestAnimationFrame(draw);
-      }
-
-      resize();
-      createParticles();
-      draw();
-
-      window.addEventListener('resize', () => {
-        cancelAnimationFrame(rafId);
-        resize();
-        createParticles();
-        draw();
-      });
-
-      // Pause when tab is hidden to save battery
-      document.addEventListener('visibilitychange', () => {
-        if (document.hidden) {
-          cancelAnimationFrame(rafId);
-        } else {
-          draw();
-        }
-      });
-    }
-
-    // ────────────────────────────────────────────
-    // 5. DROP CARD TAP TILT
-    // ────────────────────────────────────────────
-    function initCardTilt() {
-      if (prefersReducedMotion) return;
-      const cards = document.querySelectorAll('.drop-card');
-      cards.forEach(card => {
-        card.addEventListener('pointerdown', function() {
-          if (this.classList.contains('tapping')) return;
-          this.classList.add('tapping');
-          setTimeout(() => this.classList.remove('tapping'), 340);
-        }, { passive: true });
-      });
-    }
-
-    // ────────────────────────────────────────────
-    // 6. STICKY BAR BOUNCE-IN
-    // ────────────────────────────────────────────
-    function initStickyBounce() {
-      if (prefersReducedMotion) return;
-      const sticky = document.getElementById('stickyBar');
-      if (!sticky) return;
-
-      // Watch for the class that makes it visible (whatever the main script uses)
-      const observer = new MutationObserver(mutations => {
-        mutations.forEach(m => {
-          if (m.attributeName === 'class') {
-            // Only fire on first becoming-visible
-            if (sticky.classList.contains('visible') && !sticky.dataset.bouncedIn) {
-              sticky.dataset.bouncedIn = '1';
-            }
-          }
-        });
-      });
-      observer.observe(sticky, { attributes: true });
-    }
-
-    // ────────────────────────────────────────────
-    // INIT — wait for DOM ready
-    // ────────────────────────────────────────────
-    function init() {
-      try { initRipple(); } catch(e) { console.warn('ripple init failed', e); }
-      try { initDropFlicker(); } catch(e) { console.warn('flicker init failed', e); }
-      try { initFrostParticles(); } catch(e) { console.warn('particles init failed', e); }
-      try { initCardTilt(); } catch(e) { console.warn('tilt init failed', e); }
-      try { initStickyBounce(); } catch(e) { console.warn('sticky init failed', e); }
-    }
-
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', init);
-    } else {
-      init();
-    }
-  })();
-  </script>
+    } catch(e) { console.log('submit failed', e); }
+  }
+
+  btn.classList.add('success');
+  btn.textContent = 'submitted ✓';
+  setTimeout(() => { btn.disabled = false; }, 600);
+}
+
+function shareSlot() {
+  const text = `frostd just told me to make ${currentResult.spirit} · ${currentResult.base} · ${currentResult.wild}. spin yours →`;
+  const url = window.location.href;
+  if (navigator.share) {
+    navigator.share({ title: 'FROSTD 004?', text, url });
+  } else {
+    navigator.clipboard.writeText(text + ' ' + url);
+    const btn = event.target;
+    const orig = btn.textContent;
+    btn.textContent = 'copied';
+    setTimeout(() => btn.textContent = orig, 1600);
+  }
+}
+
+/* ────────────────────────────────────────────
+   POISON PILLS
+   ──────────────────────────────────────────── */
+let selectedPoison = null;
+document.querySelectorAll('.poison-pill').forEach(pill => {
+  pill.addEventListener('click', () => {
+    document.querySelectorAll('.poison-pill').forEach(p => p.classList.remove('active'));
+    pill.classList.add('active');
+    selectedPoison = pill.dataset.poison;
+  });
+});
+
+/* ────────────────────────────────────────────
+   WAITLIST SUBMIT
+   ──────────────────────────────────────────── */
+async function submitWaitlist(e) {
+  e.preventDefault();
+  const form = e.target;
+  const data = {
+    name: form.name.value,
+    email: form.email.value,
+    phone: form.phone.value || null,
+    poison: selectedPoison,
+    created_at: new Date().toISOString()
+  };
+
+  document.getElementById('waitlistSubmit').disabled = true;
+
+  if (supabase) {
+    try {
+      await supabase.from('frostd_waitlist').insert(data);
+    } catch(err) { console.log('waitlist insert failed', err); }
+  } else {
+    console.log('Waitlist submission (Supabase not configured):', data);
+  }
+
+  form.style.display = 'none';
+  document.getElementById('waitlistSuccess').classList.add('show');
+}
+
+function shareWaitlist() {
+  const text = "alcohol in ice cream. cause you deserve both. join the list →";
+  const url = window.location.origin || window.location.href;
+  if (navigator.share) {
+    navigator.share({ title: 'FROSTD', text, url });
+  } else {
+    navigator.clipboard.writeText(text + ' ' + url);
+    const btn = event.currentTarget;
+    btn.innerHTML = 'copied <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  }
+}
+
+/* ────────────────────────────────────────────
+   PARTNER FORM SUBMIT
+   ──────────────────────────────────────────── */
+async function submitPartner(e) {
+  e.preventDefault();
+  const form = e.target;
+  const data = {
+    name: form.name.value,
+    event_name: form.event.value,
+    event_date: form.date.value || null,
+    contact: form.contact.value,
+    details: form.details.value || null,
+    created_at: new Date().toISOString()
+  };
+
+  document.getElementById('partnerSubmit').disabled = true;
+
+  if (supabase) {
+    try {
+      await supabase.from('frostd_partnerships').insert(data);
+    } catch(err) { console.log('partner insert failed', err); }
+  } else {
+    console.log('Partner submission (Supabase not configured):', data);
+  }
+
+  form.style.display = 'none';
+  const success = document.getElementById('partnerSuccess');
+  success.classList.add('show');
+  // Move success into form container
+  form.parentElement.appendChild(success);
+}
+
+/* ────────────────────────────────────────────
+   NAV HIDE ON SCROLL DOWN
+   ──────────────────────────────────────────── */
+let lastY = 0;
+let navHidden = false;
+window.addEventListener('scroll', () => {
+  const y = window.scrollY;
+  if (y > 200 && y > lastY && !navHidden) {
+    document.getElementById('nav').style.transform = 'translateY(-120%)';
+    navHidden = true;
+  } else if (y < lastY && navHidden) {
+    document.getElementById('nav').style.transform = 'translateY(0)';
+    navHidden = false;
+  }
+  lastY = y;
+}, { passive: true });
+</script>
 
 </body>
 </html>
