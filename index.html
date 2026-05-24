@@ -2,147 +2,169 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nook</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Nook — Find the person you actually want to live with</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --w:#FFFFFF;
-  --b:#111111;
-  --y:#F2C500;
-  --g1:#F5F5F5;
-  --g2:#E8E8E8;
-  --g3:#AAAAAA;
-  --g4:#666666;
-  --syne:'Syne',sans-serif;
-  --dm:'DM Sans',sans-serif;
+  --w:#FFFFFF; --b:#111111; --y:#F2C500;
+  --g1:#F5F5F5; --g2:#E8E8E8; --g3:#AAAAAA; --g4:#666666;
+  --syne:'Syne',sans-serif; --dm:'DM Sans',sans-serif;
 }
 html{scroll-behavior:smooth}
 body{font-family:var(--dm);background:var(--w);color:var(--b);-webkit-font-smoothing:antialiased;overflow-x:hidden}
 
 /* ── SCREEN SYSTEM ── */
-.screen{display:none}
-.screen.active{display:flex;flex-direction:column}
+.screen{display:none!important}
+.screen.active{display:flex!important;flex-direction:column}
 
-/* ── LANDING ── */
+/* ════════════════════════════════
+   LANDING
+════════════════════════════════ */
 #s-land{min-height:100dvh;flex-direction:column}
 
 .land-nav{
-  position:fixed;top:20px;left:50%;transform:translateX(-50%);
-  z-index:100;display:flex;align-items:center;justify-content:space-between;
-  padding:10px 10px 10px 26px;
-  background:rgba(255,255,255,0.92);backdrop-filter:blur(24px);
-  border:1px solid var(--g2);border-radius:999px;
-  width:min(460px,calc(100vw - 32px));
-  box-shadow:0 2px 24px rgba(0,0,0,0.07);
+  position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:200;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 10px 10px 26px;background:rgba(255,255,255,0.9);
+  backdrop-filter:blur(24px);border:1px solid var(--g2);
+  border-radius:999px;width:min(460px,calc(100vw - 28px));
+  box-shadow:0 2px 20px rgba(0,0,0,0.07);
 }
-.nav-logo{font-family:var(--syne);font-size:19px;font-weight:800;color:var(--b);letter-spacing:-0.03em;text-decoration:none}
-
+.nav-logo{font-family:var(--syne);font-size:19px;font-weight:800;letter-spacing:-0.03em;text-decoration:none;color:var(--b)}
 .btn-b{
-  display:inline-flex;align-items:center;gap:7px;
-  padding:9px 20px;background:var(--b);color:var(--w);
-  font-family:var(--dm);font-size:13px;font-weight:600;
-  border-radius:999px;border:none;cursor:pointer;text-decoration:none;
-  transition:all 0.35s cubic-bezier(0.32,0.72,0,1);white-space:nowrap;
+  display:inline-flex;align-items:center;gap:7px;padding:9px 20px;
+  background:var(--b);color:var(--w);font-family:var(--dm);font-size:13px;
+  font-weight:600;border-radius:999px;border:none;cursor:pointer;
+  text-decoration:none;transition:all 0.3s cubic-bezier(0.32,0.72,0,1);white-space:nowrap;
 }
 .btn-b:hover{background:#2a2a2a;transform:scale(0.97)}
 .btn-b.lg{padding:14px 32px;font-size:14px;border-radius:12px}
 
-.hero{
-  display:grid;grid-template-columns:1fr 1fr;
-  min-height:100dvh;
-}
-.hero-l{
-  display:flex;flex-direction:column;justify-content:center;
-  padding:120px 56px 80px 80px;
-}
+/* Hero */
+.hero{display:grid;grid-template-columns:1fr 1fr;min-height:100dvh}
+.hero-l{display:flex;flex-direction:column;justify-content:center;padding:120px 56px 80px 80px}
 .h-eye{
-  display:flex;align-items:center;gap:10px;
-  font-size:10px;font-weight:600;letter-spacing:0.16em;
-  text-transform:uppercase;color:var(--g3);margin-bottom:28px;
+  display:flex;align-items:center;gap:10px;font-size:10px;font-weight:600;
+  letter-spacing:0.16em;text-transform:uppercase;color:var(--g3);margin-bottom:28px;
 }
-.h-eye-line{width:24px;height:2px;background:var(--y);flex-shrink:0}
+.h-eye-bar{width:24px;height:2px;background:var(--y);flex-shrink:0}
 .h-word{
-  font-family:var(--syne);font-size:clamp(72px,9vw,130px);font-weight:800;
-  line-height:0.88;letter-spacing:-0.04em;color:var(--b);margin-bottom:30px;
+  font-family:var(--syne);font-size:clamp(64px,8.5vw,118px);font-weight:800;
+  line-height:0.9;letter-spacing:-0.04em;color:var(--b);margin-bottom:28px;
 }
-.h-word .yl{
-  display:inline-block;
-  background:var(--y);
-  padding:0 6px;
-  border-radius:4px;
-  transform:rotate(-1.5deg);
-  margin-left:4px;
+.h-word .yb{
+  background:var(--y);padding:2px 8px;border-radius:5px;
+  display:inline-block;transform:rotate(-1deg);margin-left:3px;
 }
-.h-sub{font-size:16px;line-height:1.62;color:var(--g4);max-width:300px;margin-bottom:44px}
-.h-actions{display:flex;align-items:center;gap:20px}
+.h-sub{font-size:16px;line-height:1.64;color:var(--g4);max-width:290px;margin-bottom:44px}
+.h-actions{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
 .h-note{font-size:11.5px;color:var(--g3)}
 
 .hero-r{
-  background:var(--g1);display:flex;align-items:center;
-  justify-content:center;padding:120px 60px 80px;position:relative;overflow:hidden;
+  background:var(--g1);display:flex;align-items:center;justify-content:center;
+  padding:100px 60px 80px;position:relative;overflow:hidden;
 }
-.hero-r::before{
-  content:'nook';position:absolute;bottom:-30px;right:-20px;
-  font-family:var(--syne);font-size:160px;font-weight:800;
-  color:rgba(0,0,0,0.03);letter-spacing:-0.05em;line-height:1;
-  pointer-events:none;
+.hero-r::after{
+  content:'nook';position:absolute;bottom:-24px;right:-16px;
+  font-family:var(--syne);font-size:180px;font-weight:800;letter-spacing:-0.05em;
+  color:rgba(0,0,0,0.04);line-height:1;pointer-events:none;
 }
-
-.card-stack{position:relative;width:260px;height:380px}
+.card-stack{position:relative;width:256px;height:370px}
 .s-card{
-  position:absolute;width:240px;
-  background:var(--w);border:1.5px solid var(--g2);
-  border-radius:18px;padding:20px;
-  box-shadow:0 8px 40px rgba(0,0,0,0.09);
+  position:absolute;width:234px;background:var(--w);border:1.5px solid var(--g2);
+  border-radius:20px;padding:18px;box-shadow:0 8px 36px rgba(0,0,0,0.08);
 }
-.sc-a{top:0;left:20px;transform:rotate(-5deg) translateY(-10px);z-index:1;opacity:0.5}
-.sc-b{top:24px;left:0;z-index:3}
-.sc-c{top:40px;right:0;transform:rotate(4deg) translateY(10px);z-index:1;opacity:0.5}
-
-.sc-av{
-  width:38px;height:38px;background:var(--y);border-radius:8px;
-  display:flex;align-items:center;justify-content:center;
-  font-family:var(--syne);font-size:14px;font-weight:800;color:var(--b);margin-bottom:12px;
+.sc-a{top:0;left:22px;transform:rotate(-5deg);z-index:1;opacity:0.45}
+.sc-b{top:22px;left:0;z-index:3}
+.sc-c{top:38px;right:0;transform:rotate(4.5deg);z-index:1;opacity:0.45}
+.sc-photo{
+  width:100%;height:90px;border-radius:12px;margin-bottom:12px;
+  background:linear-gradient(135deg,#f0c500 0%,#f5a623 100%);
+  display:flex;align-items:flex-end;padding:8px;
 }
-.sc-name{font-family:var(--syne);font-size:15px;font-weight:700;letter-spacing:-0.02em;margin-bottom:2px}
-.sc-meta{font-size:11px;color:var(--g3);margin-bottom:12px}
-.sc-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px}
-.s-tag{padding:4px 10px;border-radius:4px;font-size:11px;font-weight:500}
+.sc-photo-name{font-family:var(--syne);font-size:13px;font-weight:700;color:var(--b)}
+.sc-college{font-size:11px;color:var(--g3);margin-bottom:10px}
+.sc-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px}
+.s-tag{padding:4px 9px;border-radius:4px;font-size:10.5px;font-weight:500}
 .s-tag.y{background:var(--y);color:var(--b)}
 .s-tag.g{background:var(--g1);color:var(--g4);border:1px solid var(--g2)}
 .sc-foot{
-  display:flex;justify-content:space-between;align-items:flex-end;
-  padding-top:12px;border-top:1px solid var(--g2);
+  display:flex;justify-content:space-between;align-items:center;
+  padding-top:10px;border-top:1px solid var(--g2);
 }
-.sc-budget-wrap .lbl{font-size:9.5px;color:var(--g3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:1px}
-.sc-budget{font-family:var(--syne);font-size:20px;font-weight:700;letter-spacing:-0.03em}
-.sc-ver{display:flex;align-items:center;gap:4px;font-size:10px;font-weight:600;color:var(--b)}
-.vdot{width:6px;height:6px;border-radius:50%;background:var(--y)}
+.sc-bud{font-family:var(--syne);font-size:17px;font-weight:700;letter-spacing:-0.02em}
+.sc-ver{display:flex;align-items:center;gap:4px;font-size:10px;font-weight:600}
+.vdot{width:6px;height:6px;border-radius:50%;background:var(--y);flex-shrink:0}
 
-/* HOW IT WORKS */
-.how{
-  padding:100px 80px;
-  border-top:1px solid var(--g2);
+/* Stats bar */
+.stats-bar{
+  background:var(--b);padding:28px 80px;
+  display:flex;justify-content:space-around;align-items:center;gap:24px;
+  flex-wrap:wrap;border-top:1px solid #222;
 }
-.sec-label{
+.stat{text-align:center}
+.stat-n{
+  font-family:var(--syne);font-size:clamp(28px,4vw,44px);font-weight:800;
+  color:var(--y);letter-spacing:-0.03em;line-height:1;margin-bottom:4px;
+}
+.stat-l{font-size:11.5px;color:rgba(255,255,255,0.4);letter-spacing:0.04em}
+
+/* Problem vs solution */
+.pvs{padding:100px 80px;border-bottom:1px solid var(--g2)}
+.pvs-label{
+  font-size:10px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;
+  color:var(--g3);margin-bottom:48px;display:flex;align-items:center;gap:12px;
+}
+.pvs-label::after{content:'';flex:1;height:1px;background:var(--g2)}
+.pvs-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px}
+.pvs-col{}
+.pvs-col-title{
+  font-family:var(--syne);font-size:16px;font-weight:700;letter-spacing:-0.02em;
+  margin-bottom:24px;display:flex;align-items:center;gap:10px;
+}
+.pvs-col-title.bad{color:var(--g3)}
+.pvs-col-title.good{color:var(--b)}
+.pvs-row{
+  display:flex;align-items:flex-start;gap:12px;
+  padding:12px 0;border-bottom:1px solid var(--g2);
+  font-size:13.5px;line-height:1.5;
+}
+.pvs-row:last-child{border-bottom:none}
+.pvs-icon{
+  width:18px;height:18px;border-radius:50%;flex-shrink:0;margin-top:1px;
+  display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;
+}
+.pvs-icon.x{background:rgba(0,0,0,0.06);color:var(--g3)}
+.pvs-icon.ok{background:var(--y);color:var(--b)}
+.pvs-row.bad{color:var(--g3)}
+.pvs-row.good{color:var(--b)}
+
+/* How it works */
+.how{padding:100px 80px;border-bottom:1px solid var(--g2)}
+.sec-lbl{
   font-size:10px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;
   color:var(--g3);margin-bottom:52px;display:flex;align-items:center;gap:12px;
 }
-.sec-label::after{content:'';flex:1;height:1px;background:var(--g2)}
+.sec-lbl::after{content:'';flex:1;height:1px;background:var(--g2)}
 .how-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:52px}
-.how-n{
-  font-family:var(--syne);font-size:11px;font-weight:700;
-  color:var(--g2);letter-spacing:0.1em;margin-bottom:20px;
-}
-.how-title{
-  font-family:var(--syne);font-size:21px;font-weight:700;
-  letter-spacing:-0.02em;margin-bottom:10px;
-}
+.how-n{font-family:var(--syne);font-size:11px;font-weight:700;color:var(--g2);letter-spacing:0.1em;margin-bottom:20px}
+.how-title{font-family:var(--syne);font-size:20px;font-weight:700;letter-spacing:-0.02em;margin-bottom:10px}
 .how-body{font-size:14px;line-height:1.68;color:var(--g4)}
+
+/* Testimonials */
+.testi{padding:100px 80px;background:var(--g1);border-bottom:1px solid var(--g2)}
+.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.t-card{background:var(--w);border-radius:16px;padding:28px 24px;border:1px solid var(--g2)}
+.t-q{
+  font-family:var(--syne);font-size:16px;font-weight:600;letter-spacing:-0.02em;
+  line-height:1.4;color:var(--b);margin-bottom:18px;
+}
+.t-who{font-size:12px;color:var(--g3)}
+.t-who strong{color:var(--g4);font-weight:600}
 
 /* CTA */
 .land-cta{
@@ -150,28 +172,25 @@ body{font-family:var(--dm);background:var(--w);color:var(--b);-webkit-font-smoot
   display:flex;align-items:center;justify-content:space-between;gap:60px;
 }
 .lc-hed{
-  font-family:var(--syne);font-size:clamp(38px,4.5vw,68px);font-weight:800;
-  color:var(--w);letter-spacing:-0.04em;line-height:0.95;max-width:480px;
+  font-family:var(--syne);font-size:clamp(36px,4.5vw,62px);font-weight:800;
+  color:var(--w);letter-spacing:-0.04em;line-height:0.96;max-width:460px;
 }
 .lc-hed .y{color:var(--y)}
-.lc-form{display:flex;flex-direction:column;gap:10px;min-width:280px}
+.lc-form{display:flex;flex-direction:column;gap:10px;min-width:280px;max-width:340px;width:100%}
 .lc-inp{
   background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);
-  border-radius:10px;padding:13px 16px;
-  font-family:var(--dm);font-size:14px;color:var(--w);outline:none;
-  transition:border-color 0.2s;
+  border-radius:10px;padding:13px 16px;font-family:var(--dm);font-size:14px;
+  color:var(--w);outline:none;transition:border-color 0.2s;
 }
-.lc-inp::placeholder{color:rgba(255,255,255,0.28)}
+.lc-inp::placeholder{color:rgba(255,255,255,0.25)}
 .lc-inp:focus{border-color:var(--y)}
 .btn-y{
-  display:flex;align-items:center;justify-content:center;
-  padding:14px;background:var(--y);color:var(--b);
-  font-family:var(--dm);font-size:14px;font-weight:600;
-  border-radius:10px;border:none;cursor:pointer;
-  transition:all 0.25s;
+  display:flex;align-items:center;justify-content:center;padding:14px;
+  background:var(--y);color:var(--b);font-family:var(--dm);font-size:14px;
+  font-weight:600;border-radius:10px;border:none;cursor:pointer;transition:all 0.25s;
 }
 .btn-y:hover{background:#ddb600;transform:scale(0.98)}
-.lc-note{font-size:11px;color:rgba(255,255,255,0.28);text-align:center}
+.lc-note{font-size:11px;color:rgba(255,255,255,0.25);text-align:center}
 
 .land-foot{
   padding:22px 80px;border-top:1px solid var(--g2);
@@ -180,210 +199,534 @@ body{font-family:var(--dm);background:var(--w);color:var(--b);-webkit-font-smoot
 .lf-logo{font-family:var(--syne);font-size:15px;font-weight:800;letter-spacing:-0.02em}
 .lf-note{font-size:11.5px;color:var(--g3)}
 
-/* ── APP WRAPPER ── */
+/* ════════════════════════════════
+   APP WRAPPER + PHONE FRAME
+════════════════════════════════ */
 #app-wrap{
-  background:#0D0D0D;min-height:100dvh;
-  display:none;align-items:center;justify-content:center;padding:48px 24px;
+  background:#0C0C0C;min-height:100dvh;
+  align-items:center;justify-content:center;padding:48px 24px;
 }
-#app-wrap.active{display:flex}
+#app-wrap.active{display:flex!important}
 
 .phone{
-  width:390px;max-width:100%;
-  background:var(--w);border-radius:52px;overflow:hidden;
-  box-shadow:0 0 0 1px rgba(255,255,255,0.06), 0 48px 96px rgba(0,0,0,0.6);
-  position:relative;
+  width:390px;max-width:100%;background:var(--w);
+  border-radius:52px;overflow:hidden;position:relative;
+  box-shadow:0 0 0 1px rgba(255,255,255,0.05),0 48px 96px rgba(0,0,0,0.64);
+  /* Fixed height for desktop phone frame */
+  height:844px;display:flex;flex-direction:column;
 }
 
-/* ── APP SCREEN BASE ── */
+/* ════════════════════════════════
+   SHARED APP COMPONENTS
+════════════════════════════════ */
 .app-screen{
-  min-height:844px;background:var(--w);
-  flex-direction:column;position:relative;
+  flex:1;overflow:hidden;
+  flex-direction:column;background:var(--w);
+  /* Hidden by default — .active makes it display:flex */
 }
 
 /* Top bar */
 .abar{
-  padding:52px 24px 0;
+  padding:52px 22px 0;flex-shrink:0;
   display:flex;align-items:center;justify-content:space-between;
 }
 .a-back{
   width:36px;height:36px;background:var(--g1);border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;border:none;flex-shrink:0;
-  transition:background 0.2s;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;
+  transition:background 0.18s;flex-shrink:0;
 }
 .a-back:hover{background:var(--g2)}
 .prog{display:flex;gap:5px}
 .pd{width:22px;height:4px;border-radius:2px;background:var(--g2);transition:background 0.3s}
 .pd.on{background:var(--b)}
 
-/* Content area */
-.acont{flex:1;padding:12px 24px 24px;overflow-y:auto}
+/* Scrollable content */
+.acont{flex:1;overflow-y:auto;padding:14px 22px 20px;-webkit-overflow-scrolling:touch}
+.acont::-webkit-scrollbar{display:none}
+
 .a-hed{
-  font-family:var(--syne);font-size:30px;font-weight:800;
-  letter-spacing:-0.03em;line-height:1.05;color:var(--b);margin-bottom:6px;
+  font-family:var(--syne);font-size:26px;font-weight:800;
+  letter-spacing:-0.03em;line-height:1.08;color:var(--b);margin-bottom:5px;
 }
-.a-sub{font-size:14px;color:var(--g4);line-height:1.55;margin-bottom:36px}
+.a-sub{font-size:13.5px;color:var(--g4);line-height:1.55;margin-bottom:30px}
 
-/* Field */
-.afield{margin-bottom:30px}
-.afield-lbl{
-  display:block;font-size:9.5px;font-weight:600;
-  letter-spacing:0.14em;text-transform:uppercase;color:var(--g3);margin-bottom:10px;
+/* Bottom CTA */
+.abot{
+  flex-shrink:0;padding:14px 22px 40px;
+  border-top:1px solid var(--g1);background:var(--w);
 }
-.afield-inp{
-  width:100%;border:none;border-bottom:2px solid var(--g2);
-  padding:8px 0;font-family:var(--syne);font-size:22px;font-weight:700;
-  color:var(--b);background:transparent;outline:none;
-  letter-spacing:-0.02em;transition:border-color 0.2s;
-}
-.afield-inp:focus{border-color:var(--b)}
-.afield-inp::placeholder{color:var(--g2)}
-
-/* Tag grids */
-.tag-sec{margin-bottom:28px}
-.tag-sec-lbl{
-  font-size:9.5px;font-weight:600;letter-spacing:0.14em;
-  text-transform:uppercase;color:var(--g3);margin-bottom:12px;display:block;
-}
-.tgrid{display:flex;flex-wrap:wrap;gap:8px}
-.ob-tag{
-  padding:10px 16px;border-radius:6px;font-size:13px;font-weight:500;
-  border:1.5px solid var(--g2);color:var(--g4);background:var(--w);
-  cursor:pointer;transition:all 0.18s;user-select:none;
-}
-.ob-tag:hover{border-color:var(--g3);color:var(--b)}
-.ob-tag.sel{background:var(--y);border-color:var(--y);color:var(--b);font-weight:600}
-
-/* Bottom */
-.abot{padding:16px 24px 44px;border-top:1px solid var(--g1)}
 .btn-full{
-  width:100%;padding:17px;background:var(--b);color:var(--w);
-  font-family:var(--syne);font-size:16px;font-weight:700;
-  border-radius:14px;border:none;cursor:pointer;
+  width:100%;padding:16px;background:var(--b);color:var(--w);
+  font-family:var(--syne);font-size:15px;font-weight:700;
+  border-radius:12px;border:none;cursor:pointer;
   letter-spacing:-0.01em;transition:all 0.25s cubic-bezier(0.32,0.72,0,1);
 }
 .btn-full:hover{background:#2a2a2a;transform:scale(0.99)}
 .btn-full:active{transform:scale(0.97)}
 
-/* ── FEED ── */
-#s-feed{min-height:844px;flex-direction:column}
-.feed-hdr{padding:52px 20px 12px}
-.feed-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
-.feed-title{font-family:var(--syne);font-size:24px;font-weight:800;letter-spacing:-0.03em}
-.feed-count{font-size:12px;color:var(--g3);font-weight:500}
-.chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
-.chips::-webkit-scrollbar{display:none}
-.chip{
-  padding:8px 14px;border-radius:6px;font-size:12px;font-weight:500;
-  border:1.5px solid var(--g2);color:var(--g4);cursor:pointer;
-  background:var(--w);transition:all 0.18s;flex-shrink:0;white-space:nowrap;
+/* Form fields */
+.afield{margin-bottom:26px}
+.afield-lbl{
+  display:block;font-size:9px;font-weight:700;letter-spacing:0.14em;
+  text-transform:uppercase;color:var(--g3);margin-bottom:9px;
 }
-.chip.on{background:var(--b);color:var(--w);border-color:var(--b)}
-.feed-grid{
-  display:grid;grid-template-columns:1fr 1fr;
-  gap:10px;padding:16px 20px 100px;overflow-y:auto;
+.afield-inp{
+  width:100%;border:none;border-bottom:2px solid var(--g2);padding:8px 0;
+  font-family:var(--syne);font-size:20px;font-weight:700;color:var(--b);
+  background:transparent;outline:none;letter-spacing:-0.02em;transition:border-color 0.2s;
 }
-.f-card{
-  background:var(--w);border:1.5px solid var(--g2);border-radius:16px;
-  padding:16px;cursor:pointer;transition:all 0.25s cubic-bezier(0.32,0.72,0,1);
+.afield-inp:focus{border-color:var(--b)}
+.afield-inp::placeholder{color:var(--g2)}
+.afield-select{
+  width:100%;border:none;border-bottom:2px solid var(--g2);padding:8px 0;
+  font-family:var(--syne);font-size:16px;font-weight:600;color:var(--b);
+  background:transparent;outline:none;appearance:none;cursor:pointer;
 }
-.f-card:hover{transform:scale(0.97);border-color:var(--b)}
-.f-av{
-  width:38px;height:38px;background:var(--y);border-radius:8px;
+
+/* Two col row */
+.row-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
+
+/* Tag section */
+.tag-sec{margin-bottom:26px}
+.tag-lbl{
+  display:block;font-size:9px;font-weight:700;letter-spacing:0.14em;
+  text-transform:uppercase;color:var(--g3);margin-bottom:11px;
+}
+.tgrid{display:flex;flex-wrap:wrap;gap:7px}
+.ob-tag{
+  padding:9px 15px;border-radius:6px;font-size:12.5px;font-weight:500;
+  border:1.5px solid var(--g2);color:var(--g4);background:var(--w);
+  cursor:pointer;transition:all 0.16s;user-select:none;
+}
+.ob-tag:hover{border-color:var(--b);color:var(--b)}
+.ob-tag.sel{background:var(--y);border-color:var(--y);color:var(--b);font-weight:600}
+
+/* Textarea */
+.afield-ta{
+  width:100%;border:1.5px solid var(--g2);border-radius:10px;
+  padding:12px;font-family:var(--dm);font-size:14px;line-height:1.55;
+  color:var(--b);background:var(--g1);outline:none;resize:none;
+  transition:border-color 0.2s;
+}
+.afield-ta:focus{border-color:var(--b);background:var(--w)}
+.afield-ta::placeholder{color:var(--g3)}
+.char-count{font-size:10px;color:var(--g3);text-align:right;margin-top:5px}
+
+/* ════════════════════════════════
+   ONBOARD 1 — PHOTOS
+════════════════════════════════ */
+.photo-grid{display:grid;grid-template-columns:2fr 1fr 1fr;grid-template-rows:1fr 1fr;gap:8px;margin-bottom:24px;height:200px}
+.photo-slot{
+  border-radius:12px;background:var(--g1);border:1.5px dashed var(--g2);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+  position:relative;overflow:hidden;transition:border-color 0.18s;
+}
+.photo-slot:hover{border-color:var(--g3)}
+.photo-slot.main{grid-row:1 / 3}
+.photo-slot .plus{
+  width:30px;height:30px;background:var(--w);border-radius:50%;
   display:flex;align-items:center;justify-content:center;
-  font-family:var(--syne);font-size:13px;font-weight:800;color:var(--b);margin-bottom:10px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.1);
 }
-.f-av.alt{background:var(--b);color:var(--y)}
-.f-name{font-family:var(--syne);font-size:14px;font-weight:700;letter-spacing:-0.02em;margin-bottom:1px}
-.f-school{font-size:10.5px;color:var(--g3);margin-bottom:10px}
-.f-tags{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px}
-.f-tag{padding:3px 8px;border-radius:4px;font-size:10.5px;font-weight:500;background:var(--g1);color:var(--g4)}
-.f-tag.y{background:var(--y);color:var(--b)}
-.f-bud{font-family:var(--syne);font-size:17px;font-weight:700;letter-spacing:-0.02em}
-
-/* Bottom nav */
-.bnav{
-  position:sticky;bottom:0;
-  background:rgba(255,255,255,0.95);backdrop-filter:blur(24px);
-  border-top:1px solid var(--g2);padding:12px 24px 32px;
-  display:flex;justify-content:space-around;
+.photo-slot.filled{border:none}
+.photo-slot.filled .photo-inner{
+  width:100%;height:100%;object-fit:cover;border-radius:12px;
 }
-.bn{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer}
-.bn-lbl{font-size:9px;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:var(--g3)}
-.bn-lbl.on{color:var(--b)}
+.photo-slot .photo-fill{
+  position:absolute;inset:0;border-radius:12px;
+  display:flex;align-items:flex-end;padding:10px;
+}
+.photo-slot .photo-name-overlay{
+  font-family:var(--syne);font-size:13px;font-weight:700;color:var(--w);
+  text-shadow:0 1px 4px rgba(0,0,0,0.4);
+}
+.photo-note{font-size:11.5px;color:var(--g3);margin-bottom:24px;line-height:1.5}
 
-/* ── PROFILE DETAIL ── */
-#s-profile{min-height:844px;flex-direction:column}
-.pd-hdr{padding:52px 24px 24px;border-bottom:1px solid var(--g1)}
-.pd-backrow{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}
-.pd-av{
+/* ════════════════════════════════
+   FEED
+════════════════════════════════ */
+#s-feed{background:var(--w)}
+.feed-hdr{
+  padding:52px 18px 12px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.feed-title{font-family:var(--syne);font-size:22px;font-weight:800;letter-spacing:-0.03em}
+.filter-btn{
+  display:flex;align-items:center;gap:6px;padding:8px 14px;
+  background:var(--g1);border:1.5px solid var(--g2);border-radius:8px;
+  font-family:var(--dm);font-size:12px;font-weight:600;color:var(--b);
+  cursor:pointer;border:none;transition:all 0.18s;
+}
+.filter-btn:hover{background:var(--g2)}
+
+.feed-scroll{flex:1;overflow-y:auto;padding:4px 18px 100px;-webkit-overflow-scrolling:touch}
+.feed-scroll::-webkit-scrollbar{display:none}
+
+/* Hinge-style full card */
+.feed-card{
+  background:var(--w);border:1.5px solid var(--g2);border-radius:20px;
+  overflow:hidden;margin-bottom:16px;cursor:pointer;
+  transition:transform 0.25s cubic-bezier(0.32,0.72,0,1),box-shadow 0.25s;
+}
+.feed-card:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,0.1)}
+.feed-card:active{transform:scale(0.99)}
+
+.fc-photo{
+  width:100%;height:220px;position:relative;overflow:hidden;
+}
+.fc-photo-bg{width:100%;height:100%;object-fit:cover}
+.fc-photo-grad{
+  position:absolute;bottom:0;left:0;right:0;height:60%;
+  background:linear-gradient(to top,rgba(0,0,0,0.6) 0%,transparent 100%);
+}
+.fc-photo-info{
+  position:absolute;bottom:14px;left:16px;right:16px;
+  display:flex;justify-content:space-between;align-items:flex-end;
+}
+.fc-photo-name{
+  font-family:var(--syne);font-size:20px;font-weight:800;
+  color:var(--w);letter-spacing:-0.02em;
+}
+.fc-photo-age{font-size:14px;font-weight:500;color:rgba(255,255,255,0.8);margin-left:4px}
+.fc-badge{
+  background:var(--y);color:var(--b);font-size:10px;font-weight:700;
+  padding:4px 10px;border-radius:999px;letter-spacing:0.04em;
+}
+
+.fc-body{padding:16px 16px 14px}
+.fc-top-row{
+  display:flex;justify-content:space-between;align-items:flex-start;
+  margin-bottom:10px;
+}
+.fc-school{font-size:12.5px;color:var(--g4);line-height:1.4}
+.fc-school strong{color:var(--b);font-weight:600}
+.fc-area-bud{text-align:right}
+.fc-area{font-size:11px;color:var(--g3);margin-bottom:1px}
+.fc-bud{font-family:var(--syne);font-size:16px;font-weight:700;letter-spacing:-0.02em}
+
+.fc-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px}
+.fc-tag{padding:4px 10px;border-radius:4px;font-size:11px;font-weight:500}
+.fc-tag.y{background:var(--y);color:var(--b)}
+.fc-tag.g{background:var(--g1);color:var(--g4)}
+
+.fc-actions{display:flex;gap:8px;padding-top:10px;border-top:1px solid var(--g1)}
+.fc-btn{
+  flex:1;padding:11px;border-radius:10px;font-family:var(--dm);
+  font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all 0.18s;
+}
+.fc-btn.pass{background:var(--g1);color:var(--g4)}
+.fc-btn.pass:hover{background:var(--g2);color:var(--b)}
+.fc-btn.like{background:var(--b);color:var(--w)}
+.fc-btn.like:hover{background:#2a2a2a}
+.fc-btn.like.matched{background:var(--y);color:var(--b)}
+
+/* ════════════════════════════════
+   PROFILE DETAIL
+════════════════════════════════ */
+#s-pdtl{background:var(--w)}
+.pd-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.pd-scroll::-webkit-scrollbar{display:none}
+
+.pd-photos{
+  width:100%;height:300px;position:relative;overflow:hidden;
+  background:linear-gradient(135deg,#f0c500,#f5a623);
+}
+.pd-photo-grad{
+  position:absolute;bottom:0;left:0;right:0;height:50%;
+  background:linear-gradient(to top,rgba(0,0,0,0.55) 0%,transparent 100%);
+}
+.pd-photo-top{
+  position:absolute;top:52px;left:16px;right:16px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.pd-back-btn{
+  width:36px;height:36px;background:rgba(255,255,255,0.22);
+  backdrop-filter:blur(8px);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;
+}
+.pd-ver-badge{
+  background:rgba(255,255,255,0.22);backdrop-filter:blur(8px);
+  padding:5px 12px;border-radius:999px;
+  display:flex;align-items:center;gap:5px;
+  font-size:10px;font-weight:700;color:var(--w);
+}
+.pd-photo-info{
+  position:absolute;bottom:16px;left:18px;right:18px;
+}
+.pd-name-row{display:flex;align-items:baseline;gap:8px;margin-bottom:3px}
+.pd-name{font-family:var(--syne);font-size:28px;font-weight:800;color:var(--w);letter-spacing:-0.03em}
+.pd-age{font-family:var(--syne);font-size:20px;font-weight:600;color:rgba(255,255,255,0.8)}
+.pd-meta{font-size:13px;color:rgba(255,255,255,0.75)}
+
+.pd-body{padding:22px 20px 0}
+.pd-sec{margin-bottom:24px}
+.pd-sec-lbl{
+  font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;
+  color:var(--g3);margin-bottom:11px;display:block;
+}
+.pd-tags{display:flex;flex-wrap:wrap;gap:6px}
+.pd-tag{
+  padding:8px 14px;border-radius:6px;font-size:12.5px;
+  font-weight:500;border:1.5px solid var(--g2);color:var(--b);
+}
+.pd-tag.y{background:var(--y);border-color:var(--y);font-weight:600}
+
+.pd-about{
+  background:var(--g1);border-radius:12px;padding:14px 16px;margin-bottom:22px;
+  font-size:14px;line-height:1.6;color:var(--b);
+}
+
+.pd-bud{
+  background:var(--b);border-radius:14px;padding:18px 20px;
+  display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;
+}
+.pd-bud-lbl{font-size:12px;color:rgba(255,255,255,0.5)}
+.pd-bud-val{font-family:var(--syne);font-size:30px;font-weight:800;color:var(--y);letter-spacing:-0.04em}
+
+.pd-acts{
+  padding:0 20px 44px;display:flex;gap:10px;
+}
+.pd-act-pass{
+  flex:1;padding:15px;background:var(--g1);color:var(--g4);
+  border:none;border-radius:12px;font-family:var(--dm);font-size:14px;
+  font-weight:600;cursor:pointer;transition:all 0.18s;
+}
+.pd-act-pass:hover{background:var(--g2);color:var(--b)}
+.pd-act-like{
+  flex:2;padding:15px;background:var(--b);color:var(--w);
+  border:none;border-radius:12px;font-family:var(--syne);font-size:15px;
+  font-weight:700;cursor:pointer;transition:all 0.25s;
+}
+.pd-act-like:hover{background:#2a2a2a;transform:scale(0.99)}
+
+/* ════════════════════════════════
+   CHATS
+════════════════════════════════ */
+#s-chat{background:var(--w)}
+.chat-hdr{padding:52px 20px 14px;flex-shrink:0}
+.chat-title{font-family:var(--syne);font-size:22px;font-weight:800;letter-spacing:-0.03em;margin-bottom:4px}
+.chat-sub{font-size:12.5px;color:var(--g3)}
+.chat-list{flex:1;overflow-y:auto;padding:4px 20px 100px;-webkit-overflow-scrolling:touch}
+.chat-list::-webkit-scrollbar{display:none}
+
+.chat-item{
+  display:flex;align-items:center;gap:14px;padding:14px 0;
+  border-bottom:1px solid var(--g1);cursor:pointer;transition:opacity 0.18s;
+}
+.chat-item:hover{opacity:0.75}
+.chat-av{
+  width:48px;height:48px;border-radius:12px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--syne);font-size:16px;font-weight:800;color:var(--b);
+}
+.chat-av.y{background:var(--y)}
+.chat-av.b{background:var(--b);color:var(--y)}
+.chat-info{flex:1;min-width:0}
+.chat-name{font-family:var(--syne);font-size:15px;font-weight:700;letter-spacing:-0.02em;margin-bottom:2px}
+.chat-preview{font-size:12.5px;color:var(--g3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chat-meta{text-align:right;flex-shrink:0}
+.chat-time{font-size:11px;color:var(--g3);margin-bottom:5px}
+.chat-unread{
+  width:18px;height:18px;background:var(--b);border-radius:50%;
+  font-size:10px;font-weight:700;color:var(--w);
+  display:flex;align-items:center;justify-content:center;margin-left:auto;
+}
+
+.match-banner{
+  background:var(--y);margin-bottom:20px;border-radius:14px;padding:16px 18px;
+  display:flex;align-items:center;gap:14px;
+}
+.match-av{
+  width:44px;height:44px;border-radius:10px;background:var(--b);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--syne);font-size:15px;font-weight:800;color:var(--y);flex-shrink:0;
+}
+.match-text .match-title{font-family:var(--syne);font-size:14px;font-weight:700;letter-spacing:-0.02em}
+.match-text .match-sub{font-size:12px;color:rgba(0,0,0,0.5);margin-top:2px}
+
+/* ════════════════════════════════
+   MY PROFILE
+════════════════════════════════ */
+#s-prof{background:var(--w)}
+.prof-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.prof-scroll::-webkit-scrollbar{display:none}
+
+.prof-hdr{
+  padding:52px 20px 20px;border-bottom:1px solid var(--g1);
+  display:flex;align-items:flex-start;justify-content:space-between;
+}
+.prof-av-name{}
+.prof-av{
   width:64px;height:64px;background:var(--y);border-radius:14px;
   display:flex;align-items:center;justify-content:center;
-  font-family:var(--syne);font-size:24px;font-weight:800;color:var(--b);margin-bottom:14px;
+  font-family:var(--syne);font-size:22px;font-weight:800;color:var(--b);margin-bottom:10px;
 }
-.pd-name{font-family:var(--syne);font-size:30px;font-weight:800;letter-spacing:-0.03em;margin-bottom:4px}
-.pd-meta{font-size:13px;color:var(--g4)}
-.pd-body{padding:24px;flex:1;overflow-y:auto}
-.pd-sec{margin-bottom:26px}
-.pd-sec-lbl{
-  font-size:9.5px;font-weight:700;letter-spacing:0.14em;
-  text-transform:uppercase;color:var(--g3);margin-bottom:12px;display:block;
+.prof-name{font-family:var(--syne);font-size:22px;font-weight:800;letter-spacing:-0.03em;margin-bottom:2px}
+.prof-meta{font-size:12.5px;color:var(--g4)}
+.edit-btn{
+  padding:8px 16px;background:var(--g1);border:1.5px solid var(--g2);
+  border-radius:8px;font-family:var(--dm);font-size:12.5px;font-weight:600;
+  color:var(--b);cursor:pointer;border:none;transition:background 0.18s;
 }
-.pd-tags{display:flex;flex-wrap:wrap;gap:7px}
-.pd-tag{padding:8px 14px;border-radius:6px;font-size:13px;font-weight:500;border:1.5px solid var(--g2);color:var(--b)}
-.pd-tag.y{background:var(--y);border-color:var(--y);font-weight:600}
-.pd-bud{
-  background:var(--g1);border-radius:14px;padding:18px 20px;
-  display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;
-}
-.pd-bud-lbl{font-size:12px;color:var(--g4)}
-.pd-bud-val{font-family:var(--syne);font-size:30px;font-weight:800;letter-spacing:-0.04em}
-.pd-act{padding:0 24px 44px}
+.edit-btn:hover{background:var(--g2)}
 
-/* Reveal */
-.r{opacity:0;transform:translateY(12px);transition:opacity 0.65s cubic-bezier(0.16,1,0.3,1),transform 0.65s cubic-bezier(0.16,1,0.3,1)}
+.prof-body{padding:20px 20px 100px}
+.prof-sec{margin-bottom:22px}
+.prof-sec-lbl{
+  font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;
+  color:var(--g3);margin-bottom:10px;display:block;
+}
+.prof-tags{display:flex;flex-wrap:wrap;gap:6px}
+.prof-tag{
+  padding:7px 13px;border-radius:6px;font-size:12.5px;font-weight:500;
+  border:1.5px solid var(--g2);color:var(--b);
+}
+.prof-tag.y{background:var(--y);border-color:var(--y);font-weight:600}
+.prof-about{
+  background:var(--g1);border-radius:10px;padding:12px 14px;
+  font-size:13.5px;line-height:1.6;color:var(--b);
+}
+.prof-stat-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:22px}
+.prof-stat{background:var(--g1);border-radius:12px;padding:14px 16px}
+.prof-stat-n{font-family:var(--syne);font-size:22px;font-weight:800;letter-spacing:-0.03em;margin-bottom:2px}
+.prof-stat-l{font-size:11px;color:var(--g3)}
+.logout-btn{
+  width:100%;padding:14px;background:transparent;border:1.5px solid var(--g2);
+  border-radius:12px;font-family:var(--dm);font-size:14px;font-weight:600;
+  color:var(--g4);cursor:pointer;transition:all 0.18s;
+}
+.logout-btn:hover{background:var(--g1);color:var(--b)}
+
+/* ════════════════════════════════
+   BOTTOM NAV
+════════════════════════════════ */
+.bnav{
+  position:absolute;bottom:0;left:0;right:0;
+  background:rgba(255,255,255,0.96);backdrop-filter:blur(24px);
+  border-top:1px solid var(--g2);padding:10px 20px 28px;
+  display:flex;justify-content:space-around;z-index:10;
+}
+.bn{
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  cursor:pointer;padding:4px 10px;border-radius:8px;transition:background 0.18s;
+}
+.bn:hover{background:var(--g1)}
+.bn-lbl{font-size:9px;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:var(--g3)}
+.bn-lbl.on{color:var(--b)}
+.bn svg circle,.bn svg path,.bn svg rect{transition:stroke 0.2s}
+
+/* ════════════════════════════════
+   FILTER SHEET
+════════════════════════════════ */
+#filter-overlay{
+  position:absolute;inset:0;background:rgba(0,0,0,0.35);
+  z-index:50;display:none;align-items:flex-end;
+}
+#filter-overlay.open{display:flex}
+.filter-sheet{
+  width:100%;background:var(--w);border-radius:24px 24px 0 0;
+  padding:16px 20px 44px;max-height:82%;overflow-y:auto;
+}
+.filter-sheet::-webkit-scrollbar{display:none}
+.fs-handle{
+  width:36px;height:4px;background:var(--g2);border-radius:2px;margin:0 auto 20px;
+}
+.fs-title{
+  font-family:var(--syne);font-size:18px;font-weight:800;
+  letter-spacing:-0.02em;margin-bottom:24px;
+}
+.fs-sec{margin-bottom:22px}
+.fs-sec-lbl{
+  font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;
+  color:var(--g3);margin-bottom:11px;display:block;
+}
+.fs-chips{display:flex;flex-wrap:wrap;gap:7px}
+.fs-chip{
+  padding:9px 15px;border-radius:6px;font-size:12.5px;font-weight:500;
+  border:1.5px solid var(--g2);color:var(--g4);background:var(--w);
+  cursor:pointer;transition:all 0.16s;
+}
+.fs-chip:hover{border-color:var(--b);color:var(--b)}
+.fs-chip.sel{background:var(--y);border-color:var(--y);color:var(--b);font-weight:600}
+.fs-btns{display:flex;gap:10px;margin-top:24px}
+.fs-reset{
+  flex:1;padding:14px;background:var(--g1);color:var(--g4);
+  border:none;border-radius:10px;font-family:var(--dm);font-size:14px;
+  font-weight:600;cursor:pointer;transition:background 0.18s;
+}
+.fs-apply{
+  flex:2;padding:14px;background:var(--b);color:var(--w);
+  border:none;border-radius:10px;font-family:var(--syne);font-size:14px;
+  font-weight:700;cursor:pointer;transition:all 0.25s;
+}
+.fs-apply:hover{background:#2a2a2a}
+
+/* ════════════════════════════════
+   REVEAL ANIMATIONS
+════════════════════════════════ */
+.r{
+  opacity:0;transform:translateY(14px);
+  transition:opacity 0.7s cubic-bezier(0.16,1,0.3,1),transform 0.7s cubic-bezier(0.16,1,0.3,1);
+}
 .r.on{opacity:1;transform:translateY(0)}
 .r.d1{transition-delay:0.08s}
-.r.d2{transition-delay:0.17s}
-.r.d3{transition-delay:0.28s}
+.r.d2{transition-delay:0.18s}
+.r.d3{transition-delay:0.3s}
 
-/* Responsive */
-@media(max-width:900px){
+/* ════════════════════════════════
+   RESPONSIVE
+════════════════════════════════ */
+@media(max-width:1000px){
   .hero{grid-template-columns:1fr}
   .hero-r{display:none}
   .hero-l{padding:100px 28px 64px}
+  .stats-bar{padding:28px 32px}
+  .pvs{padding:64px 28px}
+  .pvs-grid{grid-template-columns:1fr;gap:32px}
   .how{padding:64px 28px}
   .how-grid{grid-template-columns:1fr;gap:36px}
+  .testi{padding:64px 28px}
+  .testi-grid{grid-template-columns:1fr;gap:16px}
   .land-cta{flex-direction:column;padding:64px 28px;gap:44px}
+  .lc-form{max-width:100%}
   .land-foot{padding:20px 28px}
-  .lc-form{width:100%}
 }
-@media(max-width:480px){
-  .phone{border-radius:0;box-shadow:none}
-  #app-wrap{padding:0;background:var(--w)}
+@media(max-width:520px){
+  /* On real phones: remove the phone chrome */
+  #app-wrap{background:var(--w);padding:0;align-items:stretch}
+  .phone{border-radius:0;box-shadow:none;width:100%;height:100dvh}
+  .app-screen{min-height:100dvh}
+  .abar{padding:48px 18px 0}
+  .acont{padding:12px 18px 18px}
+  .abot{padding:12px 18px 36px}
+  .feed-hdr{padding:48px 16px 12px}
+  .feed-scroll{padding:4px 16px 100px}
+  .chat-hdr{padding:48px 16px 14px}
+  .chat-list{padding:4px 16px 100px}
+  .prof-hdr{padding:48px 16px 20px}
+  .prof-body{padding:18px 16px 100px}
+  .pd-photo-top{top:48px}
+  .bnav{padding:10px 16px 24px}
 }
 </style>
 </head>
 <body>
 
-<!-- ══════════════════════════════════
-     SCREEN: LANDING
-══════════════════════════════════ -->
+<!-- ══════════════════════
+     LANDING PAGE
+══════════════════════ -->
 <div id="s-land" class="screen active">
-
   <nav class="land-nav">
-    <span class="nav-logo">nook</span>
+    <a href="#" class="nav-logo">nook</a>
     <button class="btn-b" onclick="goApp('s-ob1')">Get early access</button>
   </nav>
 
+  <!-- Hero -->
   <section class="hero">
-    <!-- LEFT -->
     <div class="hero-l">
-      <div class="h-eye r"><span class="h-eye-line"></span>Mumbai · 2025</div>
-      <div class="h-word r d1">
-        Find<br>your<span class="yl">next</span><br>flatmate.
-      </div>
-      <p class="h-sub r d2">Not a body to split the rent. Someone you actually want to come home to.</p>
+      <div class="h-eye r"><span class="h-eye-bar"></span>Mumbai · Coming soon</div>
+      <div class="h-word r d1">Find your<span class="yb">next</span><br>flatmate.</div>
+      <p class="h-sub r d2">Not a body to split rent. Someone you're actually compatible with.</p>
       <div class="h-actions r d3">
         <button class="btn-b lg" onclick="goApp('s-ob1')">
           Build your profile
@@ -394,86 +737,131 @@ body{font-family:var(--dm);background:var(--w);color:var(--b);-webkit-font-smoot
         <span class="h-note">Mumbai students only</span>
       </div>
     </div>
-
-    <!-- RIGHT -->
     <div class="hero-r">
       <div class="card-stack">
-        <!-- card back left -->
         <div class="s-card sc-a">
-          <div class="sc-av">RS</div>
-          <div class="sc-name">Riya S.</div>
-          <div class="sc-meta">SVKM · Juhu</div>
+          <div class="sc-photo" style="background:linear-gradient(135deg,#d4b483,#b8956a)">
+            <span class="sc-photo-name">Riya, 20</span>
+          </div>
+          <div class="sc-college">SVKM · Juhu</div>
           <div class="sc-tags">
             <span class="s-tag y">Early bird</span>
-            <span class="s-tag g">Spotless</span>
-          </div>
-          <div class="sc-foot">
-            <div class="sc-budget-wrap">
-              <div class="lbl">Budget</div>
-              <div class="sc-budget">₹13,000</div>
-            </div>
-            <div class="sc-ver"><span class="vdot"></span>Verified</div>
-          </div>
-        </div>
-
-        <!-- card front centre -->
-        <div class="s-card sc-b">
-          <div class="sc-av">PM</div>
-          <div class="sc-name">Priya M.</div>
-          <div class="sc-meta">NMIMS · Bandra West</div>
-          <div class="sc-tags">
-            <span class="s-tag y">Night owl</span>
-            <span class="s-tag g">Films</span>
             <span class="s-tag g">Non-smoker</span>
           </div>
           <div class="sc-foot">
-            <div class="sc-budget-wrap">
-              <div class="lbl">Budget / month</div>
-              <div class="sc-budget">₹16,000</div>
-            </div>
-            <div class="sc-ver"><span class="vdot"></span>Verified</div>
+            <span class="sc-bud">₹13,000</span>
+            <span class="sc-ver"><span class="vdot"></span>Verified</span>
           </div>
         </div>
-
-        <!-- card back right -->
-        <div class="s-card sc-c">
-          <div class="sc-av">AK</div>
-          <div class="sc-name">Aisha K.</div>
-          <div class="sc-meta">Atlas · Andheri W</div>
+        <div class="s-card sc-b">
+          <div class="sc-photo" style="background:linear-gradient(135deg,#f0c500,#f5a623)">
+            <span class="sc-photo-name">Priya, 21</span>
+          </div>
+          <div class="sc-college">NMIMS · Bandra West</div>
           <div class="sc-tags">
-            <span class="s-tag y">Flexible</span>
+            <span class="s-tag y">Night owl</span>
+            <span class="s-tag g">Films</span>
             <span class="s-tag g">Tidy</span>
           </div>
           <div class="sc-foot">
-            <div class="sc-budget-wrap">
-              <div class="lbl">Budget</div>
-              <div class="sc-budget">₹14,000</div>
-            </div>
-            <div class="sc-ver"><span class="vdot"></span>Verified</div>
+            <span class="sc-bud">₹16,000</span>
+            <span class="sc-ver"><span class="vdot"></span>Verified</span>
+          </div>
+        </div>
+        <div class="s-card sc-c">
+          <div class="sc-photo" style="background:linear-gradient(135deg,#a8c5da,#7faabf)">
+            <span class="sc-photo-name">Aisha, 19</span>
+          </div>
+          <div class="sc-college">Atlas · Andheri</div>
+          <div class="sc-tags">
+            <span class="s-tag y">Flexible</span>
+            <span class="s-tag g">Fitness</span>
+          </div>
+          <div class="sc-foot">
+            <span class="sc-bud">₹14,000</span>
+            <span class="sc-ver"><span class="vdot"></span>Verified</span>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- HOW IT WORKS -->
+  <!-- Stats bar -->
+  <div class="stats-bar">
+    <div class="stat r">
+      <div class="stat-n">50,000+</div>
+      <div class="stat-l">students move to Mumbai each year</div>
+    </div>
+    <div class="stat r d1">
+      <div class="stat-n">1 in 3</div>
+      <div class="stat-l">end up in mismatched housing</div>
+    </div>
+    <div class="stat r d2">
+      <div class="stat-n">₹0</div>
+      <div class="stat-l">broker fees. ever.</div>
+    </div>
+  </div>
+
+  <!-- Problem vs Solution -->
+  <section class="pvs">
+    <div class="pvs-label r">Why Nook exists</div>
+    <div class="pvs-grid">
+      <div class="pvs-col r d1">
+        <div class="pvs-col-title bad">The Instagram story method</div>
+        <div class="pvs-row bad"><span class="pvs-icon x">✕</span>Post on your story and hope someone sees it</div>
+        <div class="pvs-row bad"><span class="pvs-icon x">✕</span>Forwarded to randos you know nothing about</div>
+        <div class="pvs-row bad"><span class="pvs-icon x">✕</span>No idea how they actually live</div>
+        <div class="pvs-row bad"><span class="pvs-icon x">✕</span>Move in, realise it's wrong, stuck for 11 months</div>
+        <div class="pvs-row bad"><span class="pvs-icon x">✕</span>Repeat the whole thing next year</div>
+      </div>
+      <div class="pvs-col r d2">
+        <div class="pvs-col-title good">With Nook</div>
+        <div class="pvs-row good"><span class="pvs-icon ok">✓</span>Verified Mumbai student profiles only</div>
+        <div class="pvs-row good"><span class="pvs-icon ok">✓</span>Filter by habits, schedule, and vibe</div>
+        <div class="pvs-row good"><span class="pvs-icon ok">✓</span>Know exactly what you're getting into</div>
+        <div class="pvs-row good"><span class="pvs-icon ok">✓</span>Chat in-app before you commit to anything</div>
+        <div class="pvs-row good"><span class="pvs-icon ok">✓</span>Actually compatible from day one</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How it works -->
   <section class="how">
-    <div class="sec-label r">How it works</div>
+    <div class="sec-lbl r">How it works</div>
     <div class="how-grid">
       <div class="r d1">
         <div class="how-n">01</div>
-        <div class="how-title">Build your profile</div>
-        <p class="how-body">Sleep schedule, habits, vices, dealbreakers. The things that actually matter when you share a kitchen and a bathroom.</p>
+        <div class="how-title">Build a real profile</div>
+        <p class="how-body">Photos, habits, interests, vices, dealbreakers. The stuff your future flatmate actually needs to know before they agree to share a kitchen with you.</p>
       </div>
       <div class="r d2">
         <div class="how-n">02</div>
-        <div class="how-title">Browse real people</div>
-        <p class="how-body">Verified Mumbai students filtered by area, budget, and how they live. No fake listings. No luck required.</p>
+        <div class="how-title">Browse verified students</div>
+        <p class="how-body">Every profile is a verified Mumbai student. Filter by area, budget, sleep schedule, diet — whatever matters most to you. No fake listings, no anonymous strangers.</p>
       </div>
       <div class="r d3">
         <div class="how-n">03</div>
-        <div class="how-title">Connect when it fits</div>
-        <p class="how-body">Say hello in-app first. When it feels right, move to Instagram. No algorithm making life decisions on your behalf.</p>
+        <div class="how-title">Match, then connect</div>
+        <p class="how-body">Express interest. If it's mutual, chat opens. When it feels right you move to Instagram or WhatsApp. No pressure, no algorithm overriding your gut.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="testi">
+    <div class="sec-lbl r">What students actually say</div>
+    <div class="testi-grid">
+      <div class="t-card r d1">
+        <div class="t-q">"I moved to Mumbai for NMIMS and had no idea how to find a place. My story got shared around and I ended up with someone I had nothing in common with."</div>
+        <div class="t-who"><strong>Aanya, 20</strong> · Architecture, NMIMS</div>
+      </div>
+      <div class="t-card r d2">
+        <div class="t-q">"I'm an early bird, she was a night owl. Neither of us knew before we signed the lease. Nook would have shown us that in 30 seconds."</div>
+        <div class="t-who"><strong>Mehul, 22</strong> · Business, Atlas</div>
+      </div>
+      <div class="t-card r d3">
+        <div class="t-q">"Finding a flatmate feels like getting lucky. You shouldn't need to know the right people just to find someone decent to live with."</div>
+        <div class="t-who"><strong>Sara, 21</strong> · Law, SVKM</div>
       </div>
     </div>
   </section>
@@ -485,27 +873,27 @@ body{font-family:var(--dm);background:var(--w);color:var(--b);-webkit-font-smoot
     </div>
     <div class="lc-form r d1">
       <input class="lc-inp" type="text" placeholder="Your name" />
-      <input class="lc-inp" type="text" placeholder="Instagram handle" />
-      <input class="lc-inp" type="text" placeholder="College" />
+      <input class="lc-inp" type="text" placeholder="@instagram handle" />
+      <input class="lc-inp" type="text" placeholder="Your college" />
       <button class="btn-y" onclick="goApp('s-ob1')">Get early access →</button>
-      <span class="lc-note">Mumbai students only · No spam ever</span>
+      <span class="lc-note">Mumbai students only · No spam, ever</span>
     </div>
   </section>
 
   <footer class="land-foot">
     <span class="lf-logo">nook</span>
-    <span class="lf-note">Mumbai · 2025</span>
+    <span class="lf-note">Mumbai · 2025 · Made with one too many bad flatmate stories</span>
   </footer>
-</div>
+</div><!-- /s-land -->
 
 
-<!-- ══════════════════════════════════
+<!-- ══════════════════════
      APP WRAPPER
-══════════════════════════════════ -->
+══════════════════════ -->
 <div id="app-wrap">
-  <div class="phone" id="phone-frame">
+  <div class="phone" id="phone">
 
-    <!-- ── ONBOARDING 1: BASICS ── -->
+    <!-- ── ONBOARD 1: PHOTOS + NAME + AGE + GENDER ── -->
     <div id="s-ob1" class="screen app-screen">
       <div class="abar">
         <button class="a-back" onclick="goLand()">
@@ -513,22 +901,108 @@ body{font-family:var(--dm);background:var(--w);color:var(--b);-webkit-font-smoot
             <path d="M10 12L6 8L10 4" stroke="#111" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </button>
-        <div class="prog">
-          <div class="pd on"></div><div class="pd"></div><div class="pd"></div>
-        </div>
+        <div class="prog"><div class="pd on"></div><div class="pd"></div><div class="pd"></div><div class="pd"></div></div>
       </div>
-
       <div class="acont">
-        <div class="a-hed">First things<br>first.</div>
-        <div class="a-sub">The basics. We'll get to the good stuff in a second.</div>
+        <div class="a-hed">Let's build<br>your profile.</div>
+        <div class="a-sub">Start with photos. At least one to continue.</div>
 
-        <div class="afield">
-          <label class="afield-lbl">Your name</label>
-          <input class="afield-inp" type="text" placeholder="First name" />
+        <div class="photo-grid">
+          <div class="photo-slot main" id="ph0" onclick="fillPhoto(0,'#F2C500','#f5a623')">
+            <div class="plus">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <path d="M7 1V13M1 7H13" stroke="#111" stroke-width="1.8" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+          <div class="photo-slot" id="ph1" onclick="fillPhoto(1,'#a8c5da','#7faabf')">
+            <div class="plus">
+              <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
+                <path d="M7 1V13M1 7H13" stroke="#111" stroke-width="1.8" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+          <div class="photo-slot" id="ph2" onclick="fillPhoto(2,'#d4b483','#b8956a')">
+            <div class="plus">
+              <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
+                <path d="M7 1V13M1 7H13" stroke="#111" stroke-width="1.8" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+          <div class="photo-slot" id="ph3" onclick="fillPhoto(3,'#c4a882','#a88f6a')">
+            <div class="plus">
+              <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
+                <path d="M7 1V13M1 7H13" stroke="#111" stroke-width="1.8" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+          <div class="photo-slot" id="ph4" onclick="fillPhoto(4,'#8fb5a8','#6a9589')">
+            <div class="plus">
+              <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
+                <path d="M7 1V13M1 7H13" stroke="#111" stroke-width="1.8" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+          <div class="photo-slot" id="ph5" onclick="fillPhoto(5,'#b5a8d4','#8f7fbf')">
+            <div class="plus">
+              <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
+                <path d="M7 1V13M1 7H13" stroke="#111" stroke-width="1.8" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <p class="photo-note">Your first photo is your main photo. Make it a clear one of your face.</p>
+
+        <div class="row-2">
+          <div class="afield">
+            <label class="afield-lbl">First name</label>
+            <input class="afield-inp" type="text" placeholder="Priya" />
+          </div>
+          <div class="afield">
+            <label class="afield-lbl">Age</label>
+            <input class="afield-inp" type="number" placeholder="21" min="18" max="30"/>
+          </div>
         </div>
 
         <div class="tag-sec">
-          <span class="tag-sec-lbl">Your college</span>
+          <span class="tag-lbl">I am</span>
+          <div class="tgrid" data-mode="single">
+            <div class="ob-tag" data-group="gender">A woman</div>
+            <div class="ob-tag" data-group="gender">A man</div>
+            <div class="ob-tag" data-group="gender">Non-binary</div>
+          </div>
+        </div>
+
+        <div class="tag-sec">
+          <span class="tag-lbl">I'm looking for</span>
+          <div class="tgrid" data-mode="single">
+            <div class="ob-tag" data-group="pref">Women only</div>
+            <div class="ob-tag" data-group="pref">Men only</div>
+            <div class="ob-tag" data-group="pref">Anyone</div>
+          </div>
+        </div>
+      </div>
+      <div class="abot">
+        <button class="btn-full" onclick="goApp('s-ob2')">Continue →</button>
+      </div>
+    </div>
+
+    <!-- ── ONBOARD 2: COLLEGE + BACKGROUND ── -->
+    <div id="s-ob2" class="screen app-screen">
+      <div class="abar">
+        <button class="a-back" onclick="goApp('s-ob1')">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M10 12L6 8L10 4" stroke="#111" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <div class="prog"><div class="pd on"></div><div class="pd on"></div><div class="pd"></div><div class="pd"></div></div>
+      </div>
+      <div class="acont">
+        <div class="a-hed">A bit about<br>your background.</div>
+        <div class="a-sub">This helps people know who they're actually talking to.</div>
+
+        <div class="tag-sec">
+          <span class="tag-lbl">Your college</span>
           <div class="tgrid" data-mode="single">
             <div class="ob-tag" data-group="college">Atlas Skilltech</div>
             <div class="ob-tag" data-group="college">NMIMS</div>
@@ -537,13 +1011,111 @@ body{font-family:var(--dm);background:var(--w);color:var(--b);-webkit-font-smoot
             <div class="ob-tag" data-group="college">Jai Hind</div>
             <div class="ob-tag" data-group="college">Mithibai</div>
             <div class="ob-tag" data-group="college">SP Jain</div>
+            <div class="ob-tag" data-group="college">Narsee Monjee</div>
             <div class="ob-tag" data-group="college">Other</div>
           </div>
         </div>
 
+        <div class="row-2">
+          <div class="afield">
+            <label class="afield-lbl">What you study</label>
+            <select class="afield-select">
+              <option value="">Course</option>
+              <option>Architecture</option>
+              <option>Business / BBA / MBA</option>
+              <option>Engineering</option>
+              <option>Law</option>
+              <option>Design</option>
+              <option>Media / Journalism</option>
+              <option>Arts / Humanities</option>
+              <option>Commerce</option>
+              <option>Medicine</option>
+              <option>Psychology</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="afield">
+            <label class="afield-lbl">Year</label>
+            <select class="afield-select">
+              <option value="">Year</option>
+              <option>1st year</option>
+              <option>2nd year</option>
+              <option>3rd year</option>
+              <option>4th year</option>
+              <option>Postgrad</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="afield">
+          <label class="afield-lbl">Hometown</label>
+          <input class="afield-inp" type="text" placeholder="Delhi, Pune, Kolkata..." style="font-size:17px" />
+        </div>
+
         <div class="tag-sec">
-          <span class="tag-sec-lbl">Where in Mumbai?</span>
+          <span class="tag-lbl">Diet</span>
           <div class="tgrid" data-mode="single">
+            <div class="ob-tag" data-group="diet">Vegetarian</div>
+            <div class="ob-tag" data-group="diet">Eggetarian</div>
+            <div class="ob-tag" data-group="diet">Non-vegetarian</div>
+            <div class="ob-tag" data-group="diet">Vegan</div>
+          </div>
+        </div>
+
+        <div class="tag-sec">
+          <span class="tag-lbl">Religion <span style="font-size:10px;font-weight:400;color:var(--g3)">(optional)</span></span>
+          <div class="tgrid" data-mode="single">
+            <div class="ob-tag" data-group="religion">Hindu</div>
+            <div class="ob-tag" data-group="religion">Muslim</div>
+            <div class="ob-tag" data-group="religion">Christian</div>
+            <div class="ob-tag" data-group="religion">Sikh</div>
+            <div class="ob-tag" data-group="religion">Jain</div>
+            <div class="ob-tag" data-group="religion">Buddhist</div>
+            <div class="ob-tag" data-group="religion">Other</div>
+            <div class="ob-tag" data-group="religion">Prefer not to say</div>
+          </div>
+        </div>
+
+        <div class="tag-sec">
+          <span class="tag-lbl">Employment</span>
+          <div class="tgrid" data-mode="single">
+            <div class="ob-tag" data-group="job">Full-time student</div>
+            <div class="ob-tag" data-group="job">Part-time job</div>
+            <div class="ob-tag" data-group="job">Internship</div>
+            <div class="ob-tag" data-group="job">Working student</div>
+          </div>
+        </div>
+      </div>
+      <div class="abot">
+        <button class="btn-full" onclick="goApp('s-ob3')">Continue →</button>
+      </div>
+    </div>
+
+    <!-- ── ONBOARD 3: HOUSING ── -->
+    <div id="s-ob3" class="screen app-screen">
+      <div class="abar">
+        <button class="a-back" onclick="goApp('s-ob2')">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M10 12L6 8L10 4" stroke="#111" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <div class="prog"><div class="pd on"></div><div class="pd on"></div><div class="pd on"></div><div class="pd"></div></div>
+      </div>
+      <div class="acont">
+        <div class="a-hed">What's your<br>housing situation?</div>
+        <div class="a-sub">Be upfront. It's the most important thing on here.</div>
+
+        <div class="tag-sec">
+          <span class="tag-lbl">I am</span>
+          <div class="tgrid" data-mode="single">
+            <div class="ob-tag" data-group="htype">I have a room — looking for a flatmate to join me</div>
+            <div class="ob-tag" data-group="htype">I need a room — looking to join someone</div>
+          </div>
+        </div>
+
+        <div class="tag-sec">
+          <span class="tag-lbl">Area I'm looking at</span>
+          <div class="tgrid" data-mode="multi">
             <div class="ob-tag" data-group="area">Andheri</div>
             <div class="ob-tag" data-group="area">Bandra</div>
             <div class="ob-tag" data-group="area">BKC</div>
@@ -554,43 +1126,53 @@ body{font-family:var(--dm);background:var(--w);color:var(--b);-webkit-font-smoot
             <div class="ob-tag" data-group="area">Versova</div>
             <div class="ob-tag" data-group="area">Santacruz</div>
             <div class="ob-tag" data-group="area">Borivali</div>
+            <div class="ob-tag" data-group="area">Jogeshwari</div>
+            <div class="ob-tag" data-group="area">Open to anywhere</div>
           </div>
         </div>
 
         <div class="tag-sec">
-          <span class="tag-sec-lbl">I am looking for</span>
+          <span class="tag-lbl">Monthly budget for rent</span>
           <div class="tgrid" data-mode="single">
-            <div class="ob-tag" data-group="gender">Female flatmate</div>
-            <div class="ob-tag" data-group="gender">Male flatmate</div>
-            <div class="ob-tag" data-group="gender">Anyone</div>
+            <div class="ob-tag" data-group="budget">Under ₹10,000</div>
+            <div class="ob-tag" data-group="budget">₹10,000 – ₹15,000</div>
+            <div class="ob-tag" data-group="budget">₹15,000 – ₹20,000</div>
+            <div class="ob-tag" data-group="budget">₹20,000 – ₹25,000</div>
+            <div class="ob-tag" data-group="budget">₹25,000+</div>
+          </div>
+        </div>
+
+        <div class="tag-sec">
+          <span class="tag-lbl">When do you need to move in?</span>
+          <div class="tgrid" data-mode="single">
+            <div class="ob-tag" data-group="movein">Immediately</div>
+            <div class="ob-tag" data-group="movein">Within a month</div>
+            <div class="ob-tag" data-group="movein">1–3 months</div>
+            <div class="ob-tag" data-group="movein">Flexible</div>
           </div>
         </div>
       </div>
-
       <div class="abot">
-        <button class="btn-full" onclick="goApp('s-ob2')">Continue →</button>
+        <button class="btn-full" onclick="goApp('s-ob4')">Continue →</button>
       </div>
     </div>
 
-    <!-- ── ONBOARDING 2: HABITS ── -->
-    <div id="s-ob2" class="screen app-screen">
+    <!-- ── ONBOARD 4: HABITS + VIBE + BIO ── -->
+    <div id="s-ob4" class="screen app-screen">
       <div class="abar">
-        <button class="a-back" onclick="goApp('s-ob1')">
+        <button class="a-back" onclick="goApp('s-ob3')">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
             <path d="M10 12L6 8L10 4" stroke="#111" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </button>
-        <div class="prog">
-          <div class="pd on"></div><div class="pd on"></div><div class="pd"></div>
-        </div>
+        <div class="prog"><div class="pd on"></div><div class="pd on"></div><div class="pd on"></div><div class="pd on"></div></div>
       </div>
-
       <div class="acont">
-        <div class="a-hed">How do you<br>actually live?</div>
-        <div class="a-sub">Be honest. Your future flatmate will thank you.</div>
+        <div class="a-hed">Last bit.<br>Be honest.</div>
+        <div class="a-sub">Your habits and vibe. People who are upfront here find better matches.</div>
 
         <div class="tag-sec">
-          <span class="tag-sec-lbl">Sleep schedule</span>
+          <span class="tag-lbl">Sleep schedule</span>
           <div class="tgrid" data-mode="single">
             <div class="ob-tag" data-group="sleep">Early bird</div>
             <div class="ob-tag" data-group="sleep">Night owl</div>
@@ -599,7 +1181,7 @@ body{font-family:var(--dm);background:var(--w);color:var(--b);-webkit-font-smoot
         </div>
 
         <div class="tag-sec">
-          <span class="tag-sec-lbl">Cleanliness</span>
+          <span class="tag-lbl">Cleanliness</span>
           <div class="tgrid" data-mode="single">
             <div class="ob-tag" data-group="clean">Spotless</div>
             <div class="ob-tag" data-group="clean">Reasonably tidy</div>
@@ -608,7 +1190,7 @@ body{font-family:var(--dm);background:var(--w);color:var(--b);-webkit-font-smoot
         </div>
 
         <div class="tag-sec">
-          <span class="tag-sec-lbl">Guests at home</span>
+          <span class="tag-lbl">Guests at home</span>
           <div class="tgrid" data-mode="single">
             <div class="ob-tag" data-group="guests">Often</div>
             <div class="ob-tag" data-group="guests">Sometimes</div>
@@ -618,48 +1200,16 @@ body{font-family:var(--dm);background:var(--w);color:var(--b);-webkit-font-smoot
         </div>
 
         <div class="tag-sec">
-          <span class="tag-sec-lbl">Noise level</span>
+          <span class="tag-lbl">Noise at home</span>
           <div class="tgrid" data-mode="single">
             <div class="ob-tag" data-group="noise">Silent flat</div>
-            <div class="ob-tag" data-group="noise">Background noise okay</div>
-            <div class="ob-tag" data-group="noise">Loud is fine</div>
+            <div class="ob-tag" data-group="noise">Background noise fine</div>
+            <div class="ob-tag" data-group="noise">Loud is okay</div>
           </div>
         </div>
 
         <div class="tag-sec">
-          <span class="tag-sec-lbl">Work or study from home?</span>
-          <div class="tgrid" data-mode="single">
-            <div class="ob-tag" data-group="wfh">Yes, a lot</div>
-            <div class="ob-tag" data-group="wfh">Sometimes</div>
-            <div class="ob-tag" data-group="wfh">Rarely</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="abot">
-        <button class="btn-full" onclick="goApp('s-ob3')">Continue →</button>
-      </div>
-    </div>
-
-    <!-- ── ONBOARDING 3: VIBE ── -->
-    <div id="s-ob3" class="screen app-screen">
-      <div class="abar">
-        <button class="a-back" onclick="goApp('s-ob2')">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M10 12L6 8L10 4" stroke="#111" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </button>
-        <div class="prog">
-          <div class="pd on"></div><div class="pd on"></div><div class="pd on"></div>
-        </div>
-      </div>
-
-      <div class="acont">
-        <div class="a-hed">Last bit.<br>Be real.</div>
-        <div class="a-sub">Pick up to 5 interests. And the vices — no judgment, just context.</div>
-
-        <div class="tag-sec">
-          <span class="tag-sec-lbl">Interests — pick up to 5</span>
+          <span class="tag-lbl">Interests — pick up to 5</span>
           <div class="tgrid" data-mode="multi" data-max="5">
             <div class="ob-tag" data-group="int">Music</div>
             <div class="ob-tag" data-group="int">Films</div>
@@ -674,14 +1224,15 @@ body{font-family:var(--dm);background:var(--w);color:var(--b);-webkit-font-smoot
             <div class="ob-tag" data-group="int">Sports</div>
             <div class="ob-tag" data-group="int">Fashion</div>
             <div class="ob-tag" data-group="int">Photography</div>
+            <div class="ob-tag" data-group="int">Yoga / Wellness</div>
           </div>
         </div>
 
         <div class="tag-sec">
-          <span class="tag-sec-lbl">Vices — pick all that apply</span>
+          <span class="tag-lbl">Vices — be real</span>
           <div class="tgrid" data-mode="multi">
             <div class="ob-tag" data-group="vice">Non-smoker</div>
-            <div class="ob-tag" data-group="vice">Smoker</div>
+            <div class="ob-tag" data-group="vice">Smoker (outside)</div>
             <div class="ob-tag" data-group="vice">Social drinker</div>
             <div class="ob-tag" data-group="vice">Regular drinker</div>
             <div class="ob-tag" data-group="vice">Neither</div>
@@ -690,210 +1241,546 @@ body{font-family:var(--dm);background:var(--w);color:var(--b);-webkit-font-smoot
         </div>
 
         <div class="tag-sec">
-          <span class="tag-sec-lbl">Hard dealbreakers for me</span>
+          <span class="tag-lbl">Hard dealbreakers</span>
           <div class="tgrid" data-mode="multi">
             <div class="ob-tag" data-group="deal">No smoking indoors</div>
             <div class="ob-tag" data-group="deal">No pets</div>
             <div class="ob-tag" data-group="deal">Pet-friendly only</div>
             <div class="ob-tag" data-group="deal">Vegetarian flat</div>
-            <div class="ob-tag" data-group="deal">Girls only</div>
+            <div class="ob-tag" data-group="deal">Same gender only</div>
+            <div class="ob-tag" data-group="deal">No overnight guests</div>
             <div class="ob-tag" data-group="deal">None really</div>
           </div>
         </div>
-      </div>
 
+        <div class="afield">
+          <label class="afield-lbl">In your own words <span style="font-size:10px;font-weight:400;color:var(--g3)">(optional but worth it)</span></label>
+          <textarea class="afield-ta" rows="4" maxlength="200" placeholder="What should your future flatmate know about you? The real stuff — not a job description." oninput="updateChar(this)"></textarea>
+          <div class="char-count" id="charcount">200 characters left</div>
+        </div>
+      </div>
       <div class="abot">
         <button class="btn-full" onclick="goApp('s-feed')">Find my matches →</button>
       </div>
     </div>
 
     <!-- ── FEED ── -->
-    <div id="s-feed" class="screen app-screen" style="padding-bottom:0">
+    <div id="s-feed" class="screen app-screen">
       <div class="feed-hdr">
-        <div class="feed-top">
-          <span class="feed-title">For you</span>
-          <span class="feed-count">24 profiles nearby</span>
-        </div>
-        <div class="chips">
-          <div class="chip on">All areas</div>
-          <div class="chip">Andheri</div>
-          <div class="chip">Bandra</div>
-          <div class="chip">BKC</div>
-          <div class="chip">Powai</div>
-          <div class="chip">Juhu</div>
-          <div class="chip">Under ₹15k</div>
-        </div>
+        <span class="feed-title">For you</span>
+        <button class="filter-btn" onclick="openFilter()">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M1 2.5H13M3 7H11M5 11.5H9" stroke="#111" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+          Filters
+        </button>
       </div>
 
-      <div class="feed-grid">
+      <div class="feed-scroll">
         <!-- Card 1 -->
-        <div class="f-card" onclick="goApp('s-profile')">
-          <div class="f-av">PM</div>
-          <div class="f-name">Priya M.</div>
-          <div class="f-school">NMIMS · Bandra</div>
-          <div class="f-tags">
-            <span class="f-tag y">Night owl</span>
-            <span class="f-tag">Films</span>
-            <span class="f-tag">Tidy</span>
+        <div class="feed-card" onclick="goApp('s-pdtl')">
+          <div class="fc-photo">
+            <div class="fc-photo-bg" style="background:linear-gradient(135deg,#f0c500 0%,#f5a623 100%);width:100%;height:100%"></div>
+            <div class="fc-photo-grad"></div>
+            <div class="fc-photo-info">
+              <div><span class="fc-photo-name">Priya</span><span class="fc-photo-age">21</span></div>
+              <span class="fc-badge">Verified</span>
+            </div>
           </div>
-          <div class="f-bud">₹16,000</div>
+          <div class="fc-body">
+            <div class="fc-top-row">
+              <div class="fc-school"><strong>NMIMS</strong> · Architecture, 3rd yr<br>Bandra West · Non-veg</div>
+              <div class="fc-area-bud">
+                <div class="fc-area">Has a room</div>
+                <div class="fc-bud">₹16,000</div>
+              </div>
+            </div>
+            <div class="fc-tags">
+              <span class="fc-tag y">Night owl</span>
+              <span class="fc-tag g">Reasonably tidy</span>
+              <span class="fc-tag g">Films</span>
+              <span class="fc-tag g">Social drinker</span>
+            </div>
+            <div class="fc-actions">
+              <button class="fc-btn pass">Pass</button>
+              <button class="fc-btn like" onclick="event.stopPropagation();this.textContent='Interested ✓';this.classList.add('matched')">Say I'm interested</button>
+            </div>
+          </div>
         </div>
 
         <!-- Card 2 -->
-        <div class="f-card" onclick="goApp('s-profile')">
-          <div class="f-av alt">DK</div>
-          <div class="f-name">Dev K.</div>
-          <div class="f-school">Amity · Powai</div>
-          <div class="f-tags">
-            <span class="f-tag y">Flexible</span>
-            <span class="f-tag">Gaming</span>
-            <span class="f-tag">Chill</span>
+        <div class="feed-card" onclick="goApp('s-pdtl')">
+          <div class="fc-photo">
+            <div class="fc-photo-bg" style="background:linear-gradient(135deg,#a8c5da 0%,#7faabf 100%);width:100%;height:100%"></div>
+            <div class="fc-photo-grad"></div>
+            <div class="fc-photo-info">
+              <div><span class="fc-photo-name">Dev</span><span class="fc-photo-age">22</span></div>
+              <span class="fc-badge">Verified</span>
+            </div>
           </div>
-          <div class="f-bud">₹12,000</div>
+          <div class="fc-body">
+            <div class="fc-top-row">
+              <div class="fc-school"><strong>Amity</strong> · Engineering, 4th yr<br>Powai · Veg</div>
+              <div class="fc-area-bud">
+                <div class="fc-area">Needs a room</div>
+                <div class="fc-bud">₹12,000</div>
+              </div>
+            </div>
+            <div class="fc-tags">
+              <span class="fc-tag y">Flexible</span>
+              <span class="fc-tag g">Gaming</span>
+              <span class="fc-tag g">Spotless</span>
+              <span class="fc-tag g">Neither</span>
+            </div>
+            <div class="fc-actions">
+              <button class="fc-btn pass">Pass</button>
+              <button class="fc-btn like" onclick="event.stopPropagation();this.textContent='Interested ✓';this.classList.add('matched')">Say I'm interested</button>
+            </div>
+          </div>
         </div>
 
         <!-- Card 3 -->
-        <div class="f-card" onclick="goApp('s-profile')">
-          <div class="f-av">AK</div>
-          <div class="f-name">Aisha K.</div>
-          <div class="f-school">Atlas · Andheri W</div>
-          <div class="f-tags">
-            <span class="f-tag y">Early bird</span>
-            <span class="f-tag">Fitness</span>
+        <div class="feed-card" onclick="goApp('s-pdtl')">
+          <div class="fc-photo">
+            <div class="fc-photo-bg" style="background:linear-gradient(135deg,#d4b483 0%,#b8956a 100%);width:100%;height:100%"></div>
+            <div class="fc-photo-grad"></div>
+            <div class="fc-photo-info">
+              <div><span class="fc-photo-name">Aisha</span><span class="fc-photo-age">19</span></div>
+              <span class="fc-badge">Verified</span>
+            </div>
           </div>
-          <div class="f-bud">₹14,000</div>
+          <div class="fc-body">
+            <div class="fc-top-row">
+              <div class="fc-school"><strong>Atlas Skilltech</strong> · BBA, 1st yr<br>Andheri · Non-veg</div>
+              <div class="fc-area-bud">
+                <div class="fc-area">Has a room</div>
+                <div class="fc-bud">₹14,000</div>
+              </div>
+            </div>
+            <div class="fc-tags">
+              <span class="fc-tag y">Early bird</span>
+              <span class="fc-tag g">Fitness</span>
+              <span class="fc-tag g">Tidy</span>
+              <span class="fc-tag g">Non-smoker</span>
+            </div>
+            <div class="fc-actions">
+              <button class="fc-btn pass">Pass</button>
+              <button class="fc-btn like" onclick="event.stopPropagation();this.textContent='Interested ✓';this.classList.add('matched')">Say I'm interested</button>
+            </div>
+          </div>
         </div>
 
         <!-- Card 4 -->
-        <div class="f-card" onclick="goApp('s-profile')">
-          <div class="f-av alt">RS</div>
-          <div class="f-name">Riya S.</div>
-          <div class="f-school">SVKM · Juhu</div>
-          <div class="f-tags">
-            <span class="f-tag y">Night owl</span>
-            <span class="f-tag">Music</span>
+        <div class="feed-card" onclick="goApp('s-pdtl')">
+          <div class="fc-photo">
+            <div class="fc-photo-bg" style="background:linear-gradient(135deg,#8fb5a8 0%,#6a9589 100%);width:100%;height:100%"></div>
+            <div class="fc-photo-grad"></div>
+            <div class="fc-photo-info">
+              <div><span class="fc-photo-name">Riya</span><span class="fc-photo-age">20</span></div>
+              <span class="fc-badge">Verified</span>
+            </div>
           </div>
-          <div class="f-bud">₹13,000</div>
-        </div>
-
-        <!-- Card 5 -->
-        <div class="f-card" onclick="goApp('s-profile')">
-          <div class="f-av">SM</div>
-          <div class="f-name">Sara M.</div>
-          <div class="f-school">SP Jain · BKC</div>
-          <div class="f-tags">
-            <span class="f-tag y">Spotless</span>
-            <span class="f-tag">Reading</span>
+          <div class="fc-body">
+            <div class="fc-top-row">
+              <div class="fc-school"><strong>SVKM</strong> · Law, 2nd yr<br>Juhu · Eggetarian</div>
+              <div class="fc-area-bud">
+                <div class="fc-area">Needs a room</div>
+                <div class="fc-bud">₹13,000</div>
+              </div>
+            </div>
+            <div class="fc-tags">
+              <span class="fc-tag y">Night owl</span>
+              <span class="fc-tag g">Music</span>
+              <span class="fc-tag g">Social drinker</span>
+            </div>
+            <div class="fc-actions">
+              <button class="fc-btn pass">Pass</button>
+              <button class="fc-btn like" onclick="event.stopPropagation();this.textContent='Interested ✓';this.classList.add('matched')">Say I'm interested</button>
+            </div>
           </div>
-          <div class="f-bud">₹22,000</div>
-        </div>
-
-        <!-- Card 6 -->
-        <div class="f-card" onclick="goApp('s-profile')">
-          <div class="f-av alt">VC</div>
-          <div class="f-name">Veer C.</div>
-          <div class="f-school">Mithibai · Santacruz</div>
-          <div class="f-tags">
-            <span class="f-tag y">Flexible</span>
-            <span class="f-tag">Sports</span>
-          </div>
-          <div class="f-bud">₹11,000</div>
         </div>
       </div>
 
-      <div class="bnav">
-        <div class="bn">
+      <nav class="bnav">
+        <div class="bn" onclick="showTab('s-feed')">
           <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-            <path d="M3 10.5L11 3L19 10.5V19H14V14H8V19H3V10.5Z" stroke="#111" stroke-width="1.6" stroke-linejoin="round"/>
+            <path d="M3 10.5L11 3L19 10.5V19H14V14H8V19H3V10.5Z" stroke="#111" stroke-width="1.7" stroke-linejoin="round"/>
           </svg>
           <span class="bn-lbl on">Browse</span>
         </div>
-        <div class="bn">
+        <div class="bn" onclick="showTab('s-chat')">
           <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-            <path d="M16 8C16 11.314 11 18 11 18C11 18 6 11.314 6 8C6 5.239 8.239 3 11 3C13.761 3 16 5.239 16 8Z" stroke="#999" stroke-width="1.6"/>
-            <circle cx="11" cy="8" r="1.5" stroke="#999" stroke-width="1.4"/>
+            <path d="M4 4H18V15H10L6 19V15H4V4Z" stroke="#999" stroke-width="1.7" stroke-linejoin="round"/>
           </svg>
-          <span class="bn-lbl">Map</span>
+          <span class="bn-lbl">Chats</span>
         </div>
-        <div class="bn">
+        <div class="bn" onclick="showTab('s-prof')">
           <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-            <path d="M4 4H18V15H4V4Z" stroke="#999" stroke-width="1.6" stroke-linejoin="round"/>
-            <path d="M4 15L8 11L11 14L14 10L18 15" stroke="#999" stroke-width="1.4" stroke-linejoin="round"/>
-          </svg>
-          <span class="bn-lbl">Matches</span>
-        </div>
-        <div class="bn">
-          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-            <circle cx="11" cy="8" r="4" stroke="#999" stroke-width="1.6"/>
-            <path d="M3 19C3 15.686 6.686 13 11 13C15.314 13 19 15.686 19 19" stroke="#999" stroke-width="1.6" stroke-linecap="round"/>
+            <circle cx="11" cy="8" r="4" stroke="#999" stroke-width="1.7"/>
+            <path d="M3 19C3 15.686 6.686 13 11 13C15.314 13 19 15.686 19 19" stroke="#999" stroke-width="1.7" stroke-linecap="round"/>
           </svg>
           <span class="bn-lbl">Profile</span>
         </div>
-      </div>
+      </nav>
     </div>
 
     <!-- ── PROFILE DETAIL ── -->
-    <div id="s-profile" class="screen app-screen">
-      <div class="pd-hdr">
-        <div class="pd-backrow">
-          <button class="a-back" onclick="goApp('s-feed')">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M10 12L6 8L10 4" stroke="#111" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </button>
-          <div class="sc-ver"><span class="vdot"></span>Verified student</div>
+    <div id="s-pdtl" class="screen app-screen">
+      <div class="pd-scroll">
+        <div class="pd-photos">
+          <div style="background:linear-gradient(135deg,#f0c500 0%,#f5a623 100%);width:100%;height:100%"></div>
+          <div class="pd-photo-grad"></div>
+          <div class="pd-photo-top">
+            <button class="pd-back-btn" onclick="goApp('s-feed')">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M10 12L6 8L10 4" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+            <div class="pd-ver-badge"><span class="vdot" style="background:var(--y)"></span>Verified student</div>
+          </div>
+          <div class="pd-photo-info">
+            <div class="pd-name-row">
+              <span class="pd-name">Priya Mehta</span>
+              <span class="pd-age">21</span>
+            </div>
+            <div class="pd-meta">NMIMS · Architecture, 3rd year · Bandra West</div>
+          </div>
         </div>
-        <div class="pd-av">PM</div>
-        <div class="pd-name">Priya Mehta</div>
-        <div class="pd-meta">Architecture · NMIMS · Bandra West</div>
+
+        <div class="pd-body">
+          <div class="pd-about">
+            "Architecture student who's usually up drawing till 1am. Clean-ish, love films on weekends, occasionally have people over. Looking for someone who doesn't mind the creative chaos."
+          </div>
+
+          <div class="pd-sec">
+            <span class="pd-sec-lbl">Habits</span>
+            <div class="pd-tags">
+              <span class="pd-tag y">Night owl</span>
+              <span class="pd-tag">Reasonably tidy</span>
+              <span class="pd-tag">Guests sometimes</span>
+              <span class="pd-tag">Background noise fine</span>
+              <span class="pd-tag">WFH sometimes</span>
+            </div>
+          </div>
+
+          <div class="pd-sec">
+            <span class="pd-sec-lbl">Into</span>
+            <div class="pd-tags">
+              <span class="pd-tag y">Films</span>
+              <span class="pd-tag y">Art</span>
+              <span class="pd-tag">Going out</span>
+              <span class="pd-tag">Fashion</span>
+              <span class="pd-tag">Photography</span>
+            </div>
+          </div>
+
+          <div class="pd-sec">
+            <span class="pd-sec-lbl">Background</span>
+            <div class="pd-tags">
+              <span class="pd-tag">From Delhi</span>
+              <span class="pd-tag">Non-veg</span>
+              <span class="pd-tag">Hindu</span>
+              <span class="pd-tag">Part-time internship</span>
+            </div>
+          </div>
+
+          <div class="pd-sec">
+            <span class="pd-sec-lbl">Vices</span>
+            <div class="pd-tags">
+              <span class="pd-tag">Social drinker</span>
+              <span class="pd-tag">Non-smoker</span>
+            </div>
+          </div>
+
+          <div class="pd-sec">
+            <span class="pd-sec-lbl">Dealbreakers</span>
+            <div class="pd-tags">
+              <span class="pd-tag">No smoking indoors</span>
+              <span class="pd-tag">Women only</span>
+            </div>
+          </div>
+
+          <div class="pd-sec">
+            <span class="pd-sec-lbl">Housing</span>
+            <div class="pd-tags">
+              <span class="pd-tag y">Has a room</span>
+              <span class="pd-tag">Bandra West</span>
+              <span class="pd-tag">Available now</span>
+            </div>
+          </div>
+
+          <div class="pd-bud">
+            <span class="pd-bud-lbl">Monthly rent (your share)</span>
+            <span class="pd-bud-val">₹16,000</span>
+          </div>
+        </div>
       </div>
 
-      <div class="pd-body">
-        <div class="pd-sec">
-          <span class="pd-sec-lbl">Habits</span>
-          <div class="pd-tags">
-            <span class="pd-tag y">Night owl</span>
-            <span class="pd-tag">Reasonably tidy</span>
-            <span class="pd-tag">Guests sometimes</span>
-            <span class="pd-tag">Background noise okay</span>
+      <div class="pd-acts">
+        <button class="pd-act-pass" onclick="goApp('s-feed')">Pass</button>
+        <button class="pd-act-like" onclick="this.textContent='Interested ✓';this.style.background='var(--y)';this.style.color='var(--b)'">Say I'm interested</button>
+      </div>
+    </div>
+
+    <!-- ── CHATS ── -->
+    <div id="s-chat" class="screen app-screen">
+      <div class="chat-hdr">
+        <div class="chat-title">Chats</div>
+        <div class="chat-sub">When both of you say you're interested, chat opens.</div>
+      </div>
+      <div class="chat-list">
+        <div class="match-banner">
+          <div class="match-av">RS</div>
+          <div class="match-text">
+            <div class="match-title">You matched with Riya!</div>
+            <div class="match-sub">Both of you said you're interested. Say hello.</div>
           </div>
         </div>
 
-        <div class="pd-sec">
-          <span class="pd-sec-lbl">Into</span>
-          <div class="pd-tags">
-            <span class="pd-tag y">Films</span>
-            <span class="pd-tag y">Art</span>
-            <span class="pd-tag">Going out</span>
-            <span class="pd-tag">Fashion</span>
-            <span class="pd-tag">Photography</span>
+        <div class="chat-item">
+          <div class="chat-av y">RS</div>
+          <div class="chat-info">
+            <div class="chat-name">Riya Sharma</div>
+            <div class="chat-preview">Hey! I saw your profile — Juhu works for me. Are you...</div>
+          </div>
+          <div class="chat-meta">
+            <div class="chat-time">2m ago</div>
+            <div class="chat-unread">2</div>
           </div>
         </div>
 
-        <div class="pd-sec">
-          <span class="pd-sec-lbl">Vices</span>
-          <div class="pd-tags">
-            <span class="pd-tag">Social drinker</span>
-            <span class="pd-tag">Non-smoker</span>
+        <div class="chat-item">
+          <div class="chat-av b">DK</div>
+          <div class="chat-info">
+            <div class="chat-name">Dev Kumar</div>
+            <div class="chat-preview">You: Sounds good, I'm around this weekend</div>
+          </div>
+          <div class="chat-meta">
+            <div class="chat-time">Yesterday</div>
           </div>
         </div>
 
-        <div class="pd-sec">
-          <span class="pd-sec-lbl">Dealbreakers</span>
-          <div class="pd-tags">
-            <span class="pd-tag">No smoking indoors</span>
-            <span class="pd-tag">Girls only</span>
+        <div class="chat-item">
+          <div class="chat-av y">AK</div>
+          <div class="chat-info">
+            <div class="chat-name">Aisha Khan</div>
+            <div class="chat-preview">Is the room still available? When can we talk?</div>
           </div>
-        </div>
-
-        <div class="pd-bud">
-          <span class="pd-bud-lbl">Budget / month</span>
-          <span class="pd-bud-val">₹16,000</span>
+          <div class="chat-meta">
+            <div class="chat-time">2d ago</div>
+          </div>
         </div>
       </div>
 
-      <div class="pd-act">
-        <button class="btn-full">Say hello →</button>
+      <nav class="bnav">
+        <div class="bn" onclick="showTab('s-feed')">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+            <path d="M3 10.5L11 3L19 10.5V19H14V14H8V19H3V10.5Z" stroke="#999" stroke-width="1.7" stroke-linejoin="round"/>
+          </svg>
+          <span class="bn-lbl">Browse</span>
+        </div>
+        <div class="bn" onclick="showTab('s-chat')">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+            <path d="M4 4H18V15H10L6 19V15H4V4Z" stroke="#111" stroke-width="1.7" stroke-linejoin="round"/>
+          </svg>
+          <span class="bn-lbl on">Chats</span>
+        </div>
+        <div class="bn" onclick="showTab('s-prof')">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+            <circle cx="11" cy="8" r="4" stroke="#999" stroke-width="1.7"/>
+            <path d="M3 19C3 15.686 6.686 13 11 13C15.314 13 19 15.686 19 19" stroke="#999" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+          <span class="bn-lbl">Profile</span>
+        </div>
+      </nav>
+    </div>
+
+    <!-- ── MY PROFILE ── -->
+    <div id="s-prof" class="screen app-screen">
+      <div class="prof-scroll">
+        <div class="prof-hdr">
+          <div class="prof-av-name">
+            <div class="prof-av">PM</div>
+            <div class="prof-name">Priya Mehta</div>
+            <div class="prof-meta">NMIMS · Architecture · Bandra West</div>
+          </div>
+          <button class="edit-btn">Edit</button>
+        </div>
+
+        <div class="prof-body">
+          <div class="prof-stat-row">
+            <div class="prof-stat">
+              <div class="prof-stat-n">12</div>
+              <div class="prof-stat-l">Profile views</div>
+            </div>
+            <div class="prof-stat">
+              <div class="prof-stat-n">3</div>
+              <div class="prof-stat-l">Mutual interests</div>
+            </div>
+          </div>
+
+          <div class="prof-sec">
+            <span class="prof-sec-lbl">About you</span>
+            <div class="prof-about">"Architecture student who's usually up drawing till 1am. Clean-ish, love films on weekends, occasionally have people over."</div>
+          </div>
+
+          <div class="prof-sec">
+            <span class="prof-sec-lbl">Housing</span>
+            <div class="prof-tags">
+              <span class="prof-tag y">Has a room</span>
+              <span class="prof-tag">Bandra West</span>
+              <span class="prof-tag">₹16,000/mo</span>
+              <span class="prof-tag">Available now</span>
+            </div>
+          </div>
+
+          <div class="prof-sec">
+            <span class="prof-sec-lbl">Habits</span>
+            <div class="prof-tags">
+              <span class="prof-tag y">Night owl</span>
+              <span class="prof-tag">Reasonably tidy</span>
+              <span class="prof-tag">Guests sometimes</span>
+              <span class="prof-tag">Background noise fine</span>
+            </div>
+          </div>
+
+          <div class="prof-sec">
+            <span class="prof-sec-lbl">Interests</span>
+            <div class="prof-tags">
+              <span class="prof-tag y">Films</span>
+              <span class="prof-tag y">Art</span>
+              <span class="prof-tag">Going out</span>
+              <span class="prof-tag">Fashion</span>
+              <span class="prof-tag">Photography</span>
+            </div>
+          </div>
+
+          <div class="prof-sec">
+            <span class="prof-sec-lbl">Background</span>
+            <div class="prof-tags">
+              <span class="prof-tag">Delhi</span>
+              <span class="prof-tag">Non-veg</span>
+              <span class="prof-tag">Hindu</span>
+              <span class="prof-tag">Internship</span>
+            </div>
+          </div>
+
+          <div class="prof-sec">
+            <span class="prof-sec-lbl">Vices + Dealbreakers</span>
+            <div class="prof-tags">
+              <span class="prof-tag">Social drinker</span>
+              <span class="prof-tag">Non-smoker</span>
+              <span class="prof-tag">No smoking indoors</span>
+              <span class="prof-tag">Women only</span>
+            </div>
+          </div>
+
+          <button class="logout-btn">Sign out</button>
+        </div>
+      </div>
+
+      <nav class="bnav">
+        <div class="bn" onclick="showTab('s-feed')">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+            <path d="M3 10.5L11 3L19 10.5V19H14V14H8V19H3V10.5Z" stroke="#999" stroke-width="1.7" stroke-linejoin="round"/>
+          </svg>
+          <span class="bn-lbl">Browse</span>
+        </div>
+        <div class="bn" onclick="showTab('s-chat')">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+            <path d="M4 4H18V15H10L6 19V15H4V4Z" stroke="#999" stroke-width="1.7" stroke-linejoin="round"/>
+          </svg>
+          <span class="bn-lbl">Chats</span>
+        </div>
+        <div class="bn" onclick="showTab('s-prof')">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+            <circle cx="11" cy="8" r="4" stroke="#111" stroke-width="1.7"/>
+            <path d="M3 19C3 15.686 6.686 13 11 13C15.314 13 19 15.686 19 19" stroke="#111" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+          <span class="bn-lbl on">Profile</span>
+        </div>
+      </nav>
+    </div>
+
+    <!-- ── FILTER SHEET ── -->
+    <div id="filter-overlay" onclick="closeFilter(event)">
+      <div class="filter-sheet" onclick="event.stopPropagation()">
+        <div class="fs-handle"></div>
+        <div class="fs-title">Filters</div>
+
+        <div class="fs-sec">
+          <span class="fs-sec-lbl">Area</span>
+          <div class="fs-chips">
+            <div class="fs-chip" onclick="toggleChip(this)">Andheri</div>
+            <div class="fs-chip" onclick="toggleChip(this)">Bandra</div>
+            <div class="fs-chip" onclick="toggleChip(this)">BKC</div>
+            <div class="fs-chip" onclick="toggleChip(this)">Juhu</div>
+            <div class="fs-chip" onclick="toggleChip(this)">Powai</div>
+            <div class="fs-chip" onclick="toggleChip(this)">Goregaon</div>
+            <div class="fs-chip" onclick="toggleChip(this)">Malad</div>
+            <div class="fs-chip" onclick="toggleChip(this)">Versova</div>
+          </div>
+        </div>
+
+        <div class="fs-sec">
+          <span class="fs-sec-lbl">Budget (max)</span>
+          <div class="fs-chips">
+            <div class="fs-chip" onclick="singleChip(this,'bmax')">Under ₹10k</div>
+            <div class="fs-chip" onclick="singleChip(this,'bmax')">Under ₹15k</div>
+            <div class="fs-chip" onclick="singleChip(this,'bmax')">Under ₹20k</div>
+            <div class="fs-chip" onclick="singleChip(this,'bmax')">Under ₹25k</div>
+            <div class="fs-chip" onclick="singleChip(this,'bmax')">Any</div>
+          </div>
+        </div>
+
+        <div class="fs-sec">
+          <span class="fs-sec-lbl">Gender</span>
+          <div class="fs-chips">
+            <div class="fs-chip" onclick="singleChip(this,'gen')">Women</div>
+            <div class="fs-chip" onclick="singleChip(this,'gen')">Men</div>
+            <div class="fs-chip" onclick="singleChip(this,'gen')">Any</div>
+          </div>
+        </div>
+
+        <div class="fs-sec">
+          <span class="fs-sec-lbl">Sleep schedule</span>
+          <div class="fs-chips">
+            <div class="fs-chip" onclick="singleChip(this,'sleep')">Early bird</div>
+            <div class="fs-chip" onclick="singleChip(this,'sleep')">Night owl</div>
+            <div class="fs-chip" onclick="singleChip(this,'sleep')">Flexible</div>
+          </div>
+        </div>
+
+        <div class="fs-sec">
+          <span class="fs-sec-lbl">Smoking</span>
+          <div class="fs-chips">
+            <div class="fs-chip" onclick="singleChip(this,'smoke')">Non-smokers only</div>
+            <div class="fs-chip" onclick="singleChip(this,'smoke')">Fine either way</div>
+          </div>
+        </div>
+
+        <div class="fs-sec">
+          <span class="fs-sec-lbl">Diet</span>
+          <div class="fs-chips">
+            <div class="fs-chip" onclick="toggleChip(this)">Vegetarian</div>
+            <div class="fs-chip" onclick="toggleChip(this)">Non-veg okay</div>
+            <div class="fs-chip" onclick="toggleChip(this)">Vegan</div>
+          </div>
+        </div>
+
+        <div class="fs-sec">
+          <span class="fs-sec-lbl">Housing type</span>
+          <div class="fs-chips">
+            <div class="fs-chip" onclick="singleChip(this,'htype')">Has a room</div>
+            <div class="fs-chip" onclick="singleChip(this,'htype')">Needs a room</div>
+            <div class="fs-chip" onclick="singleChip(this,'htype')">Both</div>
+          </div>
+        </div>
+
+        <div class="fs-btns">
+          <button class="fs-reset" onclick="resetFilters()">Reset</button>
+          <button class="fs-apply" onclick="closeFilter()">Apply filters</button>
+        </div>
       </div>
     </div>
 
@@ -903,69 +1790,102 @@ body{font-family:var(--dm);background:var(--w);color:var(--b);-webkit-font-smoot
 
 <script>
 // ── NAVIGATION ──
-function goApp(screenId) {
+function goApp(id){
   document.getElementById('s-land').classList.remove('active');
-  const wrap = document.getElementById('app-wrap');
+  const wrap=document.getElementById('app-wrap');
   wrap.classList.add('active');
-  document.querySelectorAll('.app-screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(screenId).classList.add('active');
-  window.scrollTo(0,0);
+  document.querySelectorAll('.app-screen').forEach(s=>s.classList.remove('active'));
+  const target=document.getElementById(id);
+  if(target) target.classList.add('active');
+  wrap.scrollTop=0;
 }
 
-function goLand() {
+function goLand(){
   document.getElementById('app-wrap').classList.remove('active');
   document.getElementById('s-land').classList.add('active');
   window.scrollTo(0,0);
 }
 
+function showTab(id){
+  document.querySelectorAll('.app-screen').forEach(s=>s.classList.remove('active'));
+  const target=document.getElementById(id);
+  if(target) target.classList.add('active');
+}
+
 // ── TAG SELECTION ──
-document.querySelectorAll('.tgrid').forEach(grid => {
-  const mode = grid.dataset.mode || 'single';
-  const max  = parseInt(grid.dataset.max) || 999;
-  const tags = grid.querySelectorAll('.ob-tag');
-
-  tags.forEach(tag => {
-    tag.addEventListener('click', () => {
-      const group = tag.dataset.group;
-
-      if (mode === 'single') {
-        // Deselect all in same group, select clicked
-        grid.querySelectorAll(`[data-group="${group}"]`).forEach(t => t.classList.remove('sel'));
+document.querySelectorAll('.tgrid').forEach(grid=>{
+  const mode=grid.dataset.mode||'single';
+  const max=parseInt(grid.dataset.max)||999;
+  grid.querySelectorAll('.ob-tag').forEach(tag=>{
+    tag.addEventListener('click',()=>{
+      const group=tag.dataset.group;
+      if(mode==='single'){
+        grid.querySelectorAll(`[data-group="${group}"]`).forEach(t=>t.classList.remove('sel'));
         tag.classList.add('sel');
       } else {
-        // Multi-select with optional cap
-        const selected = grid.querySelectorAll('.ob-tag.sel');
-        if (!tag.classList.contains('sel') && selected.length >= max) return;
+        const sel=grid.querySelectorAll('.ob-tag.sel');
+        if(!tag.classList.contains('sel')&&sel.length>=max) return;
         tag.classList.toggle('sel');
       }
     });
   });
 });
 
-// ── FILTER CHIPS ──
-document.querySelectorAll('.chips').forEach(row => {
-  row.querySelectorAll('.chip').forEach(chip => {
-    chip.addEventListener('click', () => {
-      row.querySelectorAll('.chip').forEach(c => c.classList.remove('on'));
-      chip.classList.add('on');
-    });
-  });
-});
+// ── PHOTO UPLOAD SIMULATION ──
+const photoColors=[
+  ['#F2C500','#f5a623'],
+  ['#a8c5da','#7faabf'],
+  ['#d4b483','#b8956a'],
+  ['#c4a882','#a88f6a'],
+  ['#8fb5a8','#6a9589'],
+  ['#b5a8d4','#8f7fbf'],
+];
+function fillPhoto(i,c1,c2){
+  const slot=document.getElementById('ph'+i);
+  if(slot.classList.contains('filled')) return;
+  slot.classList.add('filled');
+  slot.style.background=`linear-gradient(135deg,${c1},${c2})`;
+  slot.innerHTML='<div style="display:flex;align-items:flex-end;padding:8px;width:100%;height:100%"><span style="font-family:var(--syne);font-size:11px;font-weight:700;color:rgba(0,0,0,0.5)">Photo '+(i+1)+'</span></div>';
+  // Use actual color args
+  slot.style.background=`linear-gradient(135deg,${photoColors[i][0]},${photoColors[i][1]})`;
+}
 
-// ── SCROLL REVEAL (landing only) ──
-const obs = new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    if (e.isIntersecting) { e.target.classList.add('on'); obs.unobserve(e.target); }
-  });
-}, { threshold: 0.06, rootMargin:'0px 0px -20px 0px' });
+// ── FILTER SHEET ──
+function openFilter(){
+  const ov=document.getElementById('filter-overlay');
+  ov.style.display='flex';
+  setTimeout(()=>ov.classList.add('open'),10);
+}
+function closeFilter(e){
+  const ov=document.getElementById('filter-overlay');
+  ov.classList.remove('open');
+  setTimeout(()=>{ov.style.display='none'},200);
+}
+function toggleChip(el){el.classList.toggle('sel')}
+function singleChip(el,group){
+  el.closest('.fs-chips').querySelectorAll('.fs-chip').forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel');
+}
+function resetFilters(){
+  document.querySelectorAll('#filter-overlay .fs-chip').forEach(c=>c.classList.remove('sel'));
+}
 
-document.querySelectorAll('#s-land .r').forEach(el => obs.observe(el));
+// ── BIO CHAR COUNT ──
+function updateChar(ta){
+  const left=200-ta.value.length;
+  const el=document.getElementById('charcount');
+  if(el) el.textContent=left+' characters left';
+}
 
-// Trigger above-fold on load
-window.addEventListener('DOMContentLoaded', () => {
-  setTimeout(() => {
-    document.querySelectorAll('.hero-l .r, .land-nav .r').forEach(el => el.classList.add('on'));
-  }, 60);
+// ── SCROLL REVEAL (landing) ──
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');obs.unobserve(e.target);}});
+},{threshold:0.06,rootMargin:'0px 0px -20px 0px'});
+document.querySelectorAll('#s-land .r').forEach(el=>obs.observe(el));
+window.addEventListener('DOMContentLoaded',()=>{
+  setTimeout(()=>{
+    document.querySelectorAll('.hero-l .r').forEach(el=>el.classList.add('on'));
+  },60);
 });
 </script>
 </body>
