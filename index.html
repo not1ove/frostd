@@ -3,233 +3,208 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FROSTD — Join The List Story</title>
-<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Playfair+Display:ital,wght@1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>FROSTD — The Math v2</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body {
-  background: #0d0d0d;
-  display: flex; flex-direction: column;
+  background: #0d0d0d; display: flex; flex-direction: column;
   align-items: center; padding: 16px; gap: 12px;
-  font-family: 'JetBrains Mono', monospace;
-  color: #fff;
+  font-family: 'JetBrains Mono', monospace; color: #fff;
 }
-.label { font-size: 10px; letter-spacing: 0.22em; color: rgba(255,255,255,0.3); margin-top: 8px; }
-
-.selector { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; max-width: 340px; }
-.selector button {
-  background: #1a1a1a; color: rgba(255,255,255,0.6);
-  border: 1px solid #2a2a2a; padding: 7px 12px;
-  font-family: 'JetBrains Mono', monospace; font-size: 10px;
-  cursor: pointer; letter-spacing: 0.1em; border-radius: 2px;
-}
-.selector button.active { background: #1E5BFF; border-color: #1E5BFF; color: #fff; }
-
-.stage { width: 100%; max-width: 340px; }
-
+.stage { width: 100%; max-width: 480px; }
 .slide {
   container-type: size; container-name: slide;
-  width: 100%; aspect-ratio: 9/16;
-  position: relative; overflow: hidden; display: none;
+  width: 100%; aspect-ratio: 3/4;
+  position: relative; overflow: hidden;
 }
-.slide.active { display: block; }
 
-/* ---- STORY A: BLACK — "you've seen the posts." ---- */
-.sa { background: #0A0A0E; }
-.sa .f {
-  position: absolute; inset: 0; padding: 7cqw 6.5cqw;
-  display: flex; flex-direction: column; justify-content: space-between;
+/* NOTEBOOK BACKGROUND */
+.notebook-bg {
+  position: absolute; inset: 0;
+  background-color: #FAFAF5;
+  background-image:
+    /* red margin line */
+    linear-gradient(90deg, transparent 12cqw, #FFB3B3 12cqw, #FFB3B3 calc(12cqw + 1px), transparent calc(12cqw + 1px)),
+    /* horizontal ruled lines */
+    repeating-linear-gradient(
+      180deg,
+      transparent,
+      transparent calc(8cqw - 1px),
+      rgba(180,200,230,0.55) calc(8cqw - 1px),
+      rgba(180,200,230,0.55) 8cqw
+    );
 }
-.sa .top { font-family: 'JetBrains Mono', monospace; font-size: 2cqw; letter-spacing: 0.22em; color: rgba(244,237,224,0.4); }
-.sa .hero { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 0; }
-.sa .line1 { font-family: 'JetBrains Mono', monospace; font-size: 3cqw; letter-spacing: 0.18em; color: rgba(244,237,224,0.45); margin-bottom: 3cqw; }
-.sa .big { font-family: 'Archivo Black', sans-serif; font-size: 13.5cqw; color: #F4EDE0; line-height: 0.88; letter-spacing: -0.01em; }
-.sa .big em { font-family: 'Playfair Display', serif; font-style: italic; color: #1E5BFF; display: block; font-size: 13cqw; }
-.sa .sub { font-family: 'JetBrains Mono', monospace; font-size: 2.5cqw; letter-spacing: 0.14em; color: rgba(244,237,224,0.5); margin-top: 5cqw; line-height: 1.65; }
-.sa .foot { font-family: 'JetBrains Mono', monospace; font-size: 1.9cqw; letter-spacing: 0.2em; color: rgba(244,237,224,0.35); text-align: center; }
 
-/* ---- STORY B: YELLOW — the actual push ---- */
-.sb { background: #E8D44D; }
-.sb .f {
-  position: absolute; inset: 0; padding: 7cqw 6.5cqw;
-  display: flex; flex-direction: column; justify-content: space-between;
+/* Punch holes */
+.hole {
+  position: absolute;
+  left: 5.5cqw;
+  width: 2.8cqw; height: 2.8cqw;
+  border-radius: 50%;
+  background: #0d0d0d;
+  border: 1px solid rgba(0,0,0,0.15);
 }
-.sb .top { font-family: 'JetBrains Mono', monospace; font-size: 2cqw; letter-spacing: 0.22em; color: rgba(10,10,14,0.42); }
-.sb .hero { flex: 1; display: flex; flex-direction: column; justify-content: center; }
-.sb .eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 2.5cqw; letter-spacing: 0.2em; color: rgba(10,10,14,0.5); margin-bottom: 3cqw; }
-.sb .big { font-family: 'Archivo Black', sans-serif; font-size: 12cqw; color: #0A0A0E; line-height: 0.88; letter-spacing: -0.01em; }
-.sb .big em { font-family: 'Playfair Display', serif; font-style: italic; color: rgba(10,10,14,0.55); display: block; font-size: 10cqw; }
-.sb .divider { width: 100%; height: 1px; background: rgba(10,10,14,0.2); margin: 5cqw 0 4cqw; }
-.sb .steps { display: flex; flex-direction: column; gap: 0; }
-.sb .step { display: flex; gap: 3.5cqw; align-items: baseline; padding: 2.8cqw 0; border-bottom: 1px solid rgba(10,10,14,0.15); }
-.sb .step:last-child { border-bottom: none; }
-.sb .step .n { font-family: 'JetBrains Mono', monospace; font-size: 2cqw; letter-spacing: 0.18em; color: rgba(10,10,14,0.4); min-width: 5cqw; }
-.sb .step .t { font-family: 'Archivo Black', sans-serif; font-size: 4.8cqw; color: #0A0A0E; letter-spacing: -0.01em; }
-.sb .step .t em { font-family: 'Playfair Display', serif; font-style: italic; color: rgba(10,10,14,0.6); }
-.sb .foot { font-family: 'JetBrains Mono', monospace; font-size: 1.9cqw; letter-spacing: 0.2em; color: rgba(10,10,14,0.4); text-align: center; }
 
-/* ---- STORY C: RED — pure urgency ---- */
-.sc { background: #0A0A0E; }
-.sc .f {
-  position: absolute; inset: 0; padding: 7cqw 6.5cqw;
-  display: flex; flex-direction: column; justify-content: space-between;
+.f {
+  position: absolute; inset: 0;
+  padding: 7cqw 7cqw 7cqw 15cqw;
+  display: flex; flex-direction: column;
+  justify-content: space-between;
 }
-.sc .top { font-family: 'JetBrains Mono', monospace; font-size: 2cqw; letter-spacing: 0.22em; color: rgba(244,237,224,0.35); }
-.sc .hero { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 0; }
-.sc .warning { font-family: 'JetBrains Mono', monospace; font-size: 2.2cqw; letter-spacing: 0.25em; color: #FF2D2D; margin-bottom: 4cqw; }
-.sc .big { font-family: 'Archivo Black', sans-serif; font-size: 11.5cqw; color: #F4EDE0; line-height: 0.88; letter-spacing: -0.01em; }
-.sc .big em { font-family: 'Playfair Display', serif; font-style: italic; color: #1E5BFF; display: block; font-size: 11cqw; }
-.sc .box {
-  margin-top: 6cqw;
-  border: 1px solid #1E5BFF;
-  padding: 4cqw 4.5cqw;
-  display: flex; flex-direction: column; gap: 2cqw;
-}
-.sc .box .blabel { font-family: 'JetBrains Mono', monospace; font-size: 2cqw; letter-spacing: 0.22em; color: rgba(244,237,224,0.4); }
-.sc .box .burl { font-family: 'Archivo Black', sans-serif; font-size: 7cqw; color: #1E5BFF; letter-spacing: -0.01em; line-height: 1; }
-.sc .box .bsub { font-family: 'JetBrains Mono', monospace; font-size: 2cqw; letter-spacing: 0.15em; color: rgba(244,237,224,0.5); }
-.sc .foot { font-family: 'JetBrains Mono', monospace; font-size: 1.9cqw; letter-spacing: 0.2em; color: rgba(244,237,224,0.3); text-align: center; }
 
-.actions { display: flex; gap: 8px; width: 100%; max-width: 340px; }
+.top {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 2cqw; letter-spacing: 0.18em;
+  color: rgba(10,10,14,0.35);
+  display: flex; justify-content: space-between;
+}
+
+.equation { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 0; }
+
+.eq-row {
+  display: flex; align-items: center; gap: 3cqw;
+  padding: 2.8cqw 0;
+  border-bottom: 1px solid rgba(10,10,14,0.08);
+}
+.eq-row:last-child { border-bottom: none; }
+
+.operator {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 6.5cqw; color: rgba(10,10,14,0.18);
+  min-width: 6.5cqw; text-align: center; line-height: 1;
+  flex-shrink: 0;
+}
+
+.eq-label { display: flex; flex-direction: column; gap: 1.2cqw; }
+.eq-label .big {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 7.5cqw; color: #0A0A0E;
+  letter-spacing: -0.01em; line-height: 0.88;
+}
+/* RED PEN energy for supporting text */
+.eq-label .small {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 2cqw; letter-spacing: 0.12em;
+  color: #CC2200;
+  font-style: italic;
+}
+
+.result-row {
+  margin-top: 4cqw; padding-top: 4cqw;
+  border-top: 2.5px solid #0A0A0E;
+  display: flex; align-items: center; gap: 3cqw;
+}
+.equals {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 6.5cqw; color: #0A0A0E; line-height: 1;
+  flex-shrink: 0; min-width: 6.5cqw; text-align: center;
+}
+.result-label { display: flex; flex-direction: column; gap: 1.2cqw; }
+.result-label .wordmark {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 12cqw; color: #1E5BFF;
+  letter-spacing: -0.02em; line-height: 0.85;
+}
+.result-label .sub {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.9cqw; letter-spacing: 0.14em;
+  color: rgba(10,10,14,0.4);
+}
+
+.bottom {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.8cqw; letter-spacing: 0.2em;
+  color: rgba(10,10,14,0.3);
+  display: flex; justify-content: space-between;
+}
+
+.actions { display: flex; gap: 8px; width: 100%; max-width: 480px; }
 .save-btn {
-  flex: 1; background: #1E5BFF; color: white; border: none; padding: 13px;
-  font-family: 'JetBrains Mono', monospace; font-size: 11px;
-  letter-spacing: 0.15em; cursor: pointer; border-radius: 2px;
-}
-.nav-btn {
-  background: #1a1a1a; color: #fff; border: 1px solid #2a2a2a;
-  padding: 13px 15px; font-family: 'JetBrains Mono', monospace;
-  font-size: 13px; cursor: pointer; border-radius: 2px;
+  flex: 1; background: #1E5BFF; color: white; border: none;
+  padding: 14px; font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.15em; cursor: pointer; border-radius: 2px;
 }
 </style>
 </head>
 <body>
 
-<div class="label">FROSTD — JOIN THE LIST STORIES · 3 OPTIONS · 9:16</div>
-<div class="selector" id="sel"></div>
-
 <div class="stage">
+  <div class="slide">
+    <div class="notebook-bg"></div>
 
-  <!-- STORY A: "you've seen the posts." -->
-  <div class="slide sa active" id="A">
+    <!-- punch holes -->
+    <div class="hole" style="top: 18cqw;"></div>
+    <div class="hole" style="top: 50cqw;"></div>
+    <div class="hole" style="top: 82cqw;"></div>
+
     <div class="f">
-      <div class="top">FROSTD ✱ // @frostd.in</div>
-      <div class="hero">
-        <div class="line1">// ATTENTION</div>
-        <div class="big">
-          YOU'VE SEEN
-          <em>the posts.</em>
-        </div>
-        <div class="sub">
-          you know what it is.<br>
-          you know where to find it.<br>
-          you just haven't joined the list yet.<br><br>
-          <strong style="color:#F4EDE0; font-style:normal;">that's the only thing<br>standing between you<br>and the drop location.</strong>
-        </div>
+      <div class="top">
+        <span>@frostd.in</span>
+        <span>MUMBAI 2026</span>
       </div>
-      <div class="foot">frostd.in — tap the link.</div>
-    </div>
-  </div>
 
-  <!-- STORY B: YELLOW — three steps, zero excuses -->
-  <div class="slide sb" id="B">
-    <div class="f">
-      <div class="top">FROSTD ✱ // @frostd.in</div>
-      <div class="hero">
-        <div class="eyebrow">// LITERALLY THIS EASY</div>
-        <div class="big">
-          STOP
-          <em>waiting.</em>
+      <div class="equation">
+        <div class="eq-row">
+          <div class="operator"></div>
+          <div class="eq-label">
+            <div class="big">ICE CREAM</div>
+            <div class="small">// the kind that never did anything for you</div>
+          </div>
         </div>
-        <div class="divider"></div>
-        <div class="steps">
-          <div class="step">
-            <div class="n">01</div>
-            <div class="t">FROSTD.IN</div>
+        <div class="eq-row">
+          <div class="operator">+</div>
+          <div class="eq-label">
+            <div class="big">ALCOHOL</div>
+            <div class="small">// real spirits. frozen in.</div>
           </div>
-          <div class="step">
-            <div class="n">02</div>
-            <div class="t">YOUR <em>number.</em></div>
+        </div>
+        <div class="eq-row">
+          <div class="operator">+</div>
+          <div class="eq-label">
+            <div class="big">NO RULES</div>
+            <div class="small">// no permissions asked.</div>
           </div>
-          <div class="step">
-            <div class="n">03</div>
-            <div class="t">DONE.</div>
+        </div>
+
+        <div class="result-row">
+          <div class="equals">=</div>
+          <div class="result-label">
+            <div class="wordmark">FROSTD</div>
+            <div class="sub">alcoholic gelato · mumbai only · frostd.in</div>
           </div>
         </div>
       </div>
-      <div class="foot">the list gets the location first. that's it.</div>
-    </div>
-  </div>
 
-  <!-- STORY C: BLACK + BLUE BOX — pure CTA -->
-  <div class="slide sc" id="C">
-    <div class="f">
-      <div class="top">FROSTD ✱ // @frostd.in</div>
-      <div class="hero">
-        <div class="warning">// THE LIST IS OPEN</div>
-        <div class="big">
-          DON'T
-          <em>miss it.</em>
-        </div>
-        <div class="box">
-          <div class="blabel">JOIN THE LIST /</div>
-          <div class="burl">FROSTD.IN</div>
-          <div class="bsub">drop your number. get the location first.</div>
-        </div>
+      <div class="bottom">
+        <span>DROPS ONLY</span>
+        <span>JOIN THE LIST AT FROSTD.IN</span>
       </div>
-      <div class="foot">alcoholic gelato. mumbai only. drops only.</div>
     </div>
   </div>
-
 </div>
 
 <div class="actions">
-  <button class="nav-btn" id="prev">‹</button>
-  <button class="save-btn" id="save">↓ SAVE STORY</button>
-  <button class="nav-btn" id="next">›</button>
+  <button class="save-btn" id="save">↓ SAVE POST</button>
 </div>
 
 <script>
-const slides = [
-  { id: 'A', label: 'A · YOU\'VE SEEN', name: 'story-youve-seen' },
-  { id: 'B', label: 'B · STOP WAITING', name: 'story-stop-waiting' },
-  { id: 'C', label: 'C · DONT MISS', name: 'story-dont-miss' },
-];
-const sel = document.getElementById('sel');
-let idx = 0;
-slides.forEach((s, i) => {
-  const btn = document.createElement('button');
-  btn.textContent = s.label;
-  if (i === 0) btn.classList.add('active');
-  btn.addEventListener('click', () => go(i));
-  sel.appendChild(btn);
-});
-function go(i) {
-  idx = i;
-  slides.forEach((s, j) => {
-    document.getElementById(s.id).classList.toggle('active', j === i);
-    sel.children[j].classList.toggle('active', j === i);
-  });
-}
-document.getElementById('prev').addEventListener('click', () => go((idx - 1 + slides.length) % slides.length));
-document.getElementById('next').addEventListener('click', () => go((idx + 1) % slides.length));
 document.getElementById('save').addEventListener('click', async () => {
-  const el = document.getElementById(slides[idx].id);
+  const el = document.querySelector('.slide');
   const btn = document.getElementById('save');
-  const orig = btn.textContent;
   btn.textContent = '...'; btn.disabled = true;
   try {
     const canvas = await html2canvas(el, { scale: 3, useCORS: true, backgroundColor: null, logging: false });
     const a = document.createElement('a');
-    a.download = `frostd-${slides[idx].name}.png`;
+    a.download = 'frostd-the-math-notebook.png';
     a.href = canvas.toDataURL('image/png');
     a.click();
     btn.textContent = '✓ SAVED';
-    setTimeout(() => { btn.textContent = orig; btn.disabled = false; }, 1200);
+    setTimeout(() => { btn.textContent = '↓ SAVE POST'; btn.disabled = false; }, 1200);
   } catch(e) {
     btn.textContent = 'ERROR';
-    setTimeout(() => { btn.textContent = orig; btn.disabled = false; }, 1500);
+    setTimeout(() => { btn.textContent = '↓ SAVE POST'; btn.disabled = false; }, 1500);
   }
 });
 </script>
